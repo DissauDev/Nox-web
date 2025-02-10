@@ -50,62 +50,69 @@ const ProductDetails: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mt-20 flex space-x-8">
-      {/* Columna izquierda: Detalles del producto */}
-      <div className="w-1/2">
-        <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
-        <p className="text-lg text-gray-600 mb-2">
-          <strong>Category:</strong> {productData.category}
-        </p>
-        <p className="text-gray-700 mb-4">{productData.description}</p>
-        <p className="text-2xl font-semibold text-green-600 mb-6">
-          {productData.price}
-        </p>
+    <div>
+      <div className="max-w-4xl mx-auto p-6 mt-20 flex space-x-8">
+        {/* Columna izquierda: Detalles del producto */}
+        <div className="w-1/2">
+          <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
+          <p className="text-lg text-gray-600 mb-2">
+            <strong>Category:</strong> {productData.category}
+          </p>
+          <p className="text-gray-700 mb-4">{productData.description}</p>
+          <p className="text-2xl font-semibold text-green-600 mb-6">
+            {productData.price}
+          </p>
 
-        {/* Opciones de sabores */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Flavors</h2>
-          {flavors.map((flavor) => (
-            <label key={flavor.id} className="block mb-2">
-              <input
-                type="checkbox"
-                value={flavor.id}
-                onChange={() => handleFlavorChange(flavor.id)}
-                checked={selectedFlavors.includes(flavor.id)}
-                className="mr-2"
-              />
-              {flavor.name}
-            </label>
-          ))}
+          {/* Opciones de sabores */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Flavors</h2>
+            {flavors.map((flavor) => (
+              <label key={flavor.id} className="block mb-2">
+                <input
+                  type="checkbox"
+                  value={flavor.id}
+                  onChange={() => handleFlavorChange(flavor.id)}
+                  checked={selectedFlavors.includes(flavor.id)}
+                  className="mr-2"
+                />
+                {flavor.name}
+              </label>
+            ))}
+          </div>
+
+          {/* Opciones de toppings */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Toppings</h2>
+            {toppings.map((topping) => (
+              <label key={topping.id} className="block mb-2">
+                <input
+                  type="checkbox"
+                  value={topping.id}
+                  onChange={() => handleToppingChange(topping.id)}
+                  checked={selectedToppings.includes(topping.id)}
+                  className="mr-2"
+                />
+                {topping.name}
+              </label>
+            ))}
+          </div>
         </div>
 
-        {/* Opciones de toppings */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Toppings</h2>
-          {toppings.map((topping) => (
-            <label key={topping.id} className="block mb-2">
-              <input
-                type="checkbox"
-                value={topping.id}
-                onChange={() => handleToppingChange(topping.id)}
-                checked={selectedToppings.includes(topping.id)}
-                className="mr-2"
-              />
-              {topping.name}
-            </label>
-          ))}
+        {/* Columna derecha: IceCreamBuilder */}
+        <div className="w-1/2">
+          <IceCreamBuilder
+            base={baseImage}
+            flavors={flavors}
+            toppings={toppings}
+            selectedFlavors={selectedFlavors}
+            selectedToppings={selectedToppings}
+          />
         </div>
       </div>
-
-      {/* Columna derecha: IceCreamBuilder */}
-      <div className="w-1/2">
-        <IceCreamBuilder
-          base={baseImage}
-          flavors={flavors}
-          toppings={toppings}
-          selectedFlavors={selectedFlavors}
-          selectedToppings={selectedToppings}
-        />
+      <div className="items-center justify-center flex">
+        <button className="bg-affair-800 hover:bg-affair-900 text-white first-line: font-ArialBold p-2 rounded-full px-20">
+          Add to cart
+        </button>
       </div>
     </div>
   );

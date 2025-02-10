@@ -94,7 +94,7 @@ const Menu = () => {
               {[...Array(6)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-gray-100 p-4 rounded shadow hover:shadow-lg transition cursor-pointer"
+                  className=" p-4 rounded shadow hover:shadow-lg transition cursor-pointer"
                   onClick={() => handleItemClick(section.id, index + 1)}
                 >
                   <p>

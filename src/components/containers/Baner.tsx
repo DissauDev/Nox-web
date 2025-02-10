@@ -14,17 +14,14 @@ const Navbar: React.FC = () => {
   return (
     <header
       id="banner"
-      className="bg-midnight-blue-950 justify-between items-center text-white fixed w-full top-0 z-50 shadow-lg"
+      className="bg-midnight-blue-950 fixed w-full top-0 z-50 shadow-lg text-white "
     >
-      {/* Banner horizontal */}
-      {/* <div className="bg-[#f3c244] px-2">
-        Cookie & Ice Cream ShopCookie & Ice Cream Shop Cookie & Ice Cream Shop
-        Cookie & Ice Cream Shop
-      </div> */}
-      <nav className="hidden md:flex items-center justify-between px-14 ">
-        <div className="flex items-center justify-center">
+      {/* Banner para pantallas grandes */}
+      <nav className="hidden md:flex items-center justify-between px-14">
+        {/* Logo */}
+        <div className="flex items-center">
           <NavLink
-            to={`/`}
+            to="/"
             className={({ isActive }) =>
               `hover:text-mustard-yellow-400 transition duration-300 ${
                 isActive ? "underline decoration-[#f3c244]" : ""
@@ -38,37 +35,74 @@ const Navbar: React.FC = () => {
             />
           </NavLink>
         </div>
-        <ul className="flex space-x-8 text-[18px] font-ArialRegular ">
-          {["Menu", "Shipping", "Cart"].map((item, index) => (
-            <li key={index}>
-              <NavLink
-                to={`/${item.toLowerCase()}`}
-                className={({ isActive }) =>
-                  `hover:text-mustard-yellow-400 transition duration-300 ${
-                    isActive ? "underline decoration-[#f3c244]" : ""
-                  }`
-                }
-              >
-                {item}
-              </NavLink>
-            </li>
-          ))}
+
+        {/* Menú de navegación */}
+        <ul className="flex items-center space-x-8 text-[18px] font-ArialRegular">
+          <li>
+            <NavLink
+              to="/menu"
+              className={({ isActive }) =>
+                `hover:text-mustard-yellow-400 transition duration-300 ${
+                  isActive ? "underline decoration-[#f3c244]" : ""
+                }`
+              }
+            >
+              Menu
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/shipping"
+              className={({ isActive }) =>
+                `hover:text-mustard-yellow-400 transition duration-300 ${
+                  isActive ? "underline decoration-[#f3c244]" : ""
+                }`
+              }
+            >
+              Shipping
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/signin"
+              className=" font-ArialBold p-2 rounded-full bg-mustard-yellow-400
+              text-black-night-950
+               hover:bg-mustard-yellow-500 transition duration-300"
+            >
+              Sign In / Sign Up
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/cart"
+              className="hover:text-mustard-yellow-400 transition duration-300"
+            >
+              <FiShoppingBag size={24} />
+            </NavLink>
+          </li>
         </ul>
       </nav>
 
-      {/* Botón de menú para móviles */}
+      {/* Banner para móviles */}
       <div className="md:hidden flex justify-between items-center px-6 py-4">
         <img
           src={NoxSideBar}
           className="h-10 w-auto object-contain"
           alt="Sidebar Logo"
         />
+        {/* Botón de Sign In / Sign Up para móviles */}
+        <NavLink
+          to="/signin"
+          className="text-white hover:text-mustard-yellow-400 transition duration-300 text-lg"
+        >
+          Sign In / Sign Up
+        </NavLink>
         <button onClick={toggleModal} className="text-white text-2xl">
           {modalOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
 
-      {/* Modal de pantalla completa */}
+      {/* Modal de pantalla completa (para móviles) */}
       {modalOpen && (
         <div className="fixed inset-0 bg-slate-700 text-valentino-950 flex flex-col justify-center items-center z-50">
           <button
@@ -101,13 +135,13 @@ const Navbar: React.FC = () => {
             {[...Array(15)].map((_, index) => (
               <span
                 key={index}
-                className="w-2 h-2 mx-1 bg-[#f3c244] rounded-full "
+                className="w-2 h-2 mx-1 bg-[#f3c244] rounded-full"
               ></span>
             ))}
           </div>
 
           {/* Opciones secundarias en columnas */}
-          <div className="grid grid-cols-2 gap-6 text-lg font-medium  flex-row">
+          <div className="grid grid-cols-2 gap-6 text-lg font-medium">
             {["Profile", "Settings", "Help", "Logout"].map((item, index) => (
               <button
                 key={index}
