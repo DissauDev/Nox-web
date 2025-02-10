@@ -121,9 +121,6 @@ export const { addProduct,
  
   removeItem,cleanCart, decreaseQuantity,increaseQuantity,setInputQuantity,setQuantity} = cartSlice.actions;
 
-export const selectProducts= (state: RootState) => state.cart.products;
-export const selectFullPrice = (state: RootState) => state.cart.fullPrice;
-export const selectLineItems= (state: RootState) => state.cart.lineItems;
 
 
 export default cartSlice.reducer;

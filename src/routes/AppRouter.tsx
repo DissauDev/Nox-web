@@ -5,12 +5,11 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-
 import Home from "../pages/home/Home";
 import Menu from "../pages/menu/Menu";
 import Cart from "../pages/cart/Cart";
 import NotFound from "../pages/NotFound";
-import Banner from "../components/containers/Baner";
+import { Banner } from "../components/containers/Banner";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(

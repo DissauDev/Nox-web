@@ -2,25 +2,27 @@ import React, { useState } from "react";
 
 import { MdDeliveryDining } from "react-icons/md";
 import ImageCoockie from "../../assets/desing/foto dulces .png";
-import DessertCarousel from "../../components/atoms/home/DessertCarousel";
-import BackgroundWithHearts from "../../components/atoms/home/BackgroundWithHearts";
+
 import { HomeSection3 } from "../../components/atoms/home/HomeSection3";
 import { FotosSection4 } from "../../components/atoms/home/FotosSection4";
 import { HomeSection5 } from "../../components/atoms/home/HomeSection5";
 import Footer from "../../components/containers/Footer";
-import ImageMobile from "../../assets/home/Mobile-Mockup copia .png";
-import AppPromo from "../../components/containers/AppPromo";
-export const Home = () => {
-  const [activeDelivery, setactiveDelivery] = useState(true);
-  const [activePickup, setactivePickup] = useState(false);
-  const [showModal, setshowModal] = useState(false);
 
-  const toDelivery = () => {
+import { DessertCarousel } from "../../components/atoms/home/DessertCarousel";
+import { BackgroundWithHearts } from "../../components/atoms/home/BackgroundWithHearts";
+import { AppPromo } from "../../components/containers/AppPromo";
+
+export const Home = () => {
+  //const [activeDelivery, setactiveDelivery] = useState(true);
+  //const [activePickup, setactivePickup] = useState(false);
+  // const [showModal, setshowModal] = useState(false);
+
+  /*  const toDelivery = () => {
     setactiveDelivery(true);
   };
   const toPickUp = () => {
     setactiveDelivery(true);
-  };
+  };*/
   return (
     <div className="justify-center   ">
       {/* <button
@@ -74,7 +76,6 @@ export const Home = () => {
 
       <DessertCarousel />
       <BackgroundWithHearts />
-      <HomeSection3 />
       <FotosSection4 />
       <HomeSection5 />
 

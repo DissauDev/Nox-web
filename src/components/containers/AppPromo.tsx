@@ -1,7 +1,7 @@
 import { FaApple, FaGooglePlay } from "react-icons/fa";
 import ImageMobile from "../../assets/home/Mobile-Mockup copia  - copia.png";
 
-const AppPromo = () => {
+export const AppPromo = () => {
   return (
     <div
       className="relative w-full bg-grape-950 text-white flex flex-col md:flex-row  items-center justify-between
@@ -80,5 +80,3 @@ const AppPromo = () => {
     </div>
   );
 };
-
-export default AppPromo;

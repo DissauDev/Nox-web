@@ -5,7 +5,7 @@ import NoxBanner from "../../assets/nox-banner.png";
 import NoxSideBar from "../../assets/nox-sideBar.png";
 import { FiShoppingBag } from "react-icons/fi";
 
-const Navbar: React.FC = () => {
+export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   // Función para alternar el modal
@@ -163,5 +163,3 @@ const Navbar: React.FC = () => {
     </header>
   );
 };
-
-export default Navbar;

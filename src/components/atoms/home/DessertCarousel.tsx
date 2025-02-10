@@ -46,7 +46,7 @@ const categories = [
   },
 ];
 
-const DessertCarousel = () => {
+export const DessertCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const nextSlide = () => {
@@ -134,5 +134,3 @@ const DessertCarousel = () => {
     </div>
   );
 };
-
-export default DessertCarousel;

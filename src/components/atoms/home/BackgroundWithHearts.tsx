@@ -4,7 +4,7 @@ import Patterheart from "../../../assets/home/patron corazones.webp";
 import CoockiesImage from "../../../assets/home/chocolate-homemade c.png";
 import IcecreamImage from "../../../assets/home/various-ice-cream-ba.png";
 
-const BackgroundWithHearts = () => {
+export const BackgroundWithHearts = () => {
   return (
     <div className="relative min-h-screen mb-20 bg-rose-500 opacity-90 flex flex-col items-center justify-center overflow-hidden">
       {/* Imagen de fondo con corazones */}
@@ -61,5 +61,3 @@ const BackgroundWithHearts = () => {
     </div>
   );
 };
-
-export default BackgroundWithHearts;
