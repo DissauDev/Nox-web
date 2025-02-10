@@ -14,24 +14,20 @@ const Navbar: React.FC = () => {
   return (
     <header
       id="banner"
-      className="bg-midnight-blue-950 fixed w-full top-0 z-50 shadow-lg text-white "
+      className="bg-midnight-blue-950 fixed w-full top-0 z-50 shadow-lg text-white"
     >
       {/* Banner para pantallas grandes */}
       <nav className="hidden md:flex items-center justify-between px-14">
-        {/* Logo */}
+        {/* Logo: se ajusta el margen para pantallas medianas y grandes */}
         <div className="flex items-center">
           <NavLink
             to="/"
-            className={({ isActive }) =>
-              `hover:text-mustard-yellow-400 transition duration-300 ${
-                isActive ? "underline decoration-[#f3c244]" : ""
-              }`
-            }
+            className="transition duration-300 hover:text-mustard-yellow-400"
           >
             <img
               src={NoxBanner}
-              className="h-10 md:h-12 lg:h-14 ml-20 mt-4 w-auto object-contain"
               alt="Banner"
+              className="h-8 md:h-8 lg:h-14 ml-4 lg:ml-20 mt-4 w-auto object-contain"
             />
           </NavLink>
         </div>
@@ -42,8 +38,10 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/menu"
               className={({ isActive }) =>
-                `hover:text-mustard-yellow-400 transition duration-300 ${
-                  isActive ? "underline decoration-[#f3c244]" : ""
+                `hover:text-mustard-yellow-400 transition duration-300  ${
+                  isActive
+                    ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                    : ""
                 }`
               }
             >
@@ -55,7 +53,9 @@ const Navbar: React.FC = () => {
               to="/shipping"
               className={({ isActive }) =>
                 `hover:text-mustard-yellow-400 transition duration-300 ${
-                  isActive ? "underline decoration-[#f3c244]" : ""
+                  isActive
+                    ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                    : ""
                 }`
               }
             >
@@ -65,9 +65,7 @@ const Navbar: React.FC = () => {
           <li>
             <NavLink
               to="/signin"
-              className=" font-ArialBold p-2 rounded-full bg-mustard-yellow-400
-              text-black-night-950
-               hover:bg-mustard-yellow-500 transition duration-300"
+              className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
             >
               Sign In / Sign Up
             </NavLink>
@@ -75,7 +73,13 @@ const Navbar: React.FC = () => {
           <li>
             <NavLink
               to="/cart"
-              className="hover:text-mustard-yellow-400 transition duration-300"
+              className={({ isActive }) =>
+                `inline-block hover:text-mustard-yellow-400 transition duration-300 ${
+                  isActive
+                    ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                    : ""
+                }`
+              }
             >
               <FiShoppingBag size={24} />
             </NavLink>
@@ -87,13 +91,13 @@ const Navbar: React.FC = () => {
       <div className="md:hidden flex justify-between items-center px-6 py-4">
         <img
           src={NoxSideBar}
-          className="h-10 w-auto object-contain"
           alt="Sidebar Logo"
+          className="h-10 w-auto object-contain"
         />
         {/* Botón de Sign In / Sign Up para móviles */}
         <NavLink
           to="/signin"
-          className="text-white hover:text-mustard-yellow-400 transition duration-300 text-lg"
+          className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
         >
           Sign In / Sign Up
         </NavLink>
@@ -102,9 +106,9 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal de pantalla completa (para móviles) */}
+      {/* Modal de pantalla completa para móviles */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-slate-700 text-valentino-950 flex flex-col justify-center items-center z-50">
+        <div className="fixed inset-0 bg-grape-950 text-valentino-950 flex flex-col justify-center items-center z-50">
           <button
             className="absolute top-6 right-6 text-valentino-950 text-3xl"
             onClick={toggleModal}
@@ -118,11 +122,13 @@ const Navbar: React.FC = () => {
                 <NavLink
                   to={`/${item.toLowerCase()}`}
                   className={({ isActive }) =>
-                    `hover:opacity-100 opacity-75 transition duration-300 ${
-                      isActive ? "underline decoration-[#f3c244]" : ""
+                    ` hover:text-grape-200 transition duration-300 ${
+                      isActive
+                        ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                        : ""
                     }`
                   }
-                  onClick={() => setModalOpen(false)} // Cierra el modal al navegar
+                  onClick={() => setModalOpen(false)}
                 >
                   {item}
                 </NavLink>
