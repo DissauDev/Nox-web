@@ -70,6 +70,7 @@ export const Home = () => {
           <img
             src={ImageCoockie}
             alt="Cookies Images"
+            loading="lazy"
             className="w-full h-auto object-cover md:max-w-lg lg:max-w-xl"
           />
         </div>
@@ -86,22 +87,3 @@ export const Home = () => {
   );
 };
 export default Home;
-
-/* return (
-      <div className="mt-50">
-        <button
-          className="absolute top-6 right-6 text-valentino-950 text-3xl"
-          onClick={toDelivery}
-        >
-          <FaTimes />
-        </button>
-        <button
-          className="absolute top-6 right-6 text-valentino-950 text-3xl"
-          onClick={toPickUp}
-        >
-          fdf
-          <FaTimes />
-        </button>
-      </div>
-    );
-  */
