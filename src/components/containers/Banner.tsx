@@ -3,12 +3,18 @@ import { NavLink } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import NoxBanner from "../../assets/nox-banner.png";
 import NoxSideBar from "../../assets/nox-sideBar.png";
-import { FiShoppingBag } from "react-icons/fi";
+import { FiShoppingBag, FiTruck } from "react-icons/fi";
+import { setAddress } from "../../store/features/slices/addressSlice";
+import AddressModal from "../atoms/home/AddressModal";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 export const Banner: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // Modal del menú móvil
+  const [addressModalOpen, setAddressModalOpen] = useState(false); // Modal para cambiar la dirección
+  const dispatch = useAppDispatch();
+  const savedAddress = useAppSelector((state) => state.address.savedAddress);
 
-  // Función para alternar el modal
+  // Función para alternar el menú móvil
   const toggleModal = () => setModalOpen(!modalOpen);
 
   return (
@@ -18,7 +24,7 @@ export const Banner: React.FC = () => {
     >
       {/* Banner para pantallas grandes */}
       <nav className="hidden md:flex items-center justify-between px-14">
-        {/* Logo: se ajusta el margen para pantallas medianas y grandes */}
+        {/* Logo */}
         <div className="flex items-center">
           <NavLink
             to="/"
@@ -106,7 +112,7 @@ export const Banner: React.FC = () => {
         </button>
       </div>
 
-      {/* Modal de pantalla completa para móviles */}
+      {/* Modal del menú para móviles */}
       {modalOpen && (
         <div className="fixed inset-0 bg-grape-950 text-valentino-950 flex flex-col justify-center items-center z-50">
           <button
@@ -122,7 +128,7 @@ export const Banner: React.FC = () => {
                 <NavLink
                   to={`/${item.toLowerCase()}`}
                   className={({ isActive }) =>
-                    ` hover:text-grape-200 transition duration-300 ${
+                    `hover:text-grape-200 transition duration-300 ${
                       isActive
                         ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
                         : ""
@@ -136,7 +142,7 @@ export const Banner: React.FC = () => {
             ))}
           </ul>
 
-          {/* Separador con puntos intermitentes */}
+          {/* Separador (puntos intermitentes) */}
           <div className="flex items-center justify-center my-8">
             {[...Array(15)].map((_, index) => (
               <span
@@ -146,7 +152,7 @@ export const Banner: React.FC = () => {
             ))}
           </div>
 
-          {/* Opciones secundarias en columnas */}
+          {/* Opciones secundarias */}
           <div className="grid grid-cols-2 gap-6 text-lg font-medium">
             {["Profile", "Settings", "Help", "Logout"].map((item, index) => (
               <button
@@ -159,6 +165,84 @@ export const Banner: React.FC = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Nuevo Banner de dirección guardada (solo se muestra si hay una dirección guardada) */}
+      {savedAddress && (
+        <div className="border-t border-gray-300">
+          {/* Layout para pantallas medianas y grandes */}
+          <div className="hidden md:flex items-center  px-14 py-2">
+            <div className="flex items-center space-x-2">
+              {savedAddress.type === "delivery" ? (
+                <>
+                  <FiTruck size={20} className="text-white" />
+                  <span className="text-white font-ArialRegular ">
+                    Warn delivery coockies
+                  </span>
+                </>
+              ) : (
+                <>
+                  <FiShoppingBag
+                    size={20}
+                    className="text-white font-ArialRegular"
+                  />
+                  <span className="text-white">Pick Up Order</span>
+                </>
+              )}
+            </div>
+            <div className="flex items-center mx-4 space-x-4">
+              <span className="text-affair-500 font-ArialBold">
+                {savedAddress.fullAddress}
+              </span>
+              <button
+                onClick={() => setAddressModalOpen(true)}
+                className="text-mustard-yellow-400  hover:border-b-2 font-ArialRegular border-mustard-yellow-400"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+          {/* Layout para pantallas pequeñas */}
+          <div className="md:hidden px-6 py-2">
+            <div className="flex items-center ">
+              <div className="flex items-center space-x-2">
+                {/* <img
+                  src={NoxBanner}
+                  alt="Banner"
+                  className="h-8 w-auto object-contain"
+                /> */}
+                {savedAddress.type === "delivery" ? (
+                  <span className="text-white">warn delivery coockies</span>
+                ) : (
+                  <span className="text-white">Pick Up Order</span>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-affair-500 font-bold">
+                {savedAddress.fullAddress}
+              </span>
+              <button
+                onClick={() => setAddressModalOpen(true)}
+                className="text-mustard-yellow-400 hover:underline"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AddressModal para cambiar la dirección */}
+      {addressModalOpen && (
+        <AddressModal
+          isOpen={addressModalOpen}
+          onClose={() => setAddressModalOpen(false)}
+          initialType={savedAddress?.type || "delivery"}
+          onSelectAddress={(address, type) => {
+            dispatch(setAddress({ ...address, type }));
+          }}
+        />
       )}
     </header>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "AnimationDj-web",
+  "name": "Nox",
   "private": true,
   "version": "0.0.0",
   "type": "module","scripts": {
@@ -15,16 +15,14 @@
     "@react-three/fiber": "^8.17.12",
     "@reduxjs/toolkit": "^2.5.0",
     "@types/react-redux": "^7.1.34",
-    "audio-analyser": "^1.0.2",
-    "audio-context": "^1.0.3",
+
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
-    "react-router-dom": "^7.1.3",
-    "three": "^0.172.0",
-    "tone": "^15.0.4"
+    "react-router-dom": "^7.1.3"
+
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

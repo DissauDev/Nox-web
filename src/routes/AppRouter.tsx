@@ -10,6 +10,7 @@ import Menu from "../pages/menu/Menu";
 import Cart from "../pages/cart/Cart";
 import NotFound from "../pages/NotFound";
 import { Banner } from "../components/containers/Banner";
+import MapPage from "../pages/menu/MapPage";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -31,6 +32,7 @@ const AppRouter: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/map" element={<MapPage />} />
 
               {/* Ruta dinámica para productos */}
               <Route

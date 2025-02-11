@@ -11,6 +11,7 @@ import Footer from "../../components/containers/Footer";
 import { DessertCarousel } from "../../components/atoms/home/DessertCarousel";
 import { BackgroundWithHearts } from "../../components/atoms/home/BackgroundWithHearts";
 import { AppPromo } from "../../components/containers/AppPromo";
+import { AddressSelector } from "../../components/atoms/home/AddressSelector";
 
 export const Home = () => {
   //const [activeDelivery, setactiveDelivery] = useState(true);
@@ -48,7 +49,7 @@ export const Home = () => {
         {<MdDeliveryDining className="w-10 h-10 text-pink-400" />}
         <span>Pickup</span>
       </button> */}
-
+      <AddressSelector />
       <div className="flex flex-col  md:flex-row items-center bg-midnight-blue-950  opacity-90 my-20  min-h-[300px] md:min-h-[450px]">
         {/* Contenedor del texto y el botón */}
 
