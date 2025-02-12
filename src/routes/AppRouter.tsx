@@ -11,6 +11,7 @@ import Cart from "../pages/cart/Cart";
 import NotFound from "../pages/NotFound";
 import { Banner } from "../components/containers/Banner";
 import MapPage from "../pages/menu/MapPage";
+import AuthPage from "../pages/AuthPage";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -33,7 +34,7 @@ const AppRouter: React.FC = () => {
               <Route path="/menu" element={<Menu />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/map" element={<MapPage />} />
-
+              <Route path="/auth" element={<AuthPage />} />
               {/* Ruta dinámica para productos */}
               <Route
                 path="/products/:category/:id"

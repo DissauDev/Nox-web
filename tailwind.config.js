@@ -91,7 +91,7 @@ export default {
         '900': '#583073',
         '950': '#3b1952',
     },
-    'creamy white': {
+    'creamy-white': {
       '50': '#fef8eb',
       '100': '#fbebca',
       '200': '#f8d78f',

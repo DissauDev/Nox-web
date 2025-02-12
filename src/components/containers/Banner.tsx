@@ -70,7 +70,7 @@ export const Banner: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/signin"
+              to="/auth"
               className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
             >
               Sign In / Sign Up

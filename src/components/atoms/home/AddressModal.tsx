@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { addresses, CAAddress } from "../../../utils/addresses";
 import { useNavigate } from "react-router-dom";
-import { FaLocationArrow, FaTimes } from "react-icons/fa";
+import { FaLocationArrow, FaTimes, FaStore } from "react-icons/fa";
 import { FiShoppingBag, FiTruck } from "react-icons/fi";
-import { FaMapLocationDot } from "react-icons/fa6";
+import {
+  FaLocationCrosshairs,
+  FaLocationPin,
+  FaMapLocationDot,
+} from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -12,7 +17,44 @@ interface AddressModalProps {
   onSelectAddress: (address: CAAddress, type: "delivery" | "pickup") => void;
 }
 
-export const AddressModal: React.FC<AddressModalProps> = ({
+interface ToggleSwitchProps {
+  addressType: "delivery" | "pickup";
+  onChange: (type: "delivery" | "pickup") => void;
+}
+
+const ToggleSwitch: React.FC<ToggleSwitchProps> = React.memo(
+  ({ addressType, onChange }) => {
+    return (
+      <div className="mx-auto w-full max-w-xs">
+        <div className="relative bg-gray-800 rounded-full p-1 flex items-center">
+          <motion.div
+            layout
+            layoutId="switchIndicator"
+            className="absolute top-0 left-0 h-full w-1/2 bg-purple-500 rounded-full"
+            animate={{ x: addressType === "pickup" ? "100%" : "0%" }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          />
+          <button
+            onClick={() => onChange("delivery")}
+            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-semibold text-center transition-colors duration-300"
+          >
+            <FiTruck className="mr-2" size={18} />
+            Delivery
+          </button>
+          <button
+            onClick={() => onChange("pickup")}
+            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-semibold text-center transition-colors duration-300"
+          >
+            <FiShoppingBag className="mr-2" size={18} />
+            Pick Up
+          </button>
+        </div>
+      </div>
+    );
+  }
+);
+
+const AddressModal: React.FC<AddressModalProps> = ({
   isOpen,
   onClose,
   initialType,
@@ -26,7 +68,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({
   const [ipAddress, setIpAddress] = useState<CAAddress | null>(null);
   const navigate = useNavigate();
 
-  // Filtra las direcciones del arreglo según lo ingresado
+  // Filtra las direcciones según el término de búsqueda
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredAddresses([]);
@@ -38,7 +80,7 @@ export const AddressModal: React.FC<AddressModalProps> = ({
     setFilteredAddresses(results);
   }, [searchTerm]);
 
-  // Obtiene la dirección basada en la IP y la guarda en el estado
+  // Obtiene la dirección basada en la IP
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -59,85 +101,78 @@ export const AddressModal: React.FC<AddressModalProps> = ({
       );
   }, []);
 
-  // Función para guardar la dirección (ya sea de las sugerencias, la ingresada manualmente o la detectada por IP)
+  // Guarda la dirección seleccionada (ya sea de la lista o la detectada)
   const handleSaveAddress = (address: CAAddress) => {
     onSelectAddress(address, addressType);
     onClose();
   };
 
-  // Dirección construida con la entrada manual del usuario
-  const manualAddress: CAAddress = {
-    id: Date.now(), // id temporal
-    postalCode: "",
-    city: "",
-    state: "",
-    fullAddress: searchTerm,
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black-night-950 bg-opacity-80 z-50">
-      <div className="bg-black-night-800 rounded-lg shadow-lg w-11/12 max-w-md p-6 border border-grape-700">
-        {/* Cabecera con botones para Delivery / Pickup y botón de cierre */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="w-1"></div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => setAddressType("delivery")}
-              className={`px-4 py-2 flex items-center rounded-full font-ArialBold ${
-                addressType === "delivery"
-                  ? "bg-grape-800 text-white"
-                  : "bg-black-night-700 text-gray-300"
-              }`}
-            >
-              <FiTruck className="mr-2" /> Delivery
-            </button>
-            <button
-              onClick={() => setAddressType("pickup")}
-              className={`px-4 flex items-center py-2 rounded-full font-ArialBold ${
-                addressType === "pickup"
-                  ? "bg-grape-800 text-white"
-                  : "bg-black-night-700 text-gray-300"
-              }`}
-            >
-              <FiShoppingBag className="mr-2" /> Pick Up
-            </button>
-          </div>
-          <button onClick={onClose} className="text-gray-300 hover:text-white">
-            <FaTimes />
-          </button>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-md z-50">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-gray-900 rounded-2xl shadow-2xl w-11/12 max-w-md p-6 border border-purple-700 relative"
+      >
+        {/* Botón de cierre */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        >
+          <FaTimes size={20} />
+        </button>
+
+        {/* Cabecera con toggle para Delivery / Pick Up */}
+        <div className="mb-4">
+          <h2 className="text-center text-xl font-bold text-purple-400 mb-3">
+            Select Order Type
+          </h2>
+          <ToggleSwitch addressType={addressType} onChange={setAddressType} />
         </div>
 
-        {/* Input de búsqueda con botón "View on Map" integrado en modo pickup */}
+        {/* Input de búsqueda */}
         <div className="mb-4 relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+            {addressType === "delivery" ? (
+              <FaLocationArrow className="text-purple-500" size={20} />
+            ) : (
+              <FaStore className="text-purple-500" size={20} />
+            )}
+          </div>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Write address (post, city, state)"
-            className="w-full pr-20 px-3 py-2 rounded-full bg-black-night-700 text-white placeholder-gray-400 focus:outline-none"
+            placeholder={
+              addressType === "delivery"
+                ? "Enter delivery address"
+                : "Enter pick up address"
+            }
+            className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-800 text-white placeholder-gray-400 focus:outline-none border border-purple-700"
           />
           {addressType === "pickup" && (
             <button
               onClick={() => navigate("/map")}
-              className="absolute items-center flex right-2 top-1/2 transform -translate-y-1/2
-               bg-grape-500 hover:bg-grape-600 text-white px-3 py-1 rounded-full font-ArialBold"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-full font-semibold transition-colors duration-300"
             >
-              <FaMapLocationDot className="mr-2" /> View Map
+              <FaMapLocationDot className="mr-2" size={16} />
+              View Map
             </button>
           )}
         </div>
 
-        {/* Lista de direcciones filtradas según la búsqueda */}
-        <div className="mb-4 max-h-60 overflow-y-auto">
+        {/* Lista de direcciones filtradas */}
+        <div className="mb-4 max-h-40 overflow-y-auto">
           {filteredAddresses.length > 0 ? (
             <ul>
               {filteredAddresses.map((addr) => (
                 <li
                   key={addr.id}
                   onClick={() => handleSaveAddress(addr)}
-                  className="px-3 py-2 hover:bg-black-night-700 cursor-pointer rounded text-white"
+                  className="px-4 py-2 cursor-pointer rounded hover:bg-gray-800 transition-colors duration-200"
                 >
                   {addr.fullAddress}
                 </li>
@@ -145,30 +180,38 @@ export const AddressModal: React.FC<AddressModalProps> = ({
             </ul>
           ) : (
             searchTerm && (
-              <p className="text-gray-400">
-                No se encontraron direcciones coincidentes.
-              </p>
+              <p className="text-gray-400">No matching addresses found.</p>
             )
           )}
         </div>
 
-        {/* Sección para mostrar la dirección detectada por IP */}
+        {/* Sección para la dirección detectada por IP */}
         {ipAddress && (
           <button
             onClick={() => handleSaveAddress(ipAddress)}
-            className="mt-4 p-3 bg-black-night-700 w-full hover:bg-black-night-900 rounded"
+            className="mt-4 p-3 bg-gray-800 w-full hover:bg-gray-700 rounded-lg transition-colors duration-300"
           >
-            <p className="text-gray-300 mb-2 flex items-center">
-              {" "}
-              <FaLocationArrow className="mr-2" /> Your Current Address
-            </p>
-            <div className="flex justify-between items-center">
-              <span className="text-white">{ipAddress.fullAddress}</span>
+            <div className="flex items-center mb-1">
+              <FaLocationCrosshairs className="mr-2 text-gray-400" size={16} />
+              <span className="text-gray-400 text-sm">
+                Your current address
+              </span>
             </div>
-            <div className="w-1"></div>
+            <div className="text-white font-bold text-base text-left">
+              {ipAddress.fullAddress}
+            </div>
           </button>
         )}
-      </div>
+        {/* Divisor */}
+        <hr className="border-t border-gray-700 my-4" />
+
+        {/* Texto descriptivo */}
+        <div className="mb-4 text-center text-creamy-white-50  text-sm font-ArialRegular">
+          {addressType === "delivery"
+            ? "Fresh, warm cookies delivered right to your door"
+            : "Fresh, warm cookies ready for pickup"}
+        </div>
+      </motion.div>
     </div>
   );
 };

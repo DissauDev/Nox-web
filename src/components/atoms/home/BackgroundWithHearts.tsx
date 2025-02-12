@@ -12,6 +12,7 @@ export const BackgroundWithHearts = () => {
         className="absolute inset-0 bg-cover bg-center "
         src={Patterheart}
         alt="Heart pattern"
+        loading="lazy"
       />
 
       {/* Contenido */}
