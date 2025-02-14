@@ -5,3 +5,10 @@ export interface Option {
     type: 'flavor' | 'topping'; // Categoría (sabor o topping)
   }
   
+
+  export interface Articulo {
+    name: string;
+    price: number;
+    amount: number;
+  }
+  

@@ -4,56 +4,82 @@
 
 /* Personaliza la barra de desplazamiento en navegadores basados en WebKit */
 ::-webkit-scrollbar {
-  width: 8px; /* Grosor */
+  width: 8px;
+  /* Grosor */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Color de fondo */
+  background: #f1f1f1;
+  /* Color de fondo */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #583073; /* Color de la barra (Púrpura estilo Insomnia) */
+  background: #583073;
+  /* Color de la barra (Púrpura estilo Insomnia) */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b1952; /* Oscurecer cuando pase el mouse */
+  background: #3b1952;
+  /* Oscurecer cuando pase el mouse */
 }
 
 
 @font-face {
-    font-family: 'ArialBold';
-    src: url('./assets/fonts/ARIALROUNDEDMTEXTRABOLD.TTF') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: 'ArialRegular';
-    src: url('./assets/fonts/ARIALROUNDEDMT.TTF') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'ArialLight';
-    src: url('./assets/fonts/ARIALROUNDEDMTLIGHT.TTF') format('truetype');
-    font-weight: lighter;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'CamilaFont';
-    src: url('./assets/fonts/Camila.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'FreeStyleFont';
-    src: url('./assets/fonts/FREESCPT.TTF') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+  font-family: 'ArialBold';
+  src: url('./assets/fonts/ARIALROUNDEDMTEXTRABOLD.TTF') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ArialRegular';
+  src: url('./assets/fonts/ARIALROUNDEDMT.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'ArialLight';
+  src: url('./assets/fonts/ARIALROUNDEDMTLIGHT.TTF') format('truetype');
+  font-weight: lighter;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CamilaFont';
+  src: url('./assets/fonts/Camila.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FreeStyleFont';
+  src: url('./assets/fonts/FREESCPT.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   @apply bg-midnight-blue-950 bg-custom-pattern bg-repeat bg-[size:8%] text-white;
+}
+
+
+.section-padding {
+  @apply px-8 sm:px-12 py-4
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
