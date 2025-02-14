@@ -55,9 +55,9 @@ const Cart = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-20 ">
+    <div className="mt-16 bg-[#FDF9F3] pb-20 ">
       <div className="section-padding">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-2">
           <button
             className="font-bold font-ArialBold flex items-center sm:text-2xl text-purple-500"
             onClick={() => {
@@ -106,7 +106,7 @@ const Cart = () => {
           ))}
         </div>
       </div>
-      <div className="section-padding">
+      <div className="section-padding pb-16"> 
         <h4 className="text-purple-500">{itemsDataDummy.length} Item Order</h4>
         <div className="flex flex-col gap-4 mt-4 mb-16">
           {itemsDataDummy.map((item, index) => (
@@ -115,8 +115,7 @@ const Cart = () => {
           ))}
         </div>
       </div>
-      <AppPromo />
-      <Footer />
+
     </div>
   );
 };

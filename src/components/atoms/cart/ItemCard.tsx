@@ -2,7 +2,7 @@ import React from "react";
 
 const ItemCard = ({ item: { name, amount, price } }) => {
   return (
-    <div className="w-full border border-white p-8 rounded-2xl flex flex-col gap-4">
+    <div className="w-full border border-purple-500 p-8 rounded-2xl flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <h5 className="text-xl text-purple-700 font-semibold">{name}</h5>
         <button
