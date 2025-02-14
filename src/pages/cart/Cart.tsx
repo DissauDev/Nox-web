@@ -6,7 +6,6 @@ import { AppPromo } from "../../components/containers/AppPromo";
 import Footer from "../../components/containers/Footer";
 import { Articulo } from "../../types/system";
 
-
 const sugestedDataDummy = [
   {
     img: IceCreamIMg,
@@ -82,7 +81,7 @@ const Cart = () => {
           Delivering to 220 Academy Street
         </p>
       </div>
-      <div className="section-padding">
+      <div className="section-padding overflow-hidden">
         <h3 className="text-purple-500">Suggested Items</h3>
         <div className="mt-4 flex px-4 items-center gap-8 overflow-x-scroll no-scrollbar pb-6">
           {sugestedDataDummy.map((item, index) => (
