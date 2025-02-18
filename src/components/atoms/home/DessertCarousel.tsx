@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import IceamImage from "../../../assets/Imnsomnia fotos/iceCream1.png";
 import CoockiesImage from "../../../assets/Imnsomnia fotos/coockies.png";
 import MashupsImage from "../../../assets/Imnsomnia fotos/mashups.png";
 import DessertsImage from "../../../assets/Imnsomnia fotos/desserts.png";
-import ForYouImage from "../../../assets/Imnsomnia fotos/for-you.png";
-import DrinksImage from "../../../assets/Imnsomnia fotos/for-you.png";
+import ForYouImage from "../../../assets/Imnsomnia fotos/foryou.png";
+import DrinksImage from "../../../assets/Imnsomnia fotos/foryou.png";
 
 const categories = [
   {

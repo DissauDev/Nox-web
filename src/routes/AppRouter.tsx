@@ -21,7 +21,7 @@ const ProductsDetails = React.lazy(
 const AppRouter: React.FC = () => {
   return (
     <Router>
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row pt-16">
         {/* Banner para pantallas grandes */}
         <Banner />
 
@@ -37,7 +37,7 @@ const AppRouter: React.FC = () => {
               <Route path="/auth" element={<AuthPage />} />
               {/* Ruta dinámica para productos */}
               <Route
-                path="/products/:category/:id"
+                path="/products/:category/:productKey"
                 element={<ProductsDetails />}
               />
 

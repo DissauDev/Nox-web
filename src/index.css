@@ -22,6 +22,15 @@
   background: #3b1952; /* Oscurecer cuando pase el mouse */
 }
 
+/* Ocultar scrollbar en Chrome, Safari y Edge */
+.overflow-x-auto::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento */
+}
+
+/* Ocultar scrollbar en Firefox */
+.overflow-x-auto {
+  scrollbar-width: none; /* Oculta la barra de desplazamiento */
+}
 
 @font-face {
     font-family: 'ArialBold';

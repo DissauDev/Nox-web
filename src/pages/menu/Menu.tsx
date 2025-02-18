@@ -1,34 +1,25 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import DessertCard from "../../components/atoms/menu/DessertCard";
+import { Slider } from "../../components/atoms/Slider";
+
+import menuData from "../../utils/data/products";
 
 const Menu = () => {
   const tabsRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState("for-you");
-  const [isSticky, setIsSticky] = useState(false);
+  const [activeTab, setActiveTab] = useState("For you");
   const navigate = useNavigate();
 
-  const sections = [
-    { id: "for-you", label: "For You" },
-    { id: "boxes", label: "Boxes" },
-    { id: "ice-cream", label: "Ice Cream" },
-    { id: "drinks", label: "Drinks" },
-    { id: "cookies", label: "Cookies" },
-    { id: "others", label: "Others" },
-  ];
+  // Generamos las secciones a partir de la data
+  const sections = menuData.map((cat) => cat.category);
 
   useEffect(() => {
     const handleScroll = () => {
       const fromTop = window.scrollY;
 
-      // Verifica si el tab bar debe estar en modo sticky
-      if (tabsRef.current) {
-        const tabsTop = tabsRef.current.offsetTop;
-        setIsSticky(fromTop > tabsTop);
-      }
-
-      // Actualiza la pestaña activa según la sección visible
-      const currentSection = sections.find((section) => {
-        const element = document.getElementById(section.id);
+      // Determinamos la sección visible en el scroll
+      const currentSection = sections.find((id) => {
+        const element = document.getElementById(id);
         if (element) {
           const offsetTop = element.offsetTop;
           const offsetBottom = offsetTop + element.offsetHeight;
@@ -38,13 +29,13 @@ const Menu = () => {
       });
 
       if (currentSection) {
-        setActiveTab(currentSection.id);
+        setActiveTab(currentSection);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [sections]);
 
   const handleTabClick = (id: string) => {
     const element = document.getElementById(id);
@@ -53,60 +44,95 @@ const Menu = () => {
     }
   };
 
-  const handleItemClick = (category: string, id: number) => {
-    navigate(`/products/${category}/${id}`);
+  const handleItemClick = (category: string, productKey: string) => {
+    navigate(`/products/${category}/${productKey}`);
   };
 
   return (
     <div>
-      <div className="border-b border-gray-300"></div> {/* Línea divisoria */}
-      <div
-        ref={tabsRef}
-        className={`sticky top-[80px] z-40 py-2 transition-all ${
-          activeTab === "for-you" && !isSticky
-            ? "bg-white text-purple-700 shadow-none"
-            : "bg-purple-700 text-white shadow-md"
-        }`}
-      >
-        <ul className="flex justify-around text-sm font-medium">
-          {sections.map((section) => (
-            <li
-              key={section.id}
-              onClick={() => handleTabClick(section.id)}
-              className={`cursor-pointer px-4 py-2 ${
-                activeTab === section.id ? "border-b-2" : "hover:underline"
-              } ${
-                activeTab === "for-you" && !isSticky
-                  ? "border-purple-700 hover:text-purple-500"
-                  : "border-white hover:text-white"
-              }`}
-            >
-              {section.label}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="p-6">
-        {sections.map((section) => (
-          <div id={section.id} key={section.id} className="my-8">
-            <h2 className="text-2xl font-bold mb-4">{section.label}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
-              {[...Array(6)].map((_, index) => (
-                <div
-                  key={index}
-                  className=" p-4 rounded shadow hover:shadow-lg transition cursor-pointer"
-                  onClick={() => handleItemClick(section.id, index + 1)}
+      <Slider />
+      <div className="bg-[#FDF9F3] pb-20">
+        <div className="border-b border-gray-300"></div> {/* Línea divisoria */}
+        {/* Tabs de navegación */}
+        <div
+          ref={tabsRef}
+          className="font-ArialBold top-[70px] z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
+        >
+          <div className="overflow-x-auto no-scrollbar">
+            <ul className="flex whitespace-nowrap justify-evenly gap-4 px-4">
+              {sections.map((sectionId) => (
+                <li
+                  key={sectionId}
+                  onClick={() => handleTabClick(sectionId)}
+                  className={`
+                    cursor-pointer 
+                    py-2 
+                    flex-shrink-0 
+                    border-b-2 
+                    transition-all
+                    ${
+                      activeTab === sectionId
+                        ? "border-white"
+                        : "border-transparent"
+                    }
+                    text-[clamp(10px,1.5vw,16px)]
+                  `}
                 >
-                  <p>
-                    {section.label} Item {index + 1}
-                  </p>
-                </div>
+                  {sectionId.toUpperCase()}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
-        ))}
+          {/* Ocultar la scrollbar */}
+          <style>{`
+            .no-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+            .no-scrollbar {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+          `}</style>
+        </div>
+        {/* Secciones de productos */}
+        <div className="px-4">
+          {menuData.map((cat) => (
+            <div
+              id={cat.category}
+              key={cat.category}
+              className="my-8 flex flex-col items-center"
+            >
+              <div className="border-pompadour-900 border-2 rounded-2xl px-8 py-2 mb-4">
+                <h2 className="text-2xl font-ArialBold text-center text-pompadour-900">
+                  {cat.category}
+                </h2>
+              </div>
+              {/* Mostrar la descripción corta y larga */}
+              <p className="text-xl font-ArialBold text-center text-pompadour-900">
+                {cat.shortDescription}
+              </p>
+              <p className="text-sm font-ArialBold text-center text-pompadour-900 mb-4">
+                {cat.longDescription}
+              </p>
+              {/* Grid de tarjetas de producto */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+                {cat.items.map((product) => (
+                  <DessertCard
+                    key={product.id}
+                    name={product.name}
+                    description={product.description}
+                    imageLeft={product.imageLeft}
+                    imageRight={product.imageRight} // Se muestra solo si existe
+                    price={product.price}
+                    onAdd={() => handleItemClick(cat.category, product.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
     </div>
   );
 };
