@@ -12,6 +12,8 @@ import NotFound from "../pages/NotFound";
 import { Banner } from "../components/containers/Banner";
 import MapPage from "../pages/menu/MapPage";
 import AuthPage from "../pages/AuthPage";
+import { AppPromo } from "../components/containers/AppPromo";
+import Footer from "../components/containers/Footer";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -48,6 +50,8 @@ const AppRouter: React.FC = () => {
           </Suspense>
         </main>
       </div>
+        <AppPromo />
+        <Footer />
     </Router>
   );
 };

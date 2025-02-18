@@ -18,8 +18,8 @@ export const Home = () => {
       <FotosSection4 />
       <HomeSection5 />
 
-      <AppPromo />
-      <Footer />
+      {/* <AppPromo />
+      <Footer /> */}
     </div>
   );
 };
