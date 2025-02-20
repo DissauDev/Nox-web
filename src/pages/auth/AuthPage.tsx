@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SignUpForm from "./SignUpForm";
 
 const AuthPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -36,34 +37,7 @@ const AuthPage: React.FC = () => {
           </div>
 
           {isSignUp ? (
-            <div>
-              <h2 className="text-2xl text-center text-white mb-6 font-bold">
-                Create an Account
-              </h2>
-              <form>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  className="w-full p-3 mb-4 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-transparent focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full p-3 mb-4 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-transparent focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full p-3 mb-6 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-transparent focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                />
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-colors duration-300 shadow-md"
-                >
-                  Sign Up
-                </button>
-              </form>
-            </div>
+           <SignUpForm/>
           ) : (
             <div>
               <h2 className="text-2xl text-center text-white mb-6 font-bold">
