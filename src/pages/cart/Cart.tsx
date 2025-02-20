@@ -87,7 +87,7 @@ const Cart = () => {
           {sugestedDataDummy.map((item, index) => (
             <div
               key={index}
-              className="flex items-center border-2 border-purple-400  rounded-lg min-w-[18rem]  shadow-purple-500 hover:shadow-lg hover:shadow-purple-500 relative"
+              className="flex items-center border-2 border-grape-700 rounded-lg min-w-[18rem] shadow-purple-500 hover:shadow-lg hover:shadow-grape-950 relative"
             >
               <img
                 src={item.img}

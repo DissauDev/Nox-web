@@ -12,9 +12,10 @@ import Cart from "../pages/cart/Cart";
 import NotFound from "../pages/NotFound";
 import { Banner } from "../components/containers/Banner";
 import MapPage from "../pages/menu/MapPage";
-import AuthPage from "../pages/AuthPage";
+import AuthPage from "../pages/auth/AuthPage";
 import { AppPromo } from "../components/containers/AppPromo";
 import Footer from "../components/containers/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -32,6 +33,7 @@ const AppRoutes: React.FC = () => {
       <div className="flex flex-col md:flex-row pt-16">
         <Banner />
         <main className="flex-grow">
+          <Toaster />
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path="/" element={<Home />} />
