@@ -6,14 +6,7 @@ export const DrinksCoockiesSelector = () => {
 
   return (
     <>
-      <div>
-        <button
-          className="font-ArialBold text-grape-900"
-          onClick={() => navigate("/nutritional-info")}
-        >
-          Info Nutricional
-        </button>
-      </div>
+      <div></div>
       <div>
         <label className="block font-semibold text-grape-900">Cantidad</label>
         <input

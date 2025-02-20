@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import Home from "../pages/home/Home";
 import Menu from "../pages/menu/Menu";
@@ -20,38 +21,44 @@ const ProductsDetails = React.lazy(
   () => import("../pages/menu/ProductsDetails")
 );
 
-const AppRouter: React.FC = () => {
-  return (
-    <Router>
-      <div className="flex flex-col md:flex-row pt-16">
-        {/* Banner para pantallas grandes */}
-        <Banner />
+// Componente para manejar las rutas y aplicar el background condicionalmente
+const AppRoutes: React.FC = () => {
+  const location = useLocation();
+  // Si la ruta es distinta de la raíz, aplicamos el background
+  const isHome = location.pathname === "/";
 
-        {/* Contenedor principal de las rutas */}
+  return (
+    <div className={isHome ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
+      <div className="flex flex-col md:flex-row pt-16">
+        <Banner />
         <main className="flex-grow">
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
-              {/* Rutas principales */}
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/auth" element={<AuthPage />} />
-              {/* Ruta dinámica para productos */}
               <Route
                 path="/products/:category/:productKey"
                 element={<ProductsDetails />}
               />
-
-              {/* Redirección y 404 */}
               <Route path="/home" element={<Navigate to="/" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </main>
       </div>
-        <AppPromo />
-        <Footer />
+      <AppPromo />
+      <Footer />
+    </div>
+  );
+};
+
+const AppRouter: React.FC = () => {
+  return (
+    <Router>
+      <AppRoutes />
     </Router>
   );
 };

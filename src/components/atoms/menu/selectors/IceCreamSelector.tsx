@@ -4,10 +4,10 @@ export const IceCreamSelector = () => {
   return (
     <>
       <div>
-        <label className="block font-semibold">Variante</label>
+        <label className="block font-semibold text-grape-900">Variante</label>
         <select
           /* {...register("variant")}*/
-          className="border p-2 w-full"
+          className="border p-2 w-full text-grape-900"
         >
           <option value="">Seleccione variante</option>
           <option value="on-cookie">Sobre Cookie</option>
@@ -16,9 +16,9 @@ export const IceCreamSelector = () => {
         </select>
       </div>
       <div>
-        <label className="block font-semibold">Sabores</label>
+        <label className="block font-semibold text-grape-900">Sabores</label>
         {["Vanilla", "Chocolate", "Strawberry"].map((flavor) => (
-          <div key={flavor} className="flex items-center">
+          <div key={flavor} className="flex items-center text-grape-900">
             <input
               type="checkbox"
               value={flavor}
@@ -30,7 +30,7 @@ export const IceCreamSelector = () => {
         ))}
       </div>
       <div>
-        <label className="block font-semibold">Toppings</label>
+        <label className="block font-semibol text-grape-900">Toppings</label>
         {["Nuts", "Caramel", "Sprinkles"].map((topping) => (
           <div key={topping} className="flex items-center">
             <input
@@ -39,7 +39,7 @@ export const IceCreamSelector = () => {
               /*   {...register("selectedIceCreamToppings")}*/
               className="mr-2"
             />
-            <span>{topping} (+$0.75)</span>
+            <span className="text-red-600">{topping} (+$0.75)</span>
           </div>
         ))}
       </div>

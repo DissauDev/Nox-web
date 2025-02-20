@@ -51,7 +51,7 @@ const Menu = () => {
   return (
     <div>
       <Slider />
-      <div className="bg-[#FDF9F3] pb-20">
+      <div className="bg-[#FDF9F3] h-full">
         <div className="border-b border-gray-300"></div> {/* Línea divisoria */}
         {/* Tabs de navegación */}
         <div

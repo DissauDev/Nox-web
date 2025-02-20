@@ -8,6 +8,7 @@ import { IceCreamSelector } from "../../components/atoms/menu/selectors/IceCream
 import { DrinksCoockiesSelector } from "../../components/atoms/menu/selectors/DrinksCoockiesSelector";
 import { MashoopSelector } from "../../components/atoms/menu/selectors/MashoopSelector";
 import { DessertSelector } from "../../components/atoms/menu/selectors/DessertSelector";
+import CartCounter from "../../components/atoms/CartCounter";
 
 // Definimos una interfaz para las opciones del formulario.
 // Estas propiedades son opcionales y se usarán según la categoría.
@@ -68,19 +69,19 @@ const ProductDetails: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#FDF9F3] bg-cover p-4 min-h-screen flex justify-center">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center lg:items-start gap-8 mt-10">
+    <div className="flex justify-center mb-20 p-4">
+      <div className="w-full  flex flex-col lg:flex-row items-center lg:items-start gap-8 mt-10">
         {/* Imagen a la izquierda */}
-        <div className="w-full flex justify-center lg:w-1/2 lg:sticky lg:top-10">
+        <div className="w-full flex justify-center lg:w-5/12 lg:sticky lg:top-10 py-4">
           <img
             src={product.imageLeft}
             alt={product.name}
-            className="w-72 h-72 md:w-96 md:h-96 object-cover rounded-xl shadow-lg"
+            className="w-72 h-72 md:w-auto md:h-96 object-cover "
           />
         </div>
 
         {/* Contenido a la derecha con scroll en pantallas grandes */}
-        <div className="w-full lg:w-1/2 lg:max-h-[80vh] lg:overflow-y-auto px-4">
+        <div className="w-full lg:w-7/12 lg:max-h-[80vh] px-4 lg:overflow-y-auto">
           <button
             onClick={() => navigate("/menu")}
             className="text-grape-900 flex items-center font-bold justify-start mb-4"
@@ -100,19 +101,19 @@ const ProductDetails: React.FC = () => {
 
           {/* Formulario dinámico */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
-            {(category === "Coockies" || category === "Drinks") && (
-              <DrinksCoockiesSelector />
-            )}
+            {(category === "Coockies" || category === "Drinks") && <></>}
             {category === "Desserts" && <DessertSelector />}
-            {category === "Ice cream" && <IceCreamSelector />}
+            {category === "Ice-cream" && <IceCreamSelector />}
             {category === "Mashoops" && <MashoopSelector />}
-
-            <button
-              type="submit"
-              className="mt-4 p-3 bg-grape-950 text-white w-full font-bold rounded-full transition hover:bg-grape-800"
-            >
-              Añadir
-            </button>
+            <div>
+              <CartCounter />
+              <button
+                type="submit"
+                className="my-8 p-3 bg-grape-950 text-white w-full font-ArialBold text-xl rounded-full transition hover:bg-grape-800"
+              >
+                Add to cart $5.00
+              </button>
+            </div>
           </form>
         </div>
       </div>
