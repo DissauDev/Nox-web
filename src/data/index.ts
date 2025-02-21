@@ -1,7 +1,7 @@
 import {
-    IceCream,
-    Chocolate,
-    Mask,
+    img1,
+    img2,
+    img3,
     VariousIceCream
 } from "../assets";
 
@@ -41,72 +41,39 @@ import {
 
 export const products = [
     {
-        title: "IceCream",
-        link: "https://gomoonbeam.com",
-        thumbnail: IceCream
-    },
-    {
-        title: "Chocolate",
-        link: "https://cursor.so",
-        thumbnail: Chocolate
-    },
-    {
-        title: "Mask",
-        link: "https://userogue.com",
-        thumbnail: Mask
+        title: "VariousIceCream",
+        link: "https://editorially.org",
+        thumbnail: img1,
     },
     {
         title: "VariousIceCream",
         link: "https://editorially.org",
-        thumbnail: VariousIceCream,
+        thumbnail: img2,
     },
-    {
-        title: "IceCream",
-        link: "https://gomoonbeam.com",
-        thumbnail: IceCream
-    },
-    {
-        title: "Chocolate",
-        link: "https://cursor.so",
-        thumbnail: Chocolate
-    },
-    {
-        title: "Mask",
-        link: "https://userogue.com",
-        thumbnail: Mask
-    },
-
     {
         title: "VariousIceCream",
         link: "https://editorially.org",
-        thumbnail: VariousIceCream,
+        thumbnail: img3,
     },
-
     {
         title: "VariousIceCream",
         link: "https://editorially.org",
-        thumbnail: VariousIceCream,
+        thumbnail: img1,
     },
-    {
-        title: "IceCream",
-        link: "https://gomoonbeam.com",
-        thumbnail: IceCream
-    },
-    {
-        title: "Chocolate",
-        link: "https://cursor.so",
-        thumbnail: Chocolate
-    },
-    {
-        title: "Mask",
-        link: "https://userogue.com",
-        thumbnail: Mask
-    },
-
     {
         title: "VariousIceCream",
         link: "https://editorially.org",
-        thumbnail: VariousIceCream,
+        thumbnail: img2,
+    },
+    {
+        title: "VariousIceCream",
+        link: "https://editorially.org",
+        thumbnail: img3,
+    },
+    {
+        title: "VariousIceCream",
+        link: "https://editorially.org",
+        thumbnail: img3,
     },
 
 ];

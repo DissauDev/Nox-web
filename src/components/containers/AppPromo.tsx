@@ -5,7 +5,7 @@ export const AppPromo = () => {
   return (
     <div
       className="relative w-full bg-grape-950 text-white flex flex-col md:flex-row  items-center justify-between
-                 lg:h-[500px] overflow-visible mt-8 lg:mt-40"
+                 lg:h-[500px] overflow-visible mt-8 lg:mt-48"
     >
       {/* Efecto Lighting Purple detrás de la imagen */}
       <div
