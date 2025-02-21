@@ -7,7 +7,9 @@ import { BackgroundWithHearts } from "../../components/atoms/home/BackgroundWith
 import { AppPromo } from "../../components/containers/AppPromo";
 import { AddressSelector } from "../../components/atoms/home/AddressSelector";
 import { Slider } from "../../components/atoms/Slider";
-
+import { products} from "../../data/index"
+import { HeroParallax } from "@/components/ui/hero-parallax";
+ 
 export const Home = () => {
   return (
     <div className="justify-center   ">
@@ -17,6 +19,10 @@ export const Home = () => {
       <BackgroundWithHearts />
       <FotosSection4 />
       <HomeSection5 />
+      <div className="w-full overflow-hidden">
+        <HeroParallax products={products} />
+      </div>
+
 
       {/* <AppPromo />
       <Footer /> */}

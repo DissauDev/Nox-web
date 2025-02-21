@@ -30,7 +30,7 @@ const AppRoutes: React.FC = () => {
 
   return (
     <div className={isHome ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
-      <div className="flex flex-col md:flex-row pt-16">
+      <div className="flex flex-col  pt-16">
         <Banner />
         <main className="flex-grow">
           <Toaster />
