@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from './features/api/apiSlice';
 import exampleReducer from './features/exampleSlice';
 import    addressReducer  from "./features/slices/addressSlice"
+import  ordersReducer from "./features/slices/orderSlice"
 
 export const store = configureStore({
   reducer: {
     address: addressReducer,
     example: exampleReducer,
+    orders: ordersReducer,
     [apiSlice.reducerPath]: apiSlice.reducer, // Integrar RTK Query
   },
   middleware: (getDefaultMiddleware) =>

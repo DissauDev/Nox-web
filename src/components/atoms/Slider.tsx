@@ -3,7 +3,7 @@ import ImageCoockie from "../../assets/desing/foto dulces .png";
 
 export const Slider = () => {
   return (
-    <div className="flex flex-col  md:flex-row items-center bg-midnight-blue-950  opacity-80  min-h-[300px] md:min-h-[450px]">
+    <div className="flex flex-col  md:flex-row items-center bg-midnight-blue-950    min-h-[300px] md:min-h-[450px]">
       {/* Contenedor del texto y el botón */}
 
       <div className="text-center md:text-left md:ml-40 flex flex-col justify-center items-center md:items-start space-y-4 md:w-1/2 p-4 md:p-8">

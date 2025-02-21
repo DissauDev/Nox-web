@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import menuData, { Product } from "../../utils/data/products";
@@ -47,6 +47,10 @@ const findProduct = (
 };
 
 const ProductDetails: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Mueve el scroll al inicio cuando se monta el componente
+  }, []);
+
   const { category, productKey } = useParams<{
     category: string;
     productKey: string;
@@ -56,6 +60,19 @@ const ProductDetails: React.FC = () => {
   const product = findProduct(category, productKey);
 
   const navigate = useNavigate();
+
+  // Estado local para la cantidad y precio total del producto
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(product ? product.price : 0);
+
+  // Función para actualizar la cantidad, que además recalcula el precio total.
+  const handleQuantityChange = (newQuantity: number) => {
+    setQuantity(newQuantity);
+    if (product) {
+      // Aquí podrías sumar el costo de extras si los hubiera.
+      setTotalPrice(Number((product.price * newQuantity).toFixed(2)));
+    }
+  };
 
   const { register, handleSubmit } = useForm<ProductDetailsFormInputs>();
 
@@ -69,10 +86,10 @@ const ProductDetails: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center mb-20 p-4">
+    <div className="flex justify-center mb-20 p-4 ">
       <div className="w-full  flex flex-col lg:flex-row items-center lg:items-start gap-8 mt-10">
         {/* Imagen a la izquierda */}
-        <div className="w-full flex justify-center lg:w-5/12 lg:sticky lg:top-10 py-4">
+        <div className="w-full flex justify-center lg:w-5/12  lg:top-10 py-4">
           <img
             src={product.imageLeft}
             alt={product.name}
@@ -81,7 +98,7 @@ const ProductDetails: React.FC = () => {
         </div>
 
         {/* Contenido a la derecha con scroll en pantallas grandes */}
-        <div className="w-full lg:w-7/12 lg:max-h-[80vh] px-4 lg:overflow-y-auto">
+        <div className="w-full lg:w-7/12 px-4 ">
           <button
             onClick={() => navigate("/menu")}
             className="text-grape-900 flex items-center font-bold justify-start mb-4"
@@ -96,7 +113,7 @@ const ProductDetails: React.FC = () => {
 
           <p className="text-grape-900 text-lg">{product.description}</p>
           <p className="text-2xl text-grape-900 font-semibold mt-2">
-            {product.price}
+            $ {product.price}
           </p>
 
           {/* Formulario dinámico */}
@@ -106,13 +123,18 @@ const ProductDetails: React.FC = () => {
             {category === "Ice-cream" && <IceCreamSelector />}
             {category === "Mashoops" && <MashoopSelector />}
             <div>
-              <CartCounter />
-              <button
-                type="submit"
-                className="my-8 p-3 bg-grape-950 text-white w-full font-ArialBold text-xl rounded-full transition hover:bg-grape-800"
-              >
-                Add to cart $5.00
-              </button>
+              <CartCounter
+                price={product.price}
+                onQuantityChange={handleQuantityChange}
+              />
+              <div className="w-full bottom-4 left-0  flex justify-center p-4">
+                <button
+                  type="submit"
+                  className="w-full p-3 bg-grape-950 text-white font-ArialBold text-xl rounded-full transition hover:bg-grape-800 shadow-lg"
+                >
+                  Add to cart $ {totalPrice}
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -122,123 +144,3 @@ const ProductDetails: React.FC = () => {
 };
 
 export default ProductDetails;
-
-/*import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import IceCreamBuilder from "../../components/atoms/IceCreamBuilder";
-import vanillaImage from "../../assets/flavors/vannilla.png";
-import chocolateImage from "../../assets/flavors/chocolate.png";
-
-import caramelImage from "../../assets/toppings/caramel.png";
-import raisinsImage from "../../assets/toppings/raisins.png";
-import baseImage from "../../assets/base/ice-cream-bowl.png";
-const ProductDetails: React.FC = () => {
-  const { category, id } = useParams<{ category: string; id: string }>();
-
-  // Opciones de sabores y toppings
-  const flavors = [
-    { id: "1", name: "Vanilla", image: vanillaImage },
-    { id: "2", name: "Chocolate", image: chocolateImage },
-  ];
-
-  const toppings = [
-    { id: "1", name: "Caramel", image: caramelImage },
-    { id: "2", name: "Raisins", image: raisinsImage },
-  ];
-
-  // Estado para los sabores y toppings seleccionados
-  const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
-  const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
-
-  // Funciones para manejar las selecciones
-  const handleFlavorChange = (flavorId: string) => {
-    setSelectedFlavors((prev) =>
-      prev.includes(flavorId)
-        ? prev.filter((id) => id !== flavorId)
-        : [...prev, flavorId]
-    );
-  };
-
-  const handleToppingChange = (toppingId: string) => {
-    setSelectedToppings((prev) =>
-      prev.includes(toppingId)
-        ? prev.filter((id) => id !== toppingId)
-        : [...prev, toppingId]
-    );
-  };
-
-  const productData = {
-    name: `Sample Product ${id}`,
-    category: category,
-    description: "This is a detailed description of the product.",
-    price: "$10.99",
-  };
-
-  return (
-    <div>
-      <div className="max-w-4xl mx-auto p-6 mt-20 flex space-x-8">
-      /*
-        <div className="w-1/2">
-          <h1 className="text-3xl font-bold mb-4">{productData.name}</h1>
-          <p className="text-lg text-gray-600 mb-2">
-            <strong>Category:</strong> {productData.category}
-          </p>
-          <p className="text-gray-700 mb-4">{productData.description}</p>
-          <p className="text-2xl font-semibold text-green-600 mb-6">
-            {productData.price}
-          </p>
-
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Flavors</h2>
-            {flavors.map((flavor) => (
-              <label key={flavor.id} className="block mb-2">
-                <input
-                  type="checkbox"
-                  value={flavor.id}
-                  onChange={() => handleFlavorChange(flavor.id)}
-                  checked={selectedFlavors.includes(flavor.id)}
-                  className="mr-2"
-                />
-                {flavor.name}
-              </label>
-            ))}
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">Toppings</h2>
-            {toppings.map((topping) => (
-              <label key={topping.id} className="block mb-2">
-                <input
-                  type="checkbox"
-                  value={topping.id}
-                  onChange={() => handleToppingChange(topping.id)}
-                  checked={selectedToppings.includes(topping.id)}
-                  className="mr-2"
-                />
-                {topping.name}
-              </label>
-            ))}
-          </div>
-        </div>
-
-   
-        <div className="w-1/2">
-          <IceCreamBuilder
-            base={baseImage}
-            flavors={flavors}
-            toppings={toppings}
-            selectedFlavors={selectedFlavors}
-            selectedToppings={selectedToppings}
-          />
-        </div>
-      </div>
-      <div className="items-center justify-center flex">
-        <button className="bg-affair-800 hover:bg-affair-900 text-white first-line: font-ArialBold p-2 rounded-full px-20">
-          Add to cart
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default ProductDetails;*/

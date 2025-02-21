@@ -21,7 +21,7 @@ export interface Product {
   imageRight?: string;
   name: string;
   description: string;
-  price: string;
+  price: number;
 }
 
 export interface Category {
@@ -44,14 +44,14 @@ const menuData: Category[] = [
         imageRight: Limited,
         name: "Ultimate Cookie Combo",
         description: "A perfect mix of our best cookies.",
-        price: "$5.99",
+        price: 5.99,
       },
       {
         id: "foryou-1",
         imageLeft: ForyouImage,
         name: "Ice Cream Delight",
         description: "Creamy ice cream with a twist of flavors.",
-        price: "$4.99",
+        price: 4.99,
       },
     ],
   },
@@ -65,14 +65,14 @@ const menuData: Category[] = [
         imageLeft: IcecreamImage,
         name: "Vanilla Dream",
         description: "Smooth and creamy, full of rich vanilla flavor.",
-        price: "$3.50",
+        price: 3.50,
       },
       {
         id: "icecream-1",
         imageLeft: IcecreamImage2,
         name: "Chocolate Fudge",
         description: "Decadent chocolate ice cream with fudge swirls.",
-        price: "$4.00",
+        price: 4.00,
       },
     ],
   },
@@ -87,14 +87,14 @@ const menuData: Category[] = [
         imageRight: "https://example.com/desserts-1-right.jpg",
         name: "Fudge Brownie",
         description: "Rich fudge brownie with a soft, moist center.",
-        price: "$4.50",
+        price: 4.50,
       },
       {
         id: "desserts-1",
         imageLeft: DessertImage2,
         name: "Strawberry Tart",
         description: "Tart filled with fresh strawberries and cream.",
-        price: "$5.00",
+        price: 5.00,
       },
     ],
   },
@@ -109,14 +109,14 @@ const menuData: Category[] = [
         imageRight: "https://example.com/coockies-1-right.jpg",
         name: "Choco Chip",
         description: "Crispy edges with chewy center and lots of chips.",
-        price: "$2.50",
+        price: 2.50,
       },
       {
         id: "coockies-1",
         imageLeft: coockiesImages2,
         name: "Oatmeal Raisin",
         description: "Hearty oatmeal cookie loaded with plump raisins.",
-        price: "$2.75",
+        price: 2.75,
       },
     ],
   },
@@ -131,14 +131,14 @@ const menuData: Category[] = [
         imageRight: "https://example.com/mashoops-1-right.jpg",
         name: "Nutty Caramel",
         description: "A mashup of caramel, nuts, and buttery cookies.",
-        price: "$3.99",
+        price: 3.99,
       },
       {
         id: "mashoops-1",
         imageLeft: MashoopImage2,
         name: "Berry Blast",
         description: "Mix of fresh berries and rich vanilla ice cream.",
-        price: "$4.25",
+        price: 4.25,
       },
     ],
   },
@@ -153,21 +153,21 @@ const menuData: Category[] = [
         imageRight: "https://example.com/drinks-1-right.jpg",
         name: "Lemonade Spark",
         description: "Zesty lemonade with a sparkling twist.",
-        price: "$2.00",
+        price: 2.00,
       },
       {
         id: "drinks-1",
         imageLeft: DrinkImage2,
         name: "Iced Coffee",
         description: "Cold brew coffee with a touch of cream.",
-        price: "$3.00",
+        price: 3.00
       },
       {
         id: "drinks-2",
         imageLeft: DrinkImage3,
         name: "Coca-Cola",
         description: "Fresh Cola",
-        price: "$4.99",
+        price: 4.99,
       },
     ],
   },

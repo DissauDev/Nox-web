@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const CartCounter = () => {
+interface cartCounterProps {
+  price: number;
+  onQuantityChange: (quantity: number) => void;
+}
+
+const CartCounter = ({ price, onQuantityChange }: cartCounterProps) => {
   const maxCount = 50;
   const minCount = 1;
 
@@ -21,9 +26,15 @@ const CartCounter = () => {
     return () => clearTimeout(timeout);
   }, [count]);
 
+  // Cada vez que count cambie, informamos al padre.
+  useEffect(() => {
+    onQuantityChange(count);
+  }, [count, onQuantityChange, inputValue]);
+
   const handleIncrement = () => {
     if (count < maxCount) {
       const newCount = count + 1;
+
       setCount(newCount);
       setInputValue(newCount.toString());
     }
