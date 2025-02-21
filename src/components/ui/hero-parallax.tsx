@@ -18,6 +18,7 @@ export const HeroParallax = ({
 }) => {
   const firstRow = products.slice(0, 3);
   const secondRow = products.slice(3, 6);
+  const thirdRow = products.slice(6, 9);
   const ref = React.useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -47,13 +48,13 @@ export const HeroParallax = ({
     springConfig
   );
   const translateY = useSpring(
-    useTransform(scrollYProgress, [0, 0.2], [-700, 500]),
+    useTransform(scrollYProgress, [0, 0.2], [-700, 200]),
     springConfig
   );
   return (
     <div
       ref={ref}
-      className="h-[300vh] md:h-[315vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
+      className="h-[265vh] lg:w-[271vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
       <Header />
       <motion.div
@@ -83,6 +84,15 @@ export const HeroParallax = ({
             />
           ))}
         </motion.div>
+        <motion.div>
+          {thirdRow.map((product) => (
+            <ProductCard
+              product={product}
+              translate={translateX}
+              key={product.title}
+            />
+          ))}
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -95,7 +105,9 @@ export const Header = () => {
         Preorders <br /> Valentine’s
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-        Our Valentine Menu now available , aqui hace falta un texto mas grande para que quede mejor, aqui hace falta un texto mas grande para que quede mejor, aqui hace falta un texto mas grande para que quede mejor
+        Our Valentine Menu now available , aqui hace falta un texto mas grande
+        para que quede mejor, aqui hace falta un texto mas grande para que quede
+        mejor, aqui hace falta un texto mas grande para que quede mejor
       </p>
     </div>
   );
@@ -123,13 +135,17 @@ export const ProductCard = ({
       key={product.title}
       className="group/product h-96 w-[30rem] lg:w-[40rem] relative flex-shrink-0"
     >
-      <div
-        className="block group-hover/product:shadow-2xl cursor-pointer"
-      >
+      <div className="block group-hover/product:shadow-2xl cursor-pointer">
         <div className="flex gap-8 h-full justify-center items-center">
           <div className="z-50 px-12 py-10 opacity-0 group-hover/product:opacity-100">
-            <h5 className="text-3xl font-bold">Order Today, Enjoy This Week</h5>
-            <p className="text-lg">Place an order today and choose your favorite Mini or Large coockies in either a 48-Pack o 96-Pack. Enjoy your delicious treats, ready for pickup in as little as 90 minutes</p>
+            <h5 className="text-3xl font-extrabold font-CamilaFont">
+              Order Today, Enjoy This Week
+            </h5>
+            <p className="text-lg font-medium font-serif">
+              Place an order today and choose your favorite Mini or Large
+              coockies in either a 48-Pack o 96-Pack. Enjoy your delicious
+              treats, ready for pickup in as little as 90 minutes
+            </p>
           </div>
           <img
             src={product.thumbnail}

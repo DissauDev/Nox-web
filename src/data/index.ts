@@ -70,10 +70,4 @@ export const products = [
         link: "https://editorially.org",
         thumbnail: img3,
     },
-    {
-        title: "VariousIceCream",
-        link: "https://editorially.org",
-        thumbnail: img3,
-    },
-
 ];
