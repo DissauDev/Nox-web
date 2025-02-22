@@ -9,7 +9,7 @@ import  coockiesImages  from "../../assets/Imnsomnia fotos/coockies.png"
 import  coockiesImages2  from "../../assets/Imnsomnia fotos/coockies2.png"
 import  MashoopImage  from "../../assets/Imnsomnia fotos/mashups.png"
 import  MashoopImage2  from "../../assets/Imnsomnia fotos/mashoops2.png"
-import  DrinkImage  from "../../assets/Imnsomnia fotos/drinks.png"
+import  DrinkImage  from "../../assets/Imnsomnia fotos/Drinks.png"
 import  DrinkImage2  from "../../assets/Imnsomnia fotos/drinks1.png"
 import  DrinkImage3  from "../../assets/Imnsomnia fotos/drinks3.png"
 
