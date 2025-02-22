@@ -16,6 +16,7 @@ import AuthPage from "../pages/auth/AuthPage";
 import { AppPromo } from "../components/containers/AppPromo";
 import Footer from "../components/containers/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { Checkout } from "@/pages/cart/Checkout";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -38,6 +39,7 @@ const AppRoutes: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
+              <Route path="checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/auth" element={<AuthPage />} />

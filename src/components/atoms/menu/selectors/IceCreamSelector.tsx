@@ -2,7 +2,22 @@ import React from "react";
 import { ToppinsSelector } from "../ToppinsSelector";
 import IceCreamFlavorSelector from "../IceCreamFlavorSelector";
 
-export const IceCreamSelector = () => {
+type Topping = {
+  name: string;
+  price: number;
+};
+
+type IceCreamSelectorProps = {
+  // Callback para enviar la lista de toppings y el precio total de los mismos al componente padre.
+  onToppingsChange: (
+    selectedToppings: Topping[],
+    totalToppingsPrice: number
+  ) => void;
+};
+
+export const IceCreamSelector = ({
+  onToppingsChange,
+}: IceCreamSelectorProps) => {
   return (
     <>
       <div>
@@ -19,7 +34,7 @@ export const IceCreamSelector = () => {
       </div>
       <IceCreamFlavorSelector scoop={1} />
       <IceCreamFlavorSelector scoop={2} />
-      <ToppinsSelector />
+      <ToppinsSelector onToppingsChange={onToppingsChange} />
     </>
   );
 };

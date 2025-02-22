@@ -9,6 +9,9 @@ import { DrinksCoockiesSelector } from "../../components/atoms/menu/selectors/Dr
 import { MashoopSelector } from "../../components/atoms/menu/selectors/MashoopSelector";
 import { DessertSelector } from "../../components/atoms/menu/selectors/DessertSelector";
 import CartCounter from "../../components/atoms/CartCounter";
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct } from "@/store/features/slices/orderSlice";
+import { RootState } from "@/store/store";
 
 // Definimos una interfaz para las opciones del formulario.
 // Estas propiedades son opcionales y se usarán según la categoría.
@@ -27,6 +30,10 @@ interface ProductDetailsFormInputs {
   thirdFlavor?: string;
 }
 
+type Topping = {
+  name: string;
+  price: number;
+};
 // Función actualizada para buscar el producto usando el id
 // Función actualizada para buscar el producto usando solo el id
 const findProduct = (
@@ -56,6 +63,10 @@ const ProductDetails: React.FC = () => {
     productKey: string;
   }>();
 
+  // Acceso a dispatch y al estado de la orden en el slice
+  const dispatch = useDispatch();
+  const orderState = useSelector((state: RootState) => state.orders);
+
   console.log(category + "--" + productKey);
   const product = findProduct(category, productKey);
 
@@ -63,27 +74,90 @@ const ProductDetails: React.FC = () => {
 
   // Estado local para la cantidad y precio total del producto
   const [quantity, setQuantity] = useState(1);
+  const [selectedToppings, setSelectedToppings] = useState<
+    { name: string; price: number }[]
+  >([]);
   const [totalPrice, setTotalPrice] = useState(product ? product.price : 0);
+
+  const calculateTotalPrice = (
+    basePrice: number,
+    qty: number,
+    toppings: Topping[]
+  ) => {
+    const toppingsTotal = toppings.reduce(
+      (acc, topping) => acc + topping.price,
+      0
+    );
+    // Si deseas que el precio de los toppings se multiplique por la cantidad, hazlo aquí:
+    return Number(((basePrice + toppingsTotal) * qty).toFixed(2));
+  };
 
   // Función para actualizar la cantidad, que además recalcula el precio total.
   const handleQuantityChange = (newQuantity: number) => {
     setQuantity(newQuantity);
-    if (product) {
-      // Aquí podrías sumar el costo de extras si los hubiera.
-      setTotalPrice(Number((product.price * newQuantity).toFixed(2)));
-    }
+
+    // Aquí podrías sumar el costo de extras si los hubiera.
+    recalcPrice(newQuantity, selectedToppings);
+  };
+
+  // Función callback para recibir los toppings seleccionados desde DessertSelector
+  const handleToppingsChange = (
+    toppings: { name: string; price: number }[]
+  ) => {
+    setSelectedToppings(toppings);
+    recalcPrice(quantity, toppings);
+  };
+
+  // Función para recalcular el precio total del producto
+  const recalcPrice = (
+    qty: number,
+    toppings: { name: string; price: number }[]
+  ) => {
+    const toppingsTotal = toppings.reduce(
+      (sum, topping) => sum + topping.price,
+      0
+    );
+    const finaltoppins = toppingsTotal * quantity;
+    const newTotal = Number((product!.price * qty + finaltoppins).toFixed(2));
+    setTotalPrice(newTotal);
   };
 
   const { register, handleSubmit } = useForm<ProductDetailsFormInputs>();
 
   const onSubmit: SubmitHandler<ProductDetailsFormInputs> = (data) => {
-    console.log("Opciones seleccionadas:", data);
-    // Aquí llamarías a tu función de agregar al carrito u otra acción.
+    if (!product) return;
+
+    // Crear el objeto que se agregará al carrito, adaptándolo a la interfaz Product del slice.
+    const productToAdd = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      // Convertimos los toppings seleccionados a opciones del producto.
+      options: selectedToppings.map((topping) => ({
+        id: topping.name, // Se puede usar el nombre como identificador o generar otro
+        name: topping.name,
+        extraPrice: topping.price,
+      })),
+      specifications: "", // Aquí puedes agregar más detalles o especificaciones si es necesario
+    };
+
+    // Despacha la acción para agregar el producto al carrito.
+    dispatch(addProduct(productToAdd));
+
+    // Imprime en consola la información relevante:
+    console.log("Producto agregado:", productToAdd);
+    console.log("Orden actual:", orderState);
   };
 
-  if (!product) {
-    return <div>Producto no encontrado</div>;
-  }
+  // Cada vez que cambie la cantidad o los toppings, actualizamos el precio total
+  useEffect(() => {
+    if (product) {
+      setTotalPrice(
+        calculateTotalPrice(product.price, quantity, selectedToppings)
+      );
+    }
+  }, [product, quantity, selectedToppings]);
 
   return (
     <div className="flex justify-center mb-20 p-4 ">
@@ -119,8 +193,12 @@ const ProductDetails: React.FC = () => {
           {/* Formulario dinámico */}
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
             {(category === "Coockies" || category === "Drinks") && <></>}
-            {category === "Desserts" && <DessertSelector />}
-            {category === "Ice-cream" && <IceCreamSelector />}
+            {category === "Desserts" && (
+              <DessertSelector onToppingsChange={handleToppingsChange} />
+            )}
+            {category === "Ice-cream" && (
+              <IceCreamSelector onToppingsChange={handleToppingsChange} />
+            )}
             {category === "Mashoops" && <MashoopSelector />}
             <div>
               <CartCounter

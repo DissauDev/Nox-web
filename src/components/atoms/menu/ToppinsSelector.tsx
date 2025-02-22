@@ -12,40 +12,48 @@ const toppingsList: Topping[] = [
   { name: "Whipped Cream", price: 0.8 },
 ];
 
-export const ToppinsSelector = () => {
+type ToppinsSelectorProps = {
+  // Callback para enviar la lista de toppings y el precio total de los mismos al componente padre.
+  onToppingsChange: (
+    selectedToppings: Topping[],
+    totalToppingsPrice: number
+  ) => void;
+};
+export const ToppinsSelector = ({ onToppingsChange }: ToppinsSelectorProps) => {
   const [selectedToppings, setSelectedToppings] = useState<{
     [key: string]: boolean;
   }>({});
 
   const handleToggle = (topping: Topping) => {
     setSelectedToppings((prev) => {
-      // Obtener las claves (toppings) que están seleccionadas
-      const selectedKeys = Object.keys(prev).filter((key) => prev[key]);
-
-      // Si ya hay 2 toppings seleccionados, desmarcar uno al seleccionar otro
-      if (selectedKeys.length >= 2 && !prev[topping.name]) {
-        // Elegir un topping a desmarcar (puedes usar el primero o cualquier otro criterio)
-        const toppingToDeselect = selectedKeys[0]; // Desmarcar el primero, por ejemplo
-        const newState = {
-          ...prev,
-          [toppingToDeselect]: false,
-          [topping.name]: true,
-        };
-        console.log(
-          `Desmarcado: ${toppingToDeselect} y seleccionado: ${
-            topping.name
-          } - $${topping.price.toFixed(2)}`
+      // Copia del estado actual
+      const newState = { ...prev };
+      // Si el topping ya estaba seleccionado, se desmarca, si no, se marca.
+      if (newState[topping.name]) {
+        newState[topping.name] = false;
+      } else {
+        // Ejemplo: permitir máximo 2 toppings, desmarcando el primero si ya hay dos seleccionados
+        const selectedKeys = Object.keys(newState).filter(
+          (key) => newState[key]
         );
-        return newState;
+        if (selectedKeys.length >= 2) {
+          newState[selectedKeys[0]] = false;
+        }
+        newState[topping.name] = true;
       }
+      // Obtener el arreglo de toppings seleccionados
+      const selectedArray = Object.entries(newState)
+        .filter(([key, value]) => value)
+        .map(([name]) => toppingsList.find((t) => t.name === name))
+        .filter((topping): topping is Topping => topping !== undefined);
 
-      // Si no hay 2 toppings seleccionados, solo marcar o desmarcar el topping
-      const newState = { ...prev, [topping.name]: !prev[topping.name] };
-      console.log(
-        newState[topping.name]
-          ? `Seleccionado: ${topping.name} - $${topping.price.toFixed(2)}`
-          : `Deseleccionado: ${topping.name}`
+      const totalToppingsPrice = selectedArray.reduce(
+        (acc, t) => acc + t.price,
+        0
       );
+
+      // Se comunica la selección actual al componente padre.
+      onToppingsChange(selectedArray, totalToppingsPrice);
       return newState;
     });
   };

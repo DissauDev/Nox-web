@@ -78,7 +78,7 @@ export const Banner: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/cart"
+              to="/checkout"
               className={({ isActive }) =>
                 `inline-block hover:text-mustard-yellow-400 transition duration-300 ${
                   isActive

@@ -101,10 +101,10 @@ export const HeroParallax = ({
 export const Header = () => {
   return (
     <div className="max-w-7xl relative mx-auto pt-20 md:pt-40 px-4 w-full  left-0 top-0">
-      <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
+      <h1 className="text-2xl md:text-7xl font-ArialBold dark:text-white">
         Preorders <br /> Valentine’s
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
+      <p className="max-w-2xl text-base md:text-xl  font-ArialRegular mt-8 dark:text-neutral-200">
         Our Valentine Menu now available , aqui hace falta un texto mas grande
         para que quede mejor, aqui hace falta un texto mas grande para que quede
         mejor, aqui hace falta un texto mas grande para que quede mejor

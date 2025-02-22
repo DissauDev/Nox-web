@@ -1,11 +1,21 @@
-import { motion } from "framer-motion";
-import React, { useState } from "react";
 import { ToppinsSelector } from "../ToppinsSelector";
 
-export const DessertSelector = () => {
+export interface Topping {
+  name: string;
+  price: number;
+}
+type DessertSelectorProps = {
+  // Callback para enviar la lista de toppings y el precio total de los mismos al componente padre.
+  onToppingsChange: (
+    selectedToppings: Topping[],
+    totalToppingsPrice: number
+  ) => void;
+};
+
+export const DessertSelector = ({ onToppingsChange }: DessertSelectorProps) => {
   return (
     <>
-      <ToppinsSelector />
+      <ToppinsSelector onToppingsChange={onToppingsChange} />
     </>
   );
 };
