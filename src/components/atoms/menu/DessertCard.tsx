@@ -6,7 +6,7 @@ interface ProductCardProps {
   imageRight?: string;
   name: string;
   description: string;
-  price: string;
+  price: number;
   onAdd: () => void;
 }
 
