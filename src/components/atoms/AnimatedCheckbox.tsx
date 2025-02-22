@@ -2,9 +2,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaCheck } from "react-icons/fa";
 
-type CheckboxProps = {
-  checked: boolean;
-  onChange: () => void;
+// Definimos la estructura de un topping
+type Topping = {
+  id: number;
+  name: string;
+  price: number;
 };
 
 // Lista de toppings disponibles
@@ -16,14 +18,17 @@ const toppings: Topping[] = [
   { id: 5, name: "Chopped Nuts", price: 1.4 },
 ];
 
-// Definimos la estructura de un topping
-type Topping = {
-  id: number;
-  name: string;
-  price: number;
+type AnimatedCheckboxProps = {
+  checked: boolean;
+  onChange: () => void;
+  topping: Topping;
 };
 
-export const AnimatedCheckbox = ({ checked, onChange }: CheckboxProps) => {
+export const AnimatedCheckbox = ({
+  checked,
+  onChange,
+  topping,
+}: AnimatedCheckboxProps) => {
   return (
     <div className="flex items-center gap-3 cursor-pointer" onClick={onChange}>
       <motion.div
@@ -46,22 +51,24 @@ export const AnimatedCheckbox = ({ checked, onChange }: CheckboxProps) => {
 };
 
 export default function CheckboxGroup() {
-  const [selected, setSelected] = useState<{ [key: number]: boolean }>({});
+  // Usamos el id del topping para controlar si está seleccionado
+  const [selected, setSelected] = useState<{ [id: number]: boolean }>({});
 
-  const handleToggle = (index: number) => {
+  const handleToggle = (id: number) => {
     setSelected((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [id]: !prev[id],
     }));
   };
 
   return (
-    <div className="flex gap-4">
-      {[0].map((index) => (
+    <div className="flex flex-col gap-4">
+      {toppings.map((top) => (
         <AnimatedCheckbox
-          key={index}
-          checked={selected[index] || false}
-          onChange={() => handleToggle(index)}
+          key={top.id}
+          checked={selected[top.id] || false}
+          onChange={() => handleToggle(top.id)}
+          topping={top}
         />
       ))}
     </div>

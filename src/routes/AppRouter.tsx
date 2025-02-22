@@ -28,9 +28,10 @@ const AppRoutes: React.FC = () => {
   const location = useLocation();
   // Si la ruta es distinta de la raíz, aplicamos el background
   const isHome = location.pathname === "/";
+  const isauth = location.pathname === "/auth";
 
   return (
-    <div className={isHome ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
+    <div className={isHome || isauth ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
       <div className="flex flex-col  pt-16">
         <Banner />
         <main className="flex-grow">
