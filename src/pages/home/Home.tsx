@@ -10,15 +10,16 @@ import { HeroParallax } from "@/components/ui/hero-parallax";
 export const Home = () => {
   return (
     <div className="justify-center   ">
-      <AddressSelector />
       <Slider />
+      <AddressSelector />
       <DessertCarousel />
       <BackgroundWithHearts />
       <FotosSection4 />
-      <HomeSection5 />
+
       <div className="w-full overflow-hidden mb-20">
         <HeroParallax products={products} />
       </div>
+      <HomeSection5 />
     </div>
   );
 };

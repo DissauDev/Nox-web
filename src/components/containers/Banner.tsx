@@ -8,7 +8,6 @@ import { setAddress } from "../../store/features/slices/addressSlice";
 import AddressModal from "../atoms/home/AddressModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Badge } from "../ui/badge";
-import { isNullOrUndefined } from "util";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false); // Modal del menú móvil
@@ -16,7 +15,10 @@ export const Banner: React.FC = () => {
   const dispatch = useAppDispatch();
   const savedAddress = useAppSelector((state) => state.address.savedAddress);
   const products = useAppSelector((state) => state.orders.products);
-  const totalQuantity = products.reduce((total, product) => total + product.quantity, 0);
+  const totalQuantity = products.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
 
   // Función para alternar el menú móvil
   const toggleModal = () => setModalOpen(!modalOpen);
@@ -92,10 +94,22 @@ export const Banner: React.FC = () => {
               }
             >
               <FiShoppingBag size={24} />
-              <Badge className={`bg-mustard-yellow-400 hover:bg-mustard-yellow-400 size-5 rounded-full absolute -top-3 -right-3 text-sm font-extralight text-center flex items-center justify-center ${totalQuantity===0 ? 'hidden' : 'block' }`}>{totalQuantity>0 ? (totalQuantity>9 ? '9+' : totalQuantity ) : null}</Badge>
+              <Badge
+                className={`bg-mustard-yellow-400 hover:bg-mustard-yellow-400 w-5 h-5 rounded-full
+    absolute -top-3 -right-3 text-sm font-extralight text-center flex items-center justify-center
+    ${totalQuantity === 0 ? "hidden" : "block"}`}
+              >
+                <h3 className="m-0">
+                  {totalQuantity > 0
+                    ? totalQuantity > 9
+                      ? "9+"
+                      : totalQuantity
+                    : null}
+                </h3>
+              </Badge>
             </NavLink>
           </li>
-        </ul> 
+        </ul>
       </nav>
 
       {/* Banner para móviles */}
