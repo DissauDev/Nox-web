@@ -72,7 +72,7 @@
 }
 
 body {
-  @apply bg-midnight-blue-950 bg-custom-pattern bg-repeat bg-[size:8%] text-white;
+  @apply bg-midnight-blue-950 text-white;
 }
 
 
@@ -152,7 +152,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply  text-foreground;
   }
 }
 
@@ -161,6 +161,6 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply  text-foreground;
   }
 }

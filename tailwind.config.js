@@ -148,9 +148,7 @@ export default {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
-  		backgroundImage: {
-  			'custom-pattern': "url('/src/assets/desing/pattern.png')",
-  		},
+  		
   		fontFamily: {
   			ArialBold: [
   				'ArialBold',

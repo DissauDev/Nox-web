@@ -3,11 +3,7 @@ import { addresses, CAAddress } from "../../../utils/addresses";
 import { useNavigate } from "react-router-dom";
 import { FaLocationArrow, FaTimes, FaStore } from "react-icons/fa";
 import { FiShoppingBag, FiTruck } from "react-icons/fi";
-import {
-  FaLocationCrosshairs,
-  FaLocationPin,
-  FaMapLocationDot,
-} from "react-icons/fa6";
+import { FaLocationCrosshairs, FaMapLocationDot } from "react-icons/fa6";
 import { motion } from "framer-motion";
 
 interface AddressModalProps {
@@ -191,9 +187,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
             onClick={() => handleSaveAddress(ipAddress)}
             className="mt-4 p-3 bg-gray-800 w-full hover:bg-gray-700 rounded-lg transition-colors duration-300"
           >
-            <div className="flex items-center mb-1">
-              <FaLocationCrosshairs className="mr-2 text-gray-400" size={16} />
-              <span className="text-gray-400 text-sm">
+            <div className="flex items-center mb-2">
+              <FaLocationCrosshairs className="mr-2 text-[#E01766]" size={16} />
+              <span className="text-gray-400 text-sm font-ArialRegular">
                 Your current address
               </span>
             </div>
@@ -206,7 +202,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
         <hr className="border-t border-gray-700 my-4" />
 
         {/* Texto descriptivo */}
-        <div className="mb-4 text-center text-creamy-white-50  text-sm font-ArialRegular">
+        <div className="mb-4 text-center text-creamy-white-50  text-lg font-ArialRegular font-semibold ">
           {addressType === "delivery"
             ? "Fresh, warm cookies delivered right to your door"
             : "Fresh, warm cookies ready for pickup"}

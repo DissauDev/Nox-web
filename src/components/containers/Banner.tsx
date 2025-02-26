@@ -8,6 +8,7 @@ import { setAddress } from "../../store/features/slices/addressSlice";
 import AddressModal from "../atoms/home/AddressModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Badge } from "../ui/badge";
+import { ContactUs } from "../../pages/home/ContactUs";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false); // Modal del menú móvil
@@ -62,7 +63,7 @@ export const Banner: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/shipping"
+              to="/contact-us"
               className={({ isActive }) =>
                 `hover:text-mustard-yellow-400 transition duration-300 ${
                   isActive
@@ -71,7 +72,7 @@ export const Banner: React.FC = () => {
                 }`
               }
             >
-              Shipping
+              Contact Us
             </NavLink>
           </li>
           <li>
@@ -94,9 +95,9 @@ export const Banner: React.FC = () => {
               }
             >
               <FiShoppingBag size={24} />
-              <Badge
-                className={`bg-mustard-yellow-400 hover:bg-mustard-yellow-400 w-5 h-5 rounded-full
-    absolute -top-3 -right-3 text-sm font-extralight text-center flex items-center justify-center
+              <div
+                className={`bg-mustard-yellow-400  hover:bg-mustard-yellow-400 w-5 h-5 rounded-full
+    absolute -top-3 -right-3 text-sm font-ArialBold text-center flex items-center justify-center
     ${totalQuantity === 0 ? "hidden" : "block"}`}
               >
                 <h3 className="m-0">
@@ -106,7 +107,7 @@ export const Banner: React.FC = () => {
                       : totalQuantity
                     : null}
                 </h3>
-              </Badge>
+              </div>
             </NavLink>
           </li>
         </ul>

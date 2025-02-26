@@ -1,25 +1,17 @@
 import { FotosSection4 } from "../../components/atoms/home/FotosSection4";
-import { HomeSection5 } from "../../components/atoms/home/HomeSection5";
-import { DessertCarousel } from "../../components/atoms/home/DessertCarousel";
-import { BackgroundWithHearts } from "../../components/atoms/home/BackgroundWithHearts";
 import { AddressSelector } from "../../components/atoms/home/AddressSelector";
 import { Slider } from "../../components/atoms/Slider";
-import { products } from "../../data/index";
-import { HeroParallax } from "@/components/ui/hero-parallax";
+import { HomeSection3 } from "@/components/atoms/home/HomeSection3";
+import AnimatedCategories from "@/components/atoms/home/AnimatedCategories";
 
 export const Home = () => {
   return (
     <div className="justify-center   ">
       <Slider />
       <AddressSelector />
-      <DessertCarousel />
-      <BackgroundWithHearts />
+      <AnimatedCategories />
+      <HomeSection3 />
       <FotosSection4 />
-
-      <div className="w-full overflow-hidden mb-20">
-        <HeroParallax products={products} />
-      </div>
-      <HomeSection5 />
     </div>
   );
 };
