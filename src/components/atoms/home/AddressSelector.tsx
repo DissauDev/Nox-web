@@ -105,11 +105,11 @@ export const AddressSelector = () => {
             {/* Texto descriptivo debajo del input */}
             <div className="mt-4 mx-8 max-w-xs">
               {initialType === "delivery" ? (
-                <p className="text-creamy-white-50 text-xl font-semibold font-ArialRegular">
+                <p className="text-creamy-white-50 text-xl  font-ArialRegular">
                   Fresh, warm cookies delivered right to your door
                 </p>
               ) : (
-                <p className="text-creamy-white-50 text-xl font-semibold font-ArialRegular">
+                <p className="text-creamy-white-50 text-xl ffont-ArialRegular">
                   Fresh, warm cookies ready for Pickup
                 </p>
               )}

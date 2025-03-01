@@ -32,16 +32,14 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = React.memo(
           />
           <button
             onClick={() => onChange("delivery")}
-            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-semibold text-center transition-colors duration-300"
+            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-ArialRegular text-center transition-colors duration-300"
           >
-            <FiTruck className="mr-2" size={18} />
             Delivery
           </button>
           <button
             onClick={() => onChange("pickup")}
-            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-semibold text-center transition-colors duration-300"
+            className="relative z-10 w-1/2 flex items-center justify-center py-2 font-ArialRegular text-center transition-colors duration-300"
           >
-            <FiShoppingBag className="mr-2" size={18} />
             Pick Up
           </button>
         </div>
@@ -202,7 +200,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
         <hr className="border-t border-gray-700 my-4" />
 
         {/* Texto descriptivo */}
-        <div className="mb-4 text-center text-creamy-white-50  text-lg font-ArialRegular font-semibold ">
+        <div className="mb-4 text-center text-creamy-white-50  text-lg font-ArialRegular  ">
           {addressType === "delivery"
             ? "Fresh, warm cookies delivered right to your door"
             : "Fresh, warm cookies ready for pickup"}

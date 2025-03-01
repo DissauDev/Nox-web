@@ -104,6 +104,11 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
     // Navega a checkout únicamente al presionar el botón
     navigate("/checkout");
   };
+  const handleCart = () => {
+    setIsOpen(false);
+    // Navega a checkout únicamente al presionar el botón
+    navigate("/cart");
+  };
 
   return (
     <AnimatePresence>
@@ -237,6 +242,12 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
               </div>
               {/* Botón de Checkout fijo al fondo */}
               <div className="p-4 border-t">
+                <button
+                  onClick={handleCart}
+                  className="w-full py-3 bg-mustard-yellow-400 text-black-night-950 font-ArialBold rounded-full hover:bg-mustard-yellow-500"
+                >
+                  Shopping Cart
+                </button>
                 <button
                   onClick={handlecheckout}
                   className="w-full py-3 bg-mustard-yellow-400 text-black-night-950 font-ArialBold rounded-full hover:bg-mustard-yellow-500"
