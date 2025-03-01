@@ -10,6 +10,7 @@ const RestaurantMap: React.FC = () => {
 
   return (
     <div className="relative z-0 w-full h-[400px] border border-grape-800 rounded-lg overflow-hidden shadow-lg">
+      {/*@ts-ignore */}
       <MapContainer center={position} zoom={15} className="w-full h-full">
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={position}>
