@@ -86,10 +86,26 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     // Agrega un producto a la orden.
-    addProduct: (state, action: PayloadAction<Product>) => {
-      state.products.push(action.payload);
-      state.totals = calculateTotals(state.products, state.deliveryCost, state.tipPercent) ;
-    },
+  // Agrega un producto a la orden.
+addProduct: (state, action: PayloadAction<Product>) => {
+  const newProduct = action.payload;
+  const existingProduct = state.products.find(
+    product => product.id === newProduct.id
+  );
+
+  if (existingProduct) {
+    // Si el producto ya existe, se aumenta la cantidad.
+    existingProduct.quantity += newProduct.quantity;
+  } else {
+    // Si no existe, se agrega al array.
+    state.products.push(newProduct);
+  }
+  state.totals = calculateTotals(
+    state.products,
+    state.deliveryCost,
+    state.tipPercent
+  );
+},
     // Remueve un producto de la orden por su id.
     removeProduct: (state, action: PayloadAction<string>) => {
       state.products = state.products.filter(product => product.id !== action.payload);

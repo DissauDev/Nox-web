@@ -5,7 +5,7 @@ import menuData, { Product } from "../../utils/data/products";
 import { FaChevronLeft } from "react-icons/fa";
 
 import { IceCreamSelector } from "../../components/atoms/menu/selectors/IceCreamSelector";
-import { DrinksCoockiesSelector } from "../../components/atoms/menu/selectors/DrinksCoockiesSelector";
+
 import { MashoopSelector } from "../../components/atoms/menu/selectors/MashoopSelector";
 import { DessertSelector } from "../../components/atoms/menu/selectors/DessertSelector";
 import CartCounter from "../../components/atoms/CartCounter";

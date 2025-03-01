@@ -7,8 +7,8 @@ import { FiShoppingBag, FiTruck } from "react-icons/fi";
 import { setAddress } from "../../store/features/slices/addressSlice";
 import AddressModal from "../atoms/home/AddressModal";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { Badge } from "../ui/badge";
-import { ContactUs } from "../../pages/home/ContactUs";
+
+import CustomModal from "./CustomModal";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false); // Modal del menú móvil
@@ -16,14 +16,27 @@ export const Banner: React.FC = () => {
   const dispatch = useAppDispatch();
   const savedAddress = useAppSelector((state) => state.address.savedAddress);
   const products = useAppSelector((state) => state.orders.products);
-  const totalQuantity = products.reduce(
-    (total, product) => total + product.quantity,
-    0
-  );
 
+  const totalQuantity = products.length;
+  const [modalType, setModalType] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   // Función para alternar el menú móvil
   const toggleModal = () => setModalOpen(!modalOpen);
-
+  const handelCheck = (e) => {
+    if (!savedAddress) {
+      e.preventDefault();
+      setModalType("address");
+      setIsOpen(true);
+    } else if (savedAddress && products.length === 0) {
+      e.preventDefault();
+      setModalType("order");
+      setIsOpen(true);
+    } else {
+      e.preventDefault();
+      setModalType("checkout");
+      setIsOpen(true);
+    }
+  };
   return (
     <header
       id="banner"
@@ -85,16 +98,20 @@ export const Banner: React.FC = () => {
           </li>
           <li>
             <NavLink
+              onClick={handelCheck}
               to="/checkout"
               className={({ isActive }) =>
-                `relative inline-block  gap-2 hover:text-mustard-yellow-400 transition duration-300 ${
+                `relative inline-block  gap-2 transition duration-300 ${
                   isActive
                     ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
-                    : ""
+                    : "py-1 px-2 border-b-2 border-transparent"
                 }`
               }
             >
-              <FiShoppingBag size={24} />
+              <FiShoppingBag
+                size={24}
+                className=" hover:text-mustard-yellow-400"
+              />
               <div
                 className={`bg-mustard-yellow-400  hover:bg-mustard-yellow-400 w-5 h-5 rounded-full
     absolute -top-3 -right-3 text-sm font-ArialBold text-center flex items-center justify-center
@@ -109,6 +126,13 @@ export const Banner: React.FC = () => {
                 </h3>
               </div>
             </NavLink>
+            {isOpen && (
+              <CustomModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                modalType={modalType}
+              />
+            )}
           </li>
         </ul>
       </nav>

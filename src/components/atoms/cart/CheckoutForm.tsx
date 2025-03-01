@@ -1,0 +1,53 @@
+import React, { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+
+export const stripePromise = loadStripe(
+  "pk_test_51P4caFDrtegwEnl3baIqBDl1Id2beUGIBBUQOK2UfhThO0buETVWO3RDt5WZgc00Vk4qQa7HgFIENycYkCWuw4Jq00sw8wPXAX"
+);
+
+export const CheckoutForm = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!stripe || !elements) return;
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: cardElement,
+    });
+
+    if (error) {
+      setError(error.message || "Error al procesar el pago");
+      setLoading(false);
+    } else {
+      console.log("PaymentMethod creado:", paymentMethod);
+      // Aquí puedes enviar el `paymentMethod.id` a tu backend para procesar el pago
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="  rounded  w-full">
+      <CardElement className="p-2 py-3  border rounded " />
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      <button
+        type="submit"
+        className="mt-4 w-full bg-grape-900 font-ArialBold text-white py-2 rounded disabled:opacity-50"
+        disabled={!stripe || loading}
+      >
+        {loading ? "Procesando..." : "Order Place"}
+      </button>
+    </form>
+  );
+};

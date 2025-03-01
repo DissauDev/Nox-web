@@ -51,12 +51,12 @@ const Menu = () => {
   return (
     <div>
       <Slider />
-      <div className="bg-[#FDF9F3] h-full">
+      <div className="">
         <div className="border-b border-gray-300"></div> {/* Línea divisoria */}
         {/* Tabs de navegación */}
         <div
           ref={tabsRef}
-          className="font-ArialBold top-[70px] z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
+          className="font-ArialBold lg:top-[70px] top-[70px] md:top-[48px] z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
         >
           <div className="overflow-x-auto no-scrollbar">
             <ul className="flex whitespace-nowrap justify-evenly gap-4 px-4">
@@ -95,18 +95,23 @@ const Menu = () => {
           `}</style>
         </div>
         {/* Secciones de productos */}
-        <div className="px-4">
+        <div className="px-4 mt-14">
           {menuData.map((cat) => (
             <div
               id={cat.category}
               key={cat.category}
               className="my-8 flex flex-col items-center"
             >
-              <div className="border-pompadour-900 border-2 rounded-2xl px-8 py-2 mb-4">
-                <h2 className="text-2xl font-ArialBold text-center text-pompadour-900">
-                  {cat.category}
-                </h2>
+              <div className=" mb-7 flex items-center">
+                <div className="bg-pompadour-900 h-0.5 w-[20vw] md:w-[30vw] lg:w-[34vw]" />
+                <div className="border-pompadour-900 border-2 rounded-2xl px-8 py-2">
+                  <h2 className="text-2xl font-ArialBold text-center text-pompadour-900">
+                    {cat.category}
+                  </h2>
+                </div>
+                <div className="bg-pompadour-900 h-0.5 w-[20vw] md:w-[30vw] lg:w-[34vw]" />
               </div>
+
               {/* Mostrar la descripción corta y larga */}
               <p className="text-xl font-ArialBold text-center text-pompadour-900">
                 {cat.shortDescription}

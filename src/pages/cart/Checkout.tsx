@@ -10,9 +10,15 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import { setTipPercent } from "@/store/features/slices/orderSlice";
-import IceCreamIMg from "../../assets/imagenMuestra IceCream.png";
-import { OrderState } from "../../store/features/slices/orderSlice";
+
 import { MdAccessTime } from "react-icons/md";
+
+import IceCreamIMg from "../../assets/imagenMuestra IceCream.png";
+import {
+  CheckoutForm,
+  stripePromise,
+} from "@/components/atoms/cart/CheckoutForm";
+import { Elements } from "@stripe/react-stripe-js";
 // ------------------- PaymentForm ------------------- //
 const PaymentForm = () => {
   const dispatch = useDispatch();
@@ -37,83 +43,62 @@ const PaymentForm = () => {
 
   return (
     <div
-      className="flex flex-col max-w-lg w-full bg-white shadow-lg rounded-lg p-6 border-2 border-grape-800 text-grape-800 font-ArialBold"
+      className="flex flex-col max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6  text-grape-800 font-ArialBold"
       style={{ fontFamily: "Arial, sans-serif" }}
     >
-      <h2 className="text-xl mb-4">Credit / Debit Card</h2>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <FaExclamationTriangle className="text-grape-800" />
-          <span className="ml-2">Payment Information Required</span>
-        </div>
-        <FaChevronDown className="text-grape-800" />
-      </div>
+      <h2 className="text-2xl mb-4 font-ArialBold text-pompadour-900">
+        Order Details
+      </h2>
       <div className="flex flex-col">
-        <div className="flex w-full justify-between mb-2">
-          <h3>subTotal</h3>
-          <h3>{orderState.totals.subTotal}</h3>
+        <div
+          className="flex w-full  font-ArialRegular font-semibold
+         justify-between mb-2"
+        >
+          <h3 className="">subTotal</h3>
+          <h3>${orderState.totals.subTotal}</h3>
         </div>
-        <div className="flex w-full justify-between mb-4">
-          <h3>Total</h3>
-          <h3>{orderState.totals.total}</h3>
+        <div className="flex font-ArialRegular text-gray-600 w-full justify-between mb-4">
+          <h3>Tip</h3>
+          <h3 className=" font-extralight text-gray-600">
+            ${orderState.totals.tip}
+          </h3>
         </div>
-      </div>
-      <div className="mb-2">
-        <label className="block mb-1">Cardholder Number</label>
-        <input
-          type="text"
-          placeholder="Enter Card Number"
-          className="w-full p-2 border border-grape-800 rounded focus:outline-none focus:ring-2 focus:ring-grape-200"
-        />
-      </div>
-      <div className="mb-2">
-        <label className="block mb-1">Experation Date</label>
-        <input
-          type="text"
-          placeholder="MM/YY"
-          className="w-full p-2 border border-grape-800 rounded focus:outline-none focus:ring-2 focus:ring-grape-200"
-        />
-      </div>
-      <div className="mb-2">
-        <label className="block mb-1">Postal Code</label>
-        <input
-          type="text"
-          placeholder="Enter Postal code"
-          className="w-full p-2 border border-grape-800 rounded focus:outline-none focus:ring-2 focus:ring-grape-200"
-        />
       </div>
       {/* Sección de propina */}
-      <div className="mb-4">
-        <span className="block font-bold mb-2">Add a tip</span>
-        <div className="flex gap-2">
+      <div className="mb-8">
+        <div className="flex-wrap  ">
           {["18", "20", "25", "Custom"].map((tip) => (
             <button
               key={tip}
               type="button"
               onClick={() => handleTipSelection(tip)}
-              className={`px-3 py-1 border-2 rounded transition-colors duration-200 ${
+              className={`px-4 m-1 md:px-4 py-3 font-ArialBold  rounded transition-colors duration-200 ${
                 selectedTip === tip
-                  ? "bg-grape-800 text-white"
-                  : "bg-white text-grape-800 hover:bg-grape-100"
+                  ? "bg-grape-800 shadow-md shadow-purple-500 text-white"
+                  : "bg-white text-grape-800  border-2  hover:bg-grape-100"
               }`}
             >
               {tip === "Custom" ? tip : `${tip}%`}
             </button>
           ))}
         </div>
+
         {selectedTip === "Custom" && (
           <input
             placeholder="Enter tip %"
             value={customTip}
             onChange={handleCustomTipChange}
-            className="mt-2 w-full p-2 border border-grape-800 rounded focus:outline-none focus:ring-2 focus:ring-grape-200"
+            className="mt-6 w-full p-2 border border-grape-800 rounded focus:outline-none focus:ring-2 focus:ring-grape-200"
           />
         )}
       </div>
-
-      <button className="w-full py-2 bg-grape-800 text-white rounded font-ArialBold transition-colors duration-200 hover:bg-grape-700">
-        Next
-      </button>
+      <div className="flex font-ArialBold text-xl w-full justify-between mb-4">
+        <h3>Total</h3>
+        <h3 className=" ">${orderState.totals.total}</h3>
+      </div>
+      <hr className="mb-4" />
+      <h1 className="mb-4 font-ArialBold text-2xl">Payment</h1>
+      <CheckoutForm />
     </div>
   );
 };
@@ -121,20 +106,21 @@ const PaymentForm = () => {
 // ------------------- OrderDetails ------------------- //
 const OrderDetails = () => {
   const addressState = useSelector((state: RootState) => state.address);
-  console.log(addressState);
+  const orderState = useSelector((state: RootState) => state.orders);
+  console.log(orderState.products);
   return (
     <div className="space-y-8">
       {/* Pickup & Address Details */}
       <div className="bg-white p-6  w-full rounded-lg shadow-lg border border-gray-300 text-grape-800">
         <div className="flex flex-wrap justify-between">
           <div className="flex items-center mb-4">
-            <FaStore className=" mr-2 text-pink-500" size={28} />
-            <span className="text-lg font-bold">
+            <FaStore className=" mr-2 " size={28} />
+            <span className="text-lg font-ArialBold ">
               {addressState.savedAddress ? addressState.savedAddress.city : ""}
             </span>
           </div>
           <div className="flex mb-2 items-center">
-            <MdAccessTime className="mr-2 text-pink-500" size={28} />
+            <MdAccessTime className="mr-2 " size={28} />
             <div>
               <div className="flex items-center">
                 <span className="mr-2 font-ArialBold">Today</span>
@@ -153,7 +139,7 @@ const OrderDetails = () => {
             </div>
           </div>
           <div className=" flex mb-2 items-center">
-            <FaMapMarkerAlt className="text-pink-500" size={28} />
+            <FaMapMarkerAlt className="" size={28} />
             <p className="text-md mx-2 text-wrap  font-medium line-clamp-2 max-w-[220px]">
               {addressState.savedAddress.fullAddress}
             </p>
@@ -177,31 +163,52 @@ const OrderDetails = () => {
 
       {/* My Bag Section */}
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300 text-grape-800">
-        <h2 className="text-xl font-bold mb-4">My Bag</h2>
+        <h2 className="text-2xl font-ArialBold mb-4 text-pompadour-900">
+          My Bag
+        </h2>
+
         <div className="space-y-3 border-b pb-4">
+          <hr />
+          <div className="mt-4">
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
+              placeholder="Ordering for someone special? Add a personal note to go on the box."
+            ></textarea>
+          </div>
           {/* Ejemplo de item en la orden */}
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-semibold">Box of Cookies</p>
-              <p className="text-sm">Single</p>
+          {orderState.products.map((p) => (
+            <div key={p.id}>
+              <hr />
+              <div
+                className="flex justify-between items-center mt-2"
+                key={p.id}
+              >
+                <div className="flex items-center">
+                  <img
+                    src={IceCreamIMg}
+                    alt={p.name}
+                    className="size-20 object-cover mr-2 rounded-full "
+                  />
+                  <div>
+                    <p className="font-ArialBold">{p.name}</p>
+                    <p className="text-xs font-bold text-gray-700">
+                      ${p.price}
+                    </p>
+                    {p.options &&
+                      p.options.map((ops) => (
+                        <div className="mt-1 text-gray-400">
+                          <p key={ops.id} className="text-xs font-semibold">
+                            {ops.name} (${ops.extraPrice})
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="text-sm font-ArialBold">Qty: {p.quantity}</div>
+              </div>
             </div>
-            <div className="text-sm">$4.99</div>
-            <div className="text-sm">Qty: 1</div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="font-semibold">Butter Cake</p>
-              <p className="text-sm">+ $0.99 ea.</p>
-            </div>
-            <div className="text-sm">$X.XX</div>
-            <div className="text-sm">Qty: 1</div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
-            placeholder="Ordering for someone special? Add a personal note to go on the box."
-          ></textarea>
+          ))}
         </div>
       </div>
     </div>
@@ -211,38 +218,34 @@ const OrderDetails = () => {
 // ------------------- Checkout ------------------- //
 export const Checkout = () => {
   const navigate = useNavigate();
-  const orderState = useSelector((state: RootState) => state.orders);
 
   return (
-    <div className="mt-16 p-6">
-      <button
-        onClick={() => navigate("/Cart")}
-        className="text-grape-900 flex items-center font-bold justify-start mb-4"
-      >
-        <FaChevronLeft className="mr-2" size={24} />
-        Edit Cart
-      </button>
+    <Elements stripe={stripePromise}>
+      <div className="mt-16 p-6">
+        <button
+          onClick={() => navigate("/Cart")}
+          className="text-grape-900 flex items-center font-bold justify-start mb-4"
+        >
+          <FaChevronLeft className="mr-2" size={24} />
+          Edit Cart
+        </button>
 
-      <div className="w-full mx-auto px-4">
-        {/* Grid: 1 columna en móviles y en pantallas grandes se utiliza un grid con dos columnas, donde la primera es el doble */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
-          {/* Columna Izquierda: Order Details */}
-          <div className="w-full">
-            <OrderDetails />
-          </div>
-          {/* Columna Derecha: Payment Form */}
-          <div className="w-full">
-            <PaymentForm />
-            {/* Botón fijo (sticky) en pantallas medianas */}
-            <div className="md:hidden sticky bottom-4 bg-white p-4 shadow-lg rounded-lg mt-4">
-              <button className="w-full py-2 bg-grape-800 text-white rounded font-ArialBold transition-colors duration-200 hover:bg-grape-700">
-                Order Now
-              </button>
+        <div className="w-full mx-auto px-4">
+          {/* Grid: 1 columna en móviles y en pantallas grandes se utiliza un grid con dos columnas, donde la primera es el doble */}
+          <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
+            {/* Columna Izquierda: Order Details */}
+            <div className="w-full">
+              <OrderDetails />
+            </div>
+            {/* Columna Derecha: Payment Form */}
+            <div className="w-full">
+              <PaymentForm />
+              {/* Botón fijo (sticky) en pantallas medianas */}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Elements>
   );
 };
 
