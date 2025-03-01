@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { addresses, CAAddress } from "../../../utils/addresses";
 import { useNavigate } from "react-router-dom";
 import { FaLocationArrow, FaTimes, FaStore } from "react-icons/fa";
-import { FiShoppingBag, FiTruck } from "react-icons/fi";
+
 import { FaLocationCrosshairs, FaMapLocationDot } from "react-icons/fa6";
 import { motion } from "framer-motion";
 

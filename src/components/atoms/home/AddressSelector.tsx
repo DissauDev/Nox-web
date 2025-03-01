@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { CAAddress } from "../../../utils/addresses";
 import { setAddress } from "../../../store/features/slices/addressSlice";
-import { FiTruck, FiShoppingBag } from "react-icons/fi";
+
 import { motion } from "framer-motion";
 import AddressModal from "./AddressModal";
 import { FaMapMarkerAlt } from "react-icons/fa";
