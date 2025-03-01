@@ -43,7 +43,7 @@ const PaymentForm = () => {
 
   return (
     <div
-      className="flex flex-col max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6  text-grape-800 font-ArialBold"
+      className="flex flex-col lg:max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6  text-grape-800 font-ArialBold"
       style={{ fontFamily: "Arial, sans-serif" }}
     >
       <h2 className="text-2xl mb-4 font-ArialBold text-pompadour-900">

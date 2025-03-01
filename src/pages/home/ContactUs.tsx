@@ -5,6 +5,7 @@ import { TfiEmail } from "react-icons/tfi";
 import { IoPhonePortraitOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import RestaurantMap from "@/components/atoms/home/RestaurantMap";
 
 const faqs = [
   {
@@ -30,7 +31,7 @@ const faqs = [
   {
     question: "When will my credit card be charged for my order?",
     answer:
-      "Integer fringilla, orci sit amet posuere auctor, orci eros pellentesque odio, nec pellentesque erat ligula nec massa. Aenean consequat lorem ut felis ullamcorper posuere gravida tellus faucibus. ",
+      "Integer fringilla, orci sit amet posuere auctor, orci eros pellentesque odio, nec pellentesque erat ligula nec massa. Aenean consequat lorem ut felis ullamcorper posuere gravida tellus faucibus.",
   },
 ];
 
@@ -42,54 +43,88 @@ export const ContactUs = () => {
   };
 
   return (
-    <div>
+    <div className="">
+      {/* Sección Header */}
       <div className="">
-        <div className="items-center justify-center flex flex-col p-4 py-24">
-          <h3 className="text-grape-950 font-ArialBold">Get in Touch</h3>
-          <h1 className="text-grape-900 font-ArialBold text-4xl my-4">
-            Contact us
-          </h1>
-          <h3 className="text-gray-500 font-ArialBold max-w-2xl mx-auto text-center">
+        <div className="flex items-center justify-center flex-col p-6 py-24 bg-gradient-to-br from-[#21112e] [#573375] via-[#4b2e61] to-">
+          <motion.h3
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-white text-lg font-semibold uppercase tracking-wide"
+          >
+            Get in Touch
+          </motion.h3>
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-white font-bold text-5xl my-4"
+          >
+            Contact Us
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className=" font-medium text-center max-w-xl"
+          >
             Got questions, feedback, or just want to say hello? We're all ears!
             Get in touch with our friendly team and we'll be happy to assist you
             in any way we can.
-          </h3>
+          </motion.p>
         </div>
       </div>
-      <div className=" flex flex-wrap text-grape-950 p-4 items-center m lg:grid-cols-4 justify-evenly">
-        <div className=" flex flex-col  m-2 justify-center items-center">
+      {/* Sección de Información de Contacto con animación al hacer scroll */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="mt-12 flex flex-wrap text-grape-950 p-4 items-center justify-evenly"
+      >
+        <div className="flex flex-col m-2 justify-center items-center">
           <LuMapPin size={50} className="mb-4" />
-          <h1 className="font-ArialBold text-xl ">Address</h1>
-          <h3 className="font-ArialBold text-sm text-gray-700 ">
+          <h1 className="font-ArialBold text-xl">Address</h1>
+          <h3 className="font-ArialBold text-sm text-gray-500">
             422 E Campbell Ave, Campbell, CA 95008
           </h3>
         </div>
-        <div className=" flex flex-col  m-2 justify-center items-center">
+        <div className="flex flex-col m-2 justify-center items-center">
           <IoPhonePortraitOutline size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">Phone Number</h1>
-          <h3 className="font-ArialBold text-sm text-gray-700 ">
+          <h3 className="font-ArialBold text-sm text-gray-500">
             (669) 273-9216
           </h3>
         </div>
-        <div className=" flex flex-col   m-2 justify-center items-center">
+        <div className="flex flex-col m-2 justify-center items-center">
           <TfiEmail size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">E-mail Address</h1>
-          <h3 className="font-ArialBold text-sm text-gray-700 ">
+          <h3 className="font-ArialBold text-sm text-gray-500">
             info@noxcookiebar.com
           </h3>
         </div>
-        <div className=" flex flex-col  m-2 justify-center items-center">
+        <div className="flex flex-col m-2 justify-center items-center">
           <FaRegCalendarDays size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">Business Hours</h1>
-          <h3 className="font-ArialBold text-sm text-gray-700">
+          <h3 className="font-ArialBold text-sm text-gray-500">
             Mon - Sun / 11:30AM - 11:00PM
           </h3>
         </div>
-      </div>
-
-      <div className=" p-4 mt-8 flex flex-col md:flex-row justify-around">
+      </motion.div>
+      {/* Sección de Formulario y FAQ con animación al hacer scroll */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="p-4 mt-8 flex flex-col md:flex-row justify-around"
+      >
         {/* Formulario de contacto */}
-        <div className=" w-full md:w-5/12 rounded-lg p-6">
+        <div className="w-full md:w-5/12 rounded-lg p-6">
           <h2 className="text-2xl text-grape-900 font-bold mb-4">Contact Us</h2>
           <form className="space-y-4">
             <div>
@@ -129,9 +164,8 @@ export const ContactUs = () => {
             </button>
           </form>
         </div>
-
         {/* Preguntas Frecuentes */}
-        <div className=" w-full lg:pb-24 md:w-6/12 p-6 ">
+        <div className="w-full lg:pb-24 md:w-6/12 p-6">
           <h2 className="text-2xl text-grape-900 font-bold mb-8">
             Frequently Asked Questions
           </h2>
@@ -167,6 +201,12 @@ export const ContactUs = () => {
               </div>
             ))}
           </div>
+        </div>
+      </motion.div>
+      {/* Sección del Mapa sin animación de scroll */}
+      <div className="flex justify-center items-center">
+        <div className="w-full">
+          <RestaurantMap />
         </div>
       </div>
     </div>

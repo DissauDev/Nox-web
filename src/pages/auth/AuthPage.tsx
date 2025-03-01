@@ -5,7 +5,7 @@ const AuthPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center mt-28 md:my-10 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       {/* Card principal con degradado y sombra morada en la esquina superior izquierda */}
       <div className="relative bg-gradient-to-br from-gray-800 shadow-grape-900  to-gray-900 rounded-3xl shadow-xl max-w-md w-full p-8">
         {/* Sombra morada en la esquina superior izquierda */}
@@ -37,7 +37,7 @@ const AuthPage: React.FC = () => {
           </div>
 
           {isSignUp ? (
-           <SignUpForm/>
+            <SignUpForm />
           ) : (
             <div>
               <h2 className="text-2xl text-center text-white mb-6 font-bold">
