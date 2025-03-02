@@ -19,7 +19,7 @@ export const Orders = () => {
   return (
     <div className="min-h-screen py-10 mt-10 px-4">
       {/* Breadcrumbs */}
-      <div className="flex justify-center items-center font-ArialBold text-sm  md:text-xl text-grape-800 space-x-2 mb-8">
+      <div className="flex justify-center mt-6 items-center font-ArialBold text-sm  md:text-xl text-grape-800 space-x-2 mb-8">
         <a className=" transition-colors" href="#">
           Shopping Cart
         </a>

@@ -16,7 +16,7 @@ const Cart = () => {
 
   return (
     <div className="mt-16 pb-20 ">
-      <div className="flex justify-center mt-20 items-center font-ArialBold text-sm  md:text-xl text-grape-900 space-x-4">
+      <div className="flex justify-center mt-24 items-center font-ArialBold text-sm  md:text-xl text-grape-900 space-x-4">
         <a>Shopping Cart</a>
         <FaChevronRight className="text-gray-500" />
         <button

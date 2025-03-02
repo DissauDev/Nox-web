@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import DessertCard from "../../components/atoms/menu/DessertCard";
@@ -6,7 +6,6 @@ import { Slider } from "../../components/atoms/Slider";
 import menuData from "../../utils/data/products";
 
 const Menu = () => {
-  const tabsRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("For you");
   const navigate = useNavigate();
   const sections = menuData.map((cat) => cat.category);
@@ -23,7 +22,6 @@ const Menu = () => {
         }
         return false;
       });
-
       if (currentSection) {
         setActiveTab(currentSection);
       }
@@ -45,33 +43,25 @@ const Menu = () => {
   };
 
   return (
-    <div>
+    <div className="menu-wrapper">
       <Slider />
-      <div className="">
+      <div>
         <div className="border-b border-gray-300"></div>
         <div
-          ref={tabsRef}
-          className="font-ArialBold lg:top-[70px] top-[70px] md:top-[48px] z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
+          className="font-ArialBold z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
+          style={{ top: "var(--banner-height)" }}
         >
-          <div className="overflow-x-auto no-scrollbar">
-            <ul className="flex whitespace-nowrap justify-evenly gap-4 px-4">
+          <div className="tab-container">
+            <ul className="flex justify-evenly gap-4 px-4">
               {sections.map((sectionId) => (
                 <li
                   key={sectionId}
                   onClick={() => handleTabClick(sectionId)}
-                  className={`
-                    cursor-pointer 
-                    py-2 
-                    flex-shrink-0 
-                    border-b-2 
-                    transition-all
-                    ${
-                      activeTab === sectionId
-                        ? "border-white"
-                        : "border-transparent"
-                    }
-                    text-[clamp(10px,1.5vw,16px)]
-                  `}
+                  className={`cursor-pointer py-2 border-b-2 transition-all ${
+                    activeTab === sectionId
+                      ? "border-white"
+                      : "border-transparent"
+                  } text-[clamp(10px,1.5vw,16px)]`}
                 >
                   {sectionId.toUpperCase()}
                 </li>
@@ -79,12 +69,20 @@ const Menu = () => {
             </ul>
           </div>
           <style>{`
-            .no-scrollbar::-webkit-scrollbar {
+            /* Ocultar scrollbar en el contenedor de tabs */
+            .tab-container::-webkit-scrollbar {
               display: none;
             }
-            .no-scrollbar {
+            .tab-container {
               -ms-overflow-style: none;
               scrollbar-width: none;
+              overflow-x: auto;
+            }
+            /* En el rango de 1025px a 1088px, eliminar cualquier scroll horizontal */
+            @media (min-width: 1025px) and (max-width: 1088px) {
+              .menu-wrapper, .tab-container {
+                overflow-x: hidden;
+              }
             }
           `}</style>
         </div>
@@ -101,7 +99,7 @@ const Menu = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              <div className=" mb-7 flex items-center">
+              <div className="mb-7 flex items-center">
                 <div className="bg-pompadour-900 h-0.5 w-[20vw] md:w-[30vw] lg:w-[34vw]" />
                 <motion.div
                   className="border-pompadour-900 border-2 rounded-2xl px-8 py-2"
@@ -136,7 +134,6 @@ const Menu = () => {
                 {cat.longDescription}
               </motion.p>
 
-              {/* Grid de tarjetas de producto con animaciones */}
               <motion.div
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
                 initial={{ opacity: 0 }}
