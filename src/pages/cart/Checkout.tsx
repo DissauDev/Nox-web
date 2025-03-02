@@ -13,6 +13,7 @@ import {
   stripePromise,
 } from "@/components/atoms/cart/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
+import { FaChevronRight } from "react-icons/fa6";
 // ------------------- PaymentForm ------------------- //
 const PaymentForm = () => {
   const dispatch = useDispatch();
@@ -215,14 +216,16 @@ export const Checkout = () => {
 
   return (
     <Elements stripe={stripePromise}>
-      <div className="mt-16 p-6">
-        <button
-          onClick={() => navigate("/Cart")}
-          className="text-grape-900 flex items-center font-bold justify-start mb-4"
-        >
-          <FaChevronLeft className="mr-2" size={24} />
-          Edit Cart
-        </button>
+      <div className=" p-6 mt-16">
+        <div className="flex justify-center mt-2 mb-12 items-center font-ArialBold text-sm  md:text-xl text-grape-900 space-x-4">
+          <button onClick={() => navigate("/cart")}>Shopping Cart</button>
+          <FaChevronRight />
+          <button className="">Checkout</button>
+          <FaChevronRight />
+          <button className="text-gray-500  hover:text-grape-900">
+            Order Complete
+          </button>
+        </div>
 
         <div className="w-full mx-auto px-4">
           {/* Grid: 1 columna en móviles y en pantallas grandes se utiliza un grid con dos columnas, donde la primera es el doble */}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
 import IceCream from "../../../assets/Imnsomnia fotos/icecream.png";
 import coockie from "../../../assets/Imnsomnia fotos/coockies.png";
+import { useNavigate } from "react-router-dom";
 // Datos iniciales de ejemplo
 const productosIniciales = [
   {
@@ -42,6 +43,7 @@ const ItemCards = () => {
       setProducts((prev) => prev.filter((p) => p.id !== product.id));
     }
   };
+  const navigate = useNavigate();
 
   // Calcular totales
   const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
@@ -153,6 +155,7 @@ const ItemCards = () => {
               </span>
             </div>
             <button
+              onClick={() => navigate("/checkout")}
               className="w-full bg-mustard-yellow-400 rounded-full
              text-black-night-950 font-ArialBold py-2 px-full  hover:bg-mustard-yellow-500 transition"
             >

@@ -248,6 +248,7 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
                 >
                   Shopping Cart
                 </button>
+                <div className="size-4" />
                 <button
                   onClick={handlecheckout}
                   className="w-full py-3 bg-mustard-yellow-400 text-black-night-950 font-ArialBold rounded-full hover:bg-mustard-yellow-500"

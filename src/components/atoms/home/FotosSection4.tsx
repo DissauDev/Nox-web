@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import Image1 from "../../../assets/home/img 1.webp";
 import Image2 from "../../../assets/home/img 2.webp";
 import Image3 from "../../../assets/home/img 3.webp";
@@ -8,17 +9,23 @@ export const FotosSection4 = () => {
   return (
     <div className="relative ">
       {/* SECCIÓN 1: Primera imagen con dos efectos de luz alrededor */}
-      <div className="relative flex flex-col items-center justify-center mt-10">
+      <motion.div
+        className="relative flex flex-col items-center justify-center mt-10"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {/* Luz en la esquina superior derecha de la imagen 1 */}
         <div
-          className="absolute top-0 right-0 transform  -translate-y-1/4
-                    w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
+          className="absolute top-0 right-0 transform -translate-y-1/4
+                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
                      bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         {/* Luz en la esquina inferior izquierda de la imagen 1 */}
         <div
           className="absolute bottom-0 left-0 transform translate-y-1/4
-                   w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
+                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
                      bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         <img
@@ -36,10 +43,16 @@ export const FotosSection4 = () => {
             for pickup in as little as 90 minutes
           </h3>
         </div>
-      </div>
+      </motion.div>
 
       {/* SECCIÓN 2: Segunda imagen sin efectos de luz */}
-      <div className="flex flex-col items-center justify-center">
+      <motion.div
+        className="flex flex-col items-center justify-center"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <img src={Image2} alt="Imagen 2" className="w-4/5 mb-10 h-auto" />
         <div className="px-4 text-center">
           <h1 className="font-ArialLight font-semibold text-2xl md:text-4xl">
@@ -52,14 +65,20 @@ export const FotosSection4 = () => {
             selection perfectly
           </h3>
         </div>
-      </div>
+      </motion.div>
 
       {/* SECCIÓN 3: Tercera imagen con efectos de luz */}
-      <div className="relative flex flex-col items-center justify-center">
+      <motion.div
+        className="relative flex flex-col items-center justify-center"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {/* Luz en la esquina superior derecha de la imagen 3 */}
         <div
           className="absolute top-0 right-0 transform -translate-y-1/4
-                   w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
+                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
                      bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         <img
@@ -81,15 +100,14 @@ export const FotosSection4 = () => {
         <div className="relative z-10">
           <HomeSection5 />
         </div>
-        {/* Efecto de luz detrás de HomeSection5, posicionado de forma absoluta dentro de la sección */}
+        {/* Efecto de luz detrás de HomeSection5 */}
         <div className="absolute top-2/3 inset-0 bott flex items-center justify-center pointer-events-none z-0">
           <div
             className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80
                        bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl"
           />
         </div>
-        {/* HomeSection5 con z-index superior para que se muestre por encima del efecto */}
-      </div>
+      </motion.div>
     </div>
   );
 };

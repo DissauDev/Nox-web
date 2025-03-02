@@ -12,6 +12,7 @@ import CartCounter from "../../components/atoms/CartCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "@/store/features/slices/orderSlice";
 import { RootState } from "@/store/store";
+import { useToast } from "@/hooks/use-toast";
 
 // Definimos una interfaz para las opciones del formulario.
 // Estas propiedades son opcionales y se usarán según la categoría.
@@ -54,6 +55,8 @@ const findProduct = (
 };
 
 const ProductDetails: React.FC = () => {
+  const { toast } = useToast();
+
   useEffect(() => {
     window.scrollTo(0, 0); // Mueve el scroll al inicio cuando se monta el componente
   }, []);
@@ -141,7 +144,12 @@ const ProductDetails: React.FC = () => {
       })),
       specifications: "", // Aquí puedes agregar más detalles o especificaciones si es necesario
     };
-
+    toast({
+      className:
+        "bg-white text-gray-800 border font-ArialBold border-gray-200 shadow-lg rounded-lg p-4",
+      title: "✅ Good Choice!",
+      description: "Item added to cart 🛒",
+    });
     // Despacha la acción para agregar el producto al carrito.
     dispatch(addProduct(productToAdd));
 

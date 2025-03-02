@@ -18,6 +18,8 @@ import Footer from "../components/containers/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Checkout } from "@/pages/cart/Checkout";
 import { ContactUs } from "@/pages/home/ContactUs";
+import { Orders } from "@/pages/cart/Orders";
+import ScrollToTop from "./ScrollToTop";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -38,6 +40,7 @@ const AppRoutes: React.FC = () => {
         <main className="flex-grow">
           <Toaster />
           <Suspense fallback={<div>Loading...</div>}>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
@@ -46,6 +49,7 @@ const AppRoutes: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/orders" element={<Orders />} />
               <Route
                 path="/products/:category/:productKey"
                 element={<ProductsDetails />}

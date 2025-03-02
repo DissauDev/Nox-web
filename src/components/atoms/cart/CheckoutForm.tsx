@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { useNavigate } from "react-router-dom";
 
 export const stripePromise = loadStripe(
   "pk_test_51P4caFDrtegwEnl3baIqBDl1Id2beUGIBBUQOK2UfhThO0buETVWO3RDt5WZgc00Vk4qQa7HgFIENycYkCWuw4Jq00sw8wPXAX"
 );
 
 export const CheckoutForm = () => {
+  const navigate = useNavigate(); // Hook para navegar
+
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -34,6 +37,7 @@ export const CheckoutForm = () => {
       console.log("PaymentMethod creado:", paymentMethod);
       // Aquí puedes enviar el `paymentMethod.id` a tu backend para procesar el pago
       setLoading(false);
+      navigate("/orders");
     }
   };
 
@@ -43,7 +47,7 @@ export const CheckoutForm = () => {
       {error && <p className="text-red-500 mt-2">{error}</p>}
       <button
         type="submit"
-        className="mt-4 w-full bg-grape-900 font-ArialBold text-white py-2 rounded disabled:opacity-50"
+        className="mt-4 w-full bg-mustard-yellow-400 font-ArialBold text-black-night-950 py-2 rounded disabled:opacity-50"
         disabled={!stripe || loading}
       >
         {loading ? "Procesando..." : "Order Place"}

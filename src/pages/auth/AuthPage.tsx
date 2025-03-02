@@ -7,7 +7,7 @@ const AuthPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       {/* Card principal con degradado y sombra morada en la esquina superior izquierda */}
-      <div className="relative bg-gradient-to-br from-gray-800 shadow-grape-900  to-gray-900 rounded-3xl shadow-xl max-w-md w-full p-8">
+      <div className="relative bg-gradient-to-br from-gray-800 shadow-grape-900   rounded-3xl shadow-xl max-w-md w-full p-8">
         {/* Sombra morada en la esquina superior izquierda */}
 
         <div className="relative">

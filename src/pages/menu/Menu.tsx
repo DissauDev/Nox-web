@@ -1,23 +1,19 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import DessertCard from "../../components/atoms/menu/DessertCard";
 import { Slider } from "../../components/atoms/Slider";
-
 import menuData from "../../utils/data/products";
 
 const Menu = () => {
   const tabsRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("For you");
   const navigate = useNavigate();
-
-  // Generamos las secciones a partir de la data
   const sections = menuData.map((cat) => cat.category);
 
   useEffect(() => {
     const handleScroll = () => {
       const fromTop = window.scrollY;
-
-      // Determinamos la sección visible en el scroll
       const currentSection = sections.find((id) => {
         const element = document.getElementById(id);
         if (element) {
@@ -52,8 +48,7 @@ const Menu = () => {
     <div>
       <Slider />
       <div className="">
-        <div className="border-b border-gray-300"></div> {/* Línea divisoria */}
-        {/* Tabs de navegación */}
+        <div className="border-b border-gray-300"></div>
         <div
           ref={tabsRef}
           className="font-ArialBold lg:top-[70px] top-[70px] md:top-[48px] z-40 py-2 transition-all bg-midnight-blue-950 text-white sticky"
@@ -83,7 +78,6 @@ const Menu = () => {
               ))}
             </ul>
           </div>
-          {/* Ocultar la scrollbar */}
           <style>{`
             .no-scrollbar::-webkit-scrollbar {
               display: none;
@@ -94,46 +88,82 @@ const Menu = () => {
             }
           `}</style>
         </div>
-        {/* Secciones de productos */}
+
+        {/* Secciones de productos con animaciones */}
         <div className="px-4 mt-14">
           {menuData.map((cat) => (
-            <div
+            <motion.div
               id={cat.category}
               key={cat.category}
               className="my-8 flex flex-col items-center"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
             >
               <div className=" mb-7 flex items-center">
                 <div className="bg-pompadour-900 h-0.5 w-[20vw] md:w-[30vw] lg:w-[34vw]" />
-                <div className="border-pompadour-900 border-2 rounded-2xl px-8 py-2">
+                <motion.div
+                  className="border-pompadour-900 border-2 rounded-2xl px-8 py-2"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  viewport={{ once: true, amount: 0.2 }}
+                >
                   <h2 className="text-2xl font-ArialBold text-center text-pompadour-900">
                     {cat.category}
                   </h2>
-                </div>
+                </motion.div>
                 <div className="bg-pompadour-900 h-0.5 w-[20vw] md:w-[30vw] lg:w-[34vw]" />
               </div>
 
-              {/* Mostrar la descripción corta y larga */}
-              <p className="text-xl font-ArialBold text-center text-pompadour-900">
+              <motion.p
+                className="text-xl font-ArialBold text-center text-pompadour-900"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 {cat.shortDescription}
-              </p>
-              <p className="text-sm font-ArialBold text-center text-pompadour-900 mb-4">
+              </motion.p>
+              <motion.p
+                className="text-sm font-ArialBold text-center text-pompadour-900 mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 {cat.longDescription}
-              </p>
-              {/* Grid de tarjetas de producto */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+              </motion.p>
+
+              {/* Grid de tarjetas de producto con animaciones */}
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 {cat.items.map((product) => (
-                  <DessertCard
+                  <motion.div
                     key={product.id}
-                    name={product.name}
-                    description={product.description}
-                    imageLeft={product.imageLeft}
-                    imageRight={product.imageRight} // Se muestra solo si existe
-                    price={product.price}
-                    onAdd={() => handleItemClick(cat.category, product.id)}
-                  />
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.2 }}
+                  >
+                    <DessertCard
+                      name={product.name}
+                      description={product.description}
+                      imageLeft={product.imageLeft}
+                      imageRight={product.imageRight}
+                      price={product.price}
+                      onAdd={() => handleItemClick(cat.category, product.id)}
+                    />
+                  </motion.div>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
         </div>
         <Outlet />
