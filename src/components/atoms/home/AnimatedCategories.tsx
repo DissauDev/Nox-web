@@ -163,7 +163,7 @@ const AnimatedCategories = () => {
             <h2 className="text-2xl sm:text-2xl tracking-wider md:text-2xl font-CamilaFont text-purple-800">
               {categories[selectedIndex].name}
             </h2>
-            <p className="text-sm font-ArialRegular md:w-10/12  sm:text-lg md:text-lg mt-2">
+            <p className="text-sm font-ArialRegular md:w-5/6 sm:text-lg md:text-lg mt-2">
               {categories[selectedIndex].text}
             </p>
             <button className="mt-4 text-xl px-20 py-2 bg-mustard-yellow-400 rounded-full text-black font-ArialBold shadow-md hover:bg-mustard-yellow-500 transition">
