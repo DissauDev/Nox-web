@@ -46,7 +46,7 @@ export const ContactUs = () => {
     <div className="">
       {/* Sección Header */}
       <div className="">
-        <div className="flex items-center justify-center flex-col p-6 py-24 bg-gradient-to-br from-[#21112e] [#573375] via-[#4b2e61] to-">
+        <div className="flex items-center justify-center flex-col p-6 py-24 bg-grape-950">
           <motion.h3
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -158,7 +158,7 @@ export const ContactUs = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-grape-900 text-white py-2 rounded-md hover:bg-grape-700 transition"
+              className="w-full bg-grape-900 font-ArialBold text-white py-2 rounded-md hover:bg-grape-700 transition"
             >
               Send Message
             </button>
@@ -205,7 +205,7 @@ export const ContactUs = () => {
       </motion.div>
       {/* Sección del Mapa sin animación de scroll */}
       <div className="flex justify-center items-center">
-        <div className="w-full">
+        <div className="w-full mb-10">
           <RestaurantMap />
         </div>
       </div>

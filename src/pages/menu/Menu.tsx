@@ -93,7 +93,7 @@ const Menu = () => {
             <motion.div
               id={cat.category}
               key={cat.category}
-              className="my-8 flex flex-col items-center"
+              className="my-16 flex flex-col items-center"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}

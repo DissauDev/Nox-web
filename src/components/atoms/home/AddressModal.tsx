@@ -5,6 +5,8 @@ import { FaLocationArrow, FaTimes, FaStore } from "react-icons/fa";
 
 import { FaLocationCrosshairs, FaMapLocationDot } from "react-icons/fa6";
 import { motion } from "framer-motion";
+import { FiShoppingBag } from "react-icons/fi";
+import { TbTruckDelivery } from "react-icons/tb";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -34,13 +36,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = React.memo(
             onClick={() => onChange("delivery")}
             className="relative z-10 w-1/2 flex items-center justify-center py-2 font-ArialRegular text-center transition-colors duration-300"
           >
-            Delivery
+            <TbTruckDelivery className="mr-2" size={24} /> Delivery
           </button>
           <button
             onClick={() => onChange("pickup")}
             className="relative z-10 w-1/2 flex items-center justify-center py-2 font-ArialRegular text-center transition-colors duration-300"
           >
-            Pick Up
+            <FiShoppingBag className="mr-2" size={20} /> Pick Up
           </button>
         </div>
       </div>

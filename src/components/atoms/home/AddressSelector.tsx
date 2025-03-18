@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { CAAddress } from "../../../utils/addresses";
 import { setAddress } from "../../../store/features/slices/addressSlice";
-
+import { TbTruckDelivery } from "react-icons/tb";
 import { motion } from "framer-motion";
 import AddressModal from "./AddressModal";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { FiShoppingBag } from "react-icons/fi";
 
 interface ToggleSwitchProps {
   addressType: "delivery" | "pickup";
@@ -29,13 +30,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           onClick={() => onChange("delivery")}
           className="relative z-10 w-1/2 flex items-center justify-center py-2 text-white "
         >
-          Delivery
+          <TbTruckDelivery className="mr-2" size={24} /> Delivery
         </button>
         <button
           onClick={() => onChange("pickup")}
           className="relative z-10 w-1/2 flex items-center justify-center py-2 text-white"
         >
-          Pick Up
+          <FiShoppingBag className="mr-2" size={20} /> Pick Up
         </button>
       </div>
     </div>

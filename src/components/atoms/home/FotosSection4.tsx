@@ -34,10 +34,10 @@ export const FotosSection4 = () => {
           className="w-4/5 mb-10 h-auto relative z-10"
         />
         <div className="px-4 text-center">
-          <h1 className="font-ArialLight font-semibold text-2xl md:text-4xl">
+          <h1 className="font-CamilaFont tracking-wider text-2xl md:text-4xl">
             Order Today, Enjoy This Week
           </h1>
-          <h3 className="font-ArialLight font-bold text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
+          <h3 className="font-ArialRegular text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
             Place an order today and choose your favorite Mini or Large cookies
             in either a 48-Pack or 96-Pack. Enjoy your delicious treats, ready
             for pickup in as little as 90 minutes
@@ -55,10 +55,10 @@ export const FotosSection4 = () => {
       >
         <img src={Image2} alt="Imagen 2" className="w-4/5 mb-10 h-auto" />
         <div className="px-4 text-center">
-          <h1 className="font-ArialLight font-semibold text-2xl md:text-4xl">
+          <h1 className="font-CamilaFont tracking-wider text-2xl md:text-3xl">
             Choose Your Flavors
           </h1>
-          <h3 className="font-ArialLight font-bold text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
+          <h3 className="font-ArialRegular text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
             Treat your guests to a delectable assortment from our weekly menu!
             Choose from our rotating flavors of Mini or Large cookies. Starting
             with orders of 48, you can add increments of 12 to customize your
@@ -87,10 +87,10 @@ export const FotosSection4 = () => {
           className="w-4/5 mb-10 h-auto relative z-10"
         />
         <div className="px-4 text-center">
-          <h1 className="font-ArialLight font-semibold text-2xl md:text-4xl">
+          <h1 className="font-CamilaFont tracking-wider text-2xl md:text-3xl">
             Planning Something Big?
           </h1>
-          <h3 className="font-ArialLight font-bold text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
+          <h3 className="font-ArialRegular text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
             Need more cookies? Place an order in advance and make your event a
             hit! Whether it's a birthday bash, corporate event, or family
             reunion, we've got you covered with a variety of flavor options

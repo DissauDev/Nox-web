@@ -166,11 +166,13 @@ export const Banner: React.FC = () => {
 
       {/* Banner para móviles */}
       <div className="md:hidden flex justify-between items-center px-6 py-4">
-        <img
-          src={NoxSideBar}
-          alt="Sidebar Logo"
-          className="h-10 w-auto object-contain"
-        />
+        <NavLink to="/">
+          <img
+            src={NoxSideBar}
+            alt="Sidebar Logo"
+            className="h-10 w-auto object-contain"
+          />
+        </NavLink>
         <NavLink
           to="/signin"
           className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"

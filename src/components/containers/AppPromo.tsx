@@ -1,11 +1,11 @@
 import { FaApple, FaGooglePlay } from "react-icons/fa";
-import ImageMobile from "../../assets/home/Mobile-Mockup copia  - copia.png";
+import ImageMobile from "../../assets/home/Mobile-Mockup copia copy.png";
 
 export const AppPromo = () => {
   return (
     <div
-      className="relative w-full bg-grape-950 text-white flex flex-col md:flex-row  items-center justify-between
-                 lg:h-[500px] overflow-visible  lg:mt-48"
+      className="relative w-full bg-grape-950 text-white flex flex-col md:flex-row
+                 items-center justify-between lg:h-[500px] overflow-visible lg:mt-48"
     >
       {/* Efecto Lighting Purple detrás de la imagen */}
       <div
@@ -14,8 +14,11 @@ export const AppPromo = () => {
                    bg-purple-500 opacity-30 blur-3xl rounded-full z-0"
       ></div>
 
-      {/* Contenedor del texto y botones */}
-      <div className="relative w-full md:w-1/2 flex flex-col items-center md:items-start px-6 md:px-12 md:ml-20 z-10 mb-8 md:mb-0">
+      {/* Contenedor de texto y botones para pantallas medianas y grandes */}
+      <div
+        className="relative w-full md:w-1/2 flex flex-col items-center md:items-start
+                      px-6 md:px-12 md:ml-20 z-10 mb-8 md:mb-0"
+      >
         <h2 className="mt-8 md:mt-0 text-2xl md:text-4xl font-CamilaFont">
           Get the full Nox experience
         </h2>
@@ -23,12 +26,11 @@ export const AppPromo = () => {
           Level up your Nox experience with our award-winning app! Download now
           for a sprinkle of sweetness with every tap.
         </p>
-
-        {/* Botones (solo en pantallas grandes) */}
-        <div className="mt-6 hidden md:flex flex-row gap-3  w-full">
+        {/* Botones para pantallas medianas y grandes */}
+        <div className="mt-6 hidden md:flex md:flex-col lg:flex-row gap-3 w-full">
           <a
             href="#"
-            className="flex items-center bg-black px-4 py-2 rounded-lg text-white
+            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
                        text-sm md:text-lg font-semibold hover:bg-gray-800 transition w-auto"
           >
             <FaApple className="mr-2 text-lg md:text-2xl" />
@@ -36,7 +38,7 @@ export const AppPromo = () => {
           </a>
           <a
             href="#"
-            className="flex items-center bg-black px-4 py-2 rounded-lg text-white
+            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
                        text-sm md:text-lg font-semibold hover:bg-gray-800 transition w-auto"
           >
             <FaGooglePlay className="mr-2 text-lg md:text-2xl" />
@@ -45,37 +47,36 @@ export const AppPromo = () => {
         </div>
       </div>
 
-      {/* Contenedor de imagen y botones (para pantallas pequeñas) */}
+      {/* Contenedor de imagen y botones para pantallas pequeñas */}
       <div
-        className="relative w-full md:w-1/2 flex flex-row-reverse items-center md:items-end z-10
-                   lg:absolute lg:bottom-0 lg:right-0"
+        className="relative w-full md:w-1/2 flex flex-row items-center justify-center
+                   md:items-end z-10 lg:absolute lg:bottom-0 lg:right-0"
       >
-        <img
-          src={ImageMobile}
-          alt="Insomnia Cookies App"
-          className="h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px]
-                     lg:max-h-[800px] object-contain"
-        />
-
-        {/* Botones (solo en pantallas pequeñas) */}
-        <div className="md:hidden flex flex-col items-center px-6 mt-4 w-full">
+        {/* Botones (solo para pantallas pequeñas) */}
+        <div className="md:hidden flex flex-col items-center gap-3 px-6 ml-4">
           <a
             href="#"
-            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
-                       text-sm font-semibold hover:bg-gray-800 transition w-full"
+            className="flex items-center justify-center bg-black w-full px-4 py-2 rounded-lg text-white
+                       text-sm font-semibold hover:bg-gray-800 transition"
           >
             <FaApple className="mr-2 text-lg" />
             App Store
           </a>
           <a
             href="#"
-            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
-                       text-sm font-semibold hover:bg-gray-800 transition w-full mt-2"
+            className="flex items-center justify-center w-full bg-black px-4 py-2 rounded-lg text-white
+                       text-sm font-semibold hover:bg-gray-800 transition"
           >
             <FaGooglePlay className="mr-2 text-lg" />
             Google Play
           </a>
         </div>
+        <img
+          src={ImageMobile}
+          alt="Insomnia Cookies App"
+          className="h-auto max-h-[300px] sm:max-h-[400px] md:max-h-[600px]
+                     lg:max-h-[700px] object-contain"
+        />
       </div>
     </div>
   );

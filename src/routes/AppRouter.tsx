@@ -35,7 +35,7 @@ const AppRoutes: React.FC = () => {
 
   return (
     <div className={isHome || isauth ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
-      <div className="flex flex-col pt-16 lg:pt-16 md:pt-10">
+      <div className="flex flex-col pt-16 lg:pt-20 md:pt-16">
         <Banner />
         <main className="flex-grow">
           <Toaster />
@@ -43,6 +43,7 @@ const AppRoutes: React.FC = () => {
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="checkout" element={<Checkout />} />

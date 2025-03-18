@@ -6,7 +6,7 @@ export const HomeSection3 = () => {
   return (
     <div className="relative">
       {/* Sección superior: Texto y botón */}
-      <motion.div
+      {/*  <motion.div
         className="relative flex justify-end items-center p-6"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -37,7 +37,7 @@ export const HomeSection3 = () => {
             </button>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Efectos de luz en el fondo */}
       <motion.div
@@ -49,7 +49,7 @@ export const HomeSection3 = () => {
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
         viewport={{ once: true, amount: 0.2 }}
       />
-      <motion.div
+      {/*   <motion.div
         className="absolute top-0 -z-10 right-0 transform -translate-x-1/2 translate-y-1/2 
                    w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-60 lg:h-60
                    bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl"
@@ -57,7 +57,7 @@ export const HomeSection3 = () => {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
         viewport={{ once: true, amount: 0.2 }}
-      />
+      /> */}
 
       {/* Sección inferior: Logo, título, descripción y botón */}
       <motion.div
@@ -84,7 +84,7 @@ export const HomeSection3 = () => {
           viewport={{ once: true, amount: 0.2 }}
         >
           <motion.h1
-            className="uppercase font-medium text-4xl md:text-5xl my-4"
+            className="uppercase font-CamilaFont tracking-wider text-3xl md:text-4xl my-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.9 }}
@@ -93,7 +93,7 @@ export const HomeSection3 = () => {
             Nox Catering
           </motion.h1>
           <motion.h3
-            className="font-ArialRegular text-[14px] md:text-[16px] lg:text-2xl text-balance"
+            className="font-ArialRegular text-[14px] md:text-[16px] lg:text-xl text-balance"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 1 }}
@@ -112,7 +112,7 @@ export const HomeSection3 = () => {
         >
           <button
             className="bg-affair-800 hover:bg-affair-900 rounded-full
-                       py-2 px-8 md:px-10 font-ArialRegular font-medium text-[16px] md:text-[18px]"
+                       py-2 px-8 md:px-10 font-ArialBold font-medium text-[16px] md:text-[18px]"
           >
             Order Catering
           </button>

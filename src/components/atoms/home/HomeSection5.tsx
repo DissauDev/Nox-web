@@ -5,7 +5,7 @@ export const HomeSection5 = () => {
   return (
     <div className="flex my-10 justify-center flex-col items-center">
       <img src={ImagePuntos} className="h-auto w-40" />
-      <h1 className="text-center text-balance text-4xl font-ArialBold my-5">
+      <h1 className="text-center text-balance text-3xl font-ArialBold tracking-wide my-5">
         Your Dessert
         <br /> Destination
       </h1>
