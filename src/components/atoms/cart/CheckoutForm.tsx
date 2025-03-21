@@ -15,6 +15,24 @@ export const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleCheckout = async () => {
+    // Llama a tu endpoint que crea una sesión de Checkout en Stripe
+    const response = await fetch(
+      "https://tu-backend.com/create-checkout-session",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          /* datos necesarios, p.ej. items, email, etc. */
+        }),
+      }
+    );
+
+    const { sessionUrl } = await response.json();
+    // Redirige al usuario a la URL de la sesión de Checkout
+    window.location.href = sessionUrl;
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -42,11 +60,12 @@ export const CheckoutForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="  rounded  w-full">
+    <form className="  rounded  w-full">
       <CardElement className="p-2 py-3  border rounded " />
       {error && <p className="text-red-500 mt-2">{error}</p>}
       <button
-        type="submit"
+        onClick={handleCheckout}
+        //  type="submit"
         className="mt-4 w-full bg-mustard-yellow-400 font-ArialBold text-black-night-950 py-2 rounded disabled:opacity-50"
         disabled={!stripe || loading}
       >

@@ -1,21 +1,140 @@
 import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@headlessui/react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authSuccess } from "@/store/features/slices/authSlice";
 
+// Esquema de validación para el formulario de Sign In
+const signInSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long." })
+    .max(20, { message: "Password cannot exceed 20 characters." }),
+});
+
+// Componente SignInForm
+const SignInForm = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const form = useForm({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(values) {
+    setLoading(true);
+    setTimeout(() => {
+      console.log("Submitting sign-in:", values);
+      toast({
+        title: "Sign in complete",
+        description: "Form submitted successfully.",
+      });
+      dispatch(authSuccess({ email: values.email }));
+      form.reset();
+      setLoading(false);
+    }, 2000);
+    navigate("/my-account");
+  }
+
+  return (
+    <div>
+      <h2 className="text-2xl text-center text-white mb-6 font-bold">
+        Welcome Back
+      </h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    type="email"
+                    placeholder="Email"
+                    {...field}
+                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    {...field}
+                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="items-center justify-center mb-6 flex font-ArialBold text-sm">
+            <button
+              onClick={() => navigate("/reset-password")}
+              className="text-mustard-yellow-400 text-center hover:text-mustard-yellow-500"
+            >
+              Forget your password ?
+            </button>
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-full ${
+              loading
+                ? "bg-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800"
+            } text-white font-bold transition-colors duration-300 shadow-lg`}
+          >
+            {loading ? "Loading..." : "Sign In"}
+          </button>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+// Componente principal AuthPage que alterna entre Sign In y Sign Up
 const AuthPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-6">
-      {/* Contenedor principal con fondo semitransparente */}
-      <div className=" bg-gray-900 bg-opacity-70 border-b-8 border-r-8 border-purple-800 rounded-2xl shadow-2xl max-w-md w-full p-8 overflow-hidden">
-        {/* Efecto de luz difuminada en la esquina superior izquierda */}
-        <div className="absolute top-0 left-0 -translate-x-1/3 -translate-y-1/2 size-48 md:size-96 bg-purple-500 rounded-full opacity-30 blur-3xl"></div>
-        {/* Efecto de luz difuminada en la esquina inferior derecha */}
-        <div className="absolute bottom-0 right-0  translate-y-1/2 size-48 md:size-80 bg-purple-500 rounded-full opacity-30 blur-3xl"></div>
-
+    <div className="relative flex items-center justify-center p-6">
+      <div className="max-w-md w-full p-8 overflow-hidden">
         <div className="relative z-10">
           {/* Toggle estilizado */}
-          <div className="relative w-full flex items-center justify-between bg-gray-800 rounded-full p-1 mb-8">
+          <div className="relative w-full flex items-center justify-between bg-transparent border-gray-500 border rounded-full p-1 mb-8">
             {/* Indicador deslizante con gradiente */}
             <div
               className={`absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r from-purple-500 to-purple-700 rounded-full transition-transform duration-300 ${
@@ -36,33 +155,7 @@ const AuthPage: React.FC = () => {
             </button>
           </div>
 
-          {isSignUp ? (
-            <SignUpForm />
-          ) : (
-            <div>
-              <h2 className="text-2xl text-center text-white mb-6 font-bold">
-                Welcome Back
-              </h2>
-              <form>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full p-4 bg-transparent border border-gray-600 rounded-md placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-300 mb-4"
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="w-full p-4 bg-transparent border border-gray-600 rounded-md placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-300 mb-6"
-                />
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-md bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-bold transition duration-300 shadow-lg"
-                >
-                  Sign In
-                </button>
-              </form>
-            </div>
-          )}
+          {isSignUp ? <SignUpForm /> : <SignInForm />}
         </div>
       </div>
     </div>

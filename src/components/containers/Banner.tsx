@@ -19,7 +19,7 @@ export const Banner: React.FC = () => {
   const totalQuantity = products.length;
   const [modalType, setModalType] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-
+  const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const bannerRef = useRef<HTMLDivElement>(null);
 
   // Función para actualizar la variable CSS de la altura del banner
@@ -69,7 +69,7 @@ export const Banner: React.FC = () => {
         </span>
       </div>
 
-      <nav className="hidden md:flex items-center justify-between px-14">
+      <nav className="hidden md:flex items-center justify-between px-8">
         {/* Logo */}
         <div className="flex items-center">
           <NavLink
@@ -84,7 +84,7 @@ export const Banner: React.FC = () => {
           </NavLink>
         </div>
         {/* Menú de navegación */}
-        <ul className="flex items-center space-x-8 text-[18px] font-ArialRegular">
+        <ul className="flex items-center md:space-x-4 space-x-8 lg:space-x-8 text-[18px] font-ArialRegular">
           <li>
             <NavLink
               to="/menu"
@@ -115,11 +115,42 @@ export const Banner: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/auth"
-              className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
+              target="_blank"
+              rel="noopener noreferrer"
+              to="https://nox.dissau.site/blog/"
+              className={({ isActive }) =>
+                `hover:text-mustard-yellow-400 transition duration-300 ${
+                  isActive
+                    ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                    : ""
+                }`
+              }
             >
-              Sign In / Sign Up
+              Blog
             </NavLink>
+          </li>
+          <li>
+            {isAuth ? (
+              <NavLink
+                to="/my-account"
+                className={({ isActive }) =>
+                  `hover:text-mustard-yellow-400 transition duration-300 ${
+                    isActive
+                      ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                      : ""
+                  }`
+                }
+              >
+                My account
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/auth"
+                className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
+              >
+                Sign In / Sign Up
+              </NavLink>
+            )}
           </li>
           <li>
             <NavLink
@@ -221,15 +252,17 @@ export const Banner: React.FC = () => {
             ))}
           </div>
           <div className="grid grid-cols-2 gap-6 text-lg font-medium">
-            {["Profile", "Settings", "Help", "Logout"].map((item, index) => (
-              <button
-                key={index}
-                className="hover:opacity-75 transition duration-300 text-valentino-950"
-                onClick={() => setModalOpen(false)}
-              >
-                {item}
-              </button>
-            ))}
+            {["Profile", "Contact us", "Blog", "About us"].map(
+              (item, index) => (
+                <button
+                  key={index}
+                  className="hover:opacity-75 transition duration-300 text-valentino-950"
+                  onClick={() => setModalOpen(false)}
+                >
+                  {item}
+                </button>
+              )
+            )}
           </div>
         </div>
       )}

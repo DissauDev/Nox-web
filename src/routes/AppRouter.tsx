@@ -20,6 +20,10 @@ import { Checkout } from "@/pages/cart/Checkout";
 import { ContactUs } from "@/pages/home/ContactUs";
 import { Orders } from "@/pages/cart/Orders";
 import ScrollToTop from "./ScrollToTop";
+import { TermsConditions } from "@/pages/home/TermsConditions";
+import PrivacyPolicy from "@/pages/home/PrivacyPolicy";
+import ResetPassword from "@/pages/auth/ResetPassword";
+import MyAccount from "@/pages/auth/MyAccount";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -34,7 +38,15 @@ const AppRoutes: React.FC = () => {
   const isauth = location.pathname === "/auth";
 
   return (
-    <div className={isHome || isauth ? "" : "bg-[#FDF9F3] min-h-screen w-full"}>
+    <div
+      className={
+        isHome
+          ? ""
+          : isauth
+          ? "bg-[#21112E]"
+          : "bg-[#FDF9F3] min-h-screen w-full"
+      }
+    >
       <div className="flex flex-col pt-16 lg:pt-20 md:pt-16">
         <Banner />
         <main className="flex-grow">
@@ -51,6 +63,10 @@ const AppRoutes: React.FC = () => {
               <Route path="/map" element={<MapPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/terms" element={<TermsConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/my-account" element={<MyAccount />} />
               <Route
                 path="/products/:category/:productKey"
                 element={<ProductsDetails />}

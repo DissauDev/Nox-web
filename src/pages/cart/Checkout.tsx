@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaChevronLeft, FaStore, FaMapMarkerAlt } from "react-icons/fa";
+import { FaStore, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";

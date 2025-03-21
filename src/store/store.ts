@@ -3,10 +3,12 @@ import { apiSlice } from './features/api/apiSlice';
 import exampleReducer from './features/exampleSlice';
 import    addressReducer  from "./features/slices/addressSlice"
 import  ordersReducer from "./features/slices/orderSlice"
+import authSlice from './features/slices/authSlice';
 
 export const store = configureStore({
   reducer: {
     address: addressReducer,
+    auth: authSlice,
     example: exampleReducer,
     orders: ordersReducer,
     [apiSlice.reducerPath]: apiSlice.reducer, // Integrar RTK Query

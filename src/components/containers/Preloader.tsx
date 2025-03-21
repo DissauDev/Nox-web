@@ -49,7 +49,7 @@ const Preloader: React.FC<PreloaderProps> = ({ children, imageSources }) => {
             transition={{ duration: 0.5 }}
           >
             <motion.p
-              className="text-4xl font-bold tracking-wide"
+              className="text-4xl font-ArialBold tracking-wide"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}

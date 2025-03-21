@@ -22,7 +22,7 @@ export const Slider = () => {
     <div className="bg-black">
       <div
         className="relative flex md:flex-row items-center overflow-hidden 
-                   bg-midnight-blue-950 min-h-[400px] md:min-h-[500px] w-full px-4 md:px-6"
+                   bg-midnight-blue-950 min-h-[400px] md:min-h-[500px]  w-full px-4 md:px-6"
       >
         {!showExit && <EnterAnimation />}
         {showExit && <ExitAnimation />}
@@ -102,19 +102,22 @@ export const ExitAnimation = () => {
 
       {/* Texto que aparece desde arriba */}
       <motion.div
-        className="absolute top-8 md:top-5 w-full text-center z-10"
+        className="absolute top-8 md:top-5 w-full text-center z-40"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
       >
-        <h1 className="text-white text-5xl md:text-6xl max-w-[90%] lg:text-6xl font-bold">
+        <h1
+          style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)" }}
+          className="text-white text-5xl sm:text-4xl mt-12 lg:mt-11 md:text-6xl max-w-[90%] lg:text-5xl font-bold"
+        >
           Pick a warm, delicious 12-packs.
         </h1>
       </motion.div>
 
       {/* Botón inferior */}
       <motion.div
-        className="absolute bottom-2 md:bottom-5 left-0 w-full flex justify-center z-30"
+        className="absolute bottom-2 md:bottom-5 left-0 w-full flex justify-center  z-40"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
