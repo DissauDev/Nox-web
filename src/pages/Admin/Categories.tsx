@@ -118,6 +118,9 @@ export const Categories = () => {
     },
   ]);
 
+  // States for selection, filters and pagination
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | "active">("all");
   const [nameFilter, setNameFilter] = useState("");
   const [orderBy, setOrderBy] = useState<
@@ -253,7 +256,7 @@ export const Categories = () => {
             <div className="w-1/3">
               <AddProductsForm
                 onClose={closeForm}
-                onSave={function (): void {
+                onSave={function (product: Product): void {
                   throw new Error("Function not implemented.");
                 }}
               />

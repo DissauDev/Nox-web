@@ -53,7 +53,8 @@ const SignInForm = () => {
       form.reset();
       setLoading(false);
     }, 2000);
-    navigate("/my-account");
+    navigate("/dashboard");
+    // navigate("/my-account");
   }
 
   return (
