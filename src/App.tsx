@@ -15,6 +15,12 @@ import MashupsImage from "./assets/Imnsomnia fotos/carrousel/categorias/mashups.
 import DessertsImage from "./assets/Imnsomnia fotos/carrousel/categorias/dessert.png";
 import ForYouImage from "./assets/Imnsomnia fotos/carrousel/categorias/foryou.png";
 import DrinksImage from "./assets/Imnsomnia fotos/carrousel/categorias/drink.png";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51P4caFDrtegwEnl3baIqBDl1Id2beUGIBBUQOK2UfhThO0buETVWO3RDt5WZgc00Vk4qQa7HgFIENycYkCWuw4Jq00sw8wPXAX"
+);
 
 const Images = [
   IceamImage,
@@ -36,7 +42,9 @@ const App: React.FC = () => {
       {/* Contenido principal */}
       <div className="relative z-10">
         <Preloader imageSources={Images}>
-          <AppRouter />
+          <Elements stripe={stripePromise}>
+            <AppRouter />
+          </Elements>
         </Preloader>
       </div>
     </div>

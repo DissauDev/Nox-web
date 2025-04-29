@@ -1,9 +1,9 @@
+// src/routes/AppRouter.tsx
 import React, { Suspense } from "react";
 import {
   BrowserRouter as Router,
-  Route,
   Routes,
-  Navigate,
+  Route,
   useLocation,
 } from "react-router-dom";
 import Home from "../pages/home/Home";
@@ -25,22 +25,32 @@ import PrivacyPolicy from "@/pages/home/PrivacyPolicy";
 import ResetPassword from "@/pages/auth/ResetPassword";
 import MyAccount from "@/pages/auth/MyAccount";
 
+// Rutas para el panel de administración
+import AdminAccount from "@/pages/Admin/AdminAccount";
+import { Customers } from "@/pages/Admin/Customers";
+import { Categories } from "@/pages/Admin/Categories";
+import Dashboard from "@/pages/Admin/DashBoard";
+import { Products } from "@/pages/Admin/Products";
+import CouponsAndDiscounts from "@/pages/Admin/CuponsAndDiscount";
+import SalesDashboard from "@/pages/Admin/SalesDashboard";
+import { OrdersDashboard } from "@/pages/Admin/OrdersDashboard";
+import { OrderDetails } from "@/pages/Admin/OrderDetails";
+
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
   () => import("../pages/menu/ProductsDetails")
 );
 
-// Componente para manejar las rutas y aplicar el background condicionalmente
 const AppRoutes: React.FC = () => {
   const location = useLocation();
-  // Si la ruta es distinta de la raíz, aplicamos el background
+  // Ejemplo para asignar background (puedes ajustar la lógica según tus necesidades)
   const isHome = location.pathname === "/";
   const isauth = location.pathname === "/auth";
 
   return (
     <div
       className={
-        isHome
+        isHome || location.pathname.startsWith("/dashboard")
           ? ""
           : isauth
           ? "bg-[#21112E]"
@@ -58,7 +68,7 @@ const AppRoutes: React.FC = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/contact-us" element={<ContactUs />} />
-              <Route path="checkout" element={<Checkout />} />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/auth" element={<AuthPage />} />
@@ -67,11 +77,23 @@ const AppRoutes: React.FC = () => {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/my-account" element={<MyAccount />} />
+              {/* Rutas del panel de administración */}
+              <Route path="/dashboard/*" element={<AdminAccount />}>
+                {/* Ruta por defecto: Dashboard */}
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<Products />} />
+                <Route path="categories" element={<Categories />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="orders" element={<OrdersDashboard />} />
+                <Route path="discounts" element={<CouponsAndDiscounts />} />
+                <Route path="sales" element={<SalesDashboard />} />
+                <Route path="orders/:orderkey" element={<OrderDetails />} />
+              </Route>
               <Route
                 path="/products/:category/:productKey"
                 element={<ProductsDetails />}
               />
-              <Route path="/home" element={<Navigate to="/" />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -102,7 +102,7 @@ const PaymentForm = () => {
 const OrderDetails = () => {
   const addressState = useSelector((state: RootState) => state.address);
   const orderState = useSelector((state: RootState) => state.orders);
-  console.log(orderState.products);
+
   return (
     <div className="space-y-8">
       {/* Pickup & Address Details */}
