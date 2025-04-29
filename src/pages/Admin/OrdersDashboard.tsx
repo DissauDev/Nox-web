@@ -91,7 +91,7 @@ export const OrdersDashboard = () => {
       if (orderNumber && !String(o.id).includes(orderNumber)) return false;
       // by date
       const od = parseOrderDate(o.date);
-      const diffMs = today - od;
+      const diffMs = today.getTime() - od.getTime();
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
       switch (dateFilter) {
         case "today":

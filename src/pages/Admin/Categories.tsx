@@ -2,7 +2,7 @@ import { Fragment, useState, useMemo } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 // Assumes that AddProductsForm.tsx already exists and imports its props
-import AddProductsForm from "./AddProductsForm";
+import AddProductsForm, { Product } from "./AddProductsForm";
 
 export interface Category {
   id: number;
@@ -118,9 +118,6 @@ export const Categories = () => {
     },
   ]);
 
-  // States for selection, filters and pagination
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | "active">("all");
   const [nameFilter, setNameFilter] = useState("");
   const [orderBy, setOrderBy] = useState<
@@ -226,31 +223,6 @@ export const Categories = () => {
     );
   };
 
-  // Logic for selecting categories
-  const toggleSelectAll = () => {
-    if (selectAll) {
-      setSelectedCategories([]);
-    } else {
-      setSelectedCategories(filteredCategories.map((cat) => cat.id));
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const toggleCategorySelection = (categoryId: number) => {
-    if (selectedCategories.includes(categoryId)) {
-      setSelectedCategories(
-        selectedCategories.filter((id) => id !== categoryId)
-      );
-      setSelectAll(false);
-    } else {
-      const newSelection = [...selectedCategories, categoryId];
-      setSelectedCategories(newSelection);
-      if (newSelection.length === filteredCategories.length) {
-        setSelectAll(true);
-      }
-    }
-  };
-
   return (
     <div className="p-6 text-white">
       <div className="max-w-7xl mx-auto">
@@ -281,8 +253,9 @@ export const Categories = () => {
             <div className="w-1/3">
               <AddProductsForm
                 onClose={closeForm}
-                onSave={handleSaveCategory}
-                product={editingCategory || undefined}
+                onSave={function (): void {
+                  throw new Error("Function not implemented.");
+                }}
               />
             </div>
           )}
