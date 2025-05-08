@@ -34,7 +34,7 @@ const PageEditor: React.FC = () => {
     (async () => {
       try {
         const { data } = await axios.get<PageResponse>(
-          `http://localhost:3000/api/pages/${slug}`
+          `https://nox-backend-3luc.onrender.com/api/pages/${slug}`
         );
         let obj: { sections?: Section[] } = {};
         if (typeof data.layout === "string") obj = JSON.parse(data.layout);
@@ -49,7 +49,7 @@ const PageEditor: React.FC = () => {
           return { key: s.key, html: unesc };
         });
         setSections(clean);
-      } catch (e: any) {
+      } catch (e) {
         console.error("Error cargando página:", e);
         setError("No se pudo cargar la página.");
       } finally {
@@ -111,9 +111,12 @@ const PageEditor: React.FC = () => {
               s.key === sec.key ? { ...s, html } : s
             );
             console.log("Guardando sección:", sec.key, html);
-            await axios.put(`http://localhost:3000/api/pages/${recordId}`, {
-              layout: { sections: updated },
-            });
+            await axios.put(
+              `https://nox-backend-3luc.onrender.com/api/pages/${recordId}`,
+              {
+                layout: { sections: updated },
+              }
+            );
             setSections(updated);
             alert(`Sección ${sec.key} guardada`);
           } catch (err) {
@@ -143,9 +146,12 @@ const PageEditor: React.FC = () => {
         html: editorsRef.current[idx]?.getHtml() || sec.html,
       }));
       console.log("Guardando todas las secciones:", updated);
-      await axios.put(`http://localhost:3000/api/pages/${recordId}`, {
-        layout: { sections: updated },
-      });
+      await axios.put(
+        `https://nox-backend-3luc.onrender.com/api/pages/${recordId}`,
+        {
+          layout: { sections: updated },
+        }
+      );
       setSections(updated);
       alert("Todas las secciones guardadas");
     } catch (err) {

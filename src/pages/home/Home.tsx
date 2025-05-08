@@ -16,7 +16,7 @@ export const Home: React.FC = () => {
   useEffect(() => {
     axios
       .get<{ layout: { sections: Section[] } }>(
-        "http://localhost:3000/api/pages/home"
+        "https://nox-backend-3luc.onrender.com/api/pages/home"
       )
       .then((res) => setSections(res.data.layout.sections))
       .catch(() => setError("Error al cargar la página."))
