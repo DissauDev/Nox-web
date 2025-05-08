@@ -1,10 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
-    content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+    content: ['./src/**/*.{js,jsx,ts,tsx}', './grapesjs-blocks/**/*.js'],
+	safelist: [
+		{
+		  // capturar clases como bg-[#06060a], blur-3xl, text-balance…
+		  pattern: /^(bg|text|blur|font|tracking|p|m|w|h|flex|items|justify|rounded|hover):?/,
+		},
+		{
+		  // para clases arbitrarias con corchetes
+		  pattern: /\[.*\]/,
+		},
+	  ],
+	
   theme: {
   	extend: {
   		colors: {

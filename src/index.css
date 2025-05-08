@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* GrapesJS styles */
+@import "grapesjs/dist/css/grapes.min.css";
 
 /* Personaliza la barra de desplazamiento en navegadores basados en WebKit */
 ::-webkit-scrollbar {

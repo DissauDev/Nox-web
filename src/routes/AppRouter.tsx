@@ -35,6 +35,8 @@ import CouponsAndDiscounts from "@/pages/Admin/CuponsAndDiscount";
 import SalesDashboard from "@/pages/Admin/SalesDashboard";
 import { OrdersDashboard } from "@/pages/Admin/OrdersDashboard";
 import { OrderDetails } from "@/pages/Admin/OrderDetails";
+import { PagesAdmin } from "@/pages/Admin/pageAdmin/PagesAdmin";
+import PageEditor from "@/pages/Admin/pageAdmin/PageEditor";
 
 // Lazy Load para ProductsDetails
 const ProductsDetails = React.lazy(
@@ -87,8 +89,11 @@ const AppRoutes: React.FC = () => {
                 <Route path="orders" element={<OrdersDashboard />} />
                 <Route path="discounts" element={<CouponsAndDiscounts />} />
                 <Route path="sales" element={<SalesDashboard />} />
+                <Route path="pages" element={<PagesAdmin />} />
+
                 <Route path="orders/:orderkey" element={<OrderDetails />} />
               </Route>
+              <Route path="dashboard/pages/editor" element={<PageEditor />} />
               <Route
                 path="/products/:category/:productKey"
                 element={<ProductsDetails />}

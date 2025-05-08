@@ -10,7 +10,7 @@ const adminNavItems = [
   { name: "Órdenes", path: "/dashboard/orders" },
   { name: "Ventas", path: "/dashboard/sales" },
   { name: "Descuentos", path: "/dashboard/discounts" },
-  { name: "Pages", path: "/dashboard/Pages" },
+  { name: "Pages", path: "/dashboard/pages" },
 ];
 
 export default function AdminSidebar() {
