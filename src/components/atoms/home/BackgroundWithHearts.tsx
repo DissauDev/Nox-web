@@ -6,7 +6,7 @@ import IcecreamImage from "../../../assets/home/various-ice-cream-ba.png";
 
 export const BackgroundWithHearts = () => {
   return (
-    <div className="relative min-h-screen mb-20 bg-rose-500 opacity-90 flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen  bg-rose-500 opacity-90 flex flex-col items-center justify-center overflow-hidden">
       {/* Imagen de fondo con corazones */}
       <img
         className="absolute inset-0 bg-cover bg-center "

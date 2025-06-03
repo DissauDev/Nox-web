@@ -1,90 +1,100 @@
-import React, { useState } from "react";
+// src/pages/Home.tsx
+import React from "react";
+import DOMPurify from "dompurify";
 
-import { MdDeliveryDining } from "react-icons/md";
-import ImageCoockie from "../../assets/desing/foto dulces .png";
+import { Slider } from "@/components/atoms/Slider";
+// import { AddressSelector } from "@/components/atoms/home/AddressSelector";
+import AnimatedCategories from "@/components/atoms/home/AnimatedCategories";
+import { HomeSection3 } from "@/components/atoms/home/HomeSection3";
+import { FotosSection4 } from "@/components/atoms/home/FotosSection4";
+import { useGetPageBySlugQuery } from "@/store/features/api/pageApi";
 
-import { HomeSection3 } from "../../components/atoms/home/HomeSection3";
-import { FotosSection4 } from "../../components/atoms/home/FotosSection4";
-import { HomeSection5 } from "../../components/atoms/home/HomeSection5";
-import Footer from "../../components/containers/Footer";
+type Section = { key: string; html: string };
+type Layout = { sections: Section[]; css?: string };
 
-import { DessertCarousel } from "../../components/atoms/home/DessertCarousel";
-import { BackgroundWithHearts } from "../../components/atoms/home/BackgroundWithHearts";
-import { AppPromo } from "../../components/containers/AppPromo";
-import { AddressSelector } from "../../components/atoms/home/AddressSelector";
+export const Home: React.FC = () => {
+  // 1) Llamada RTK Query para slug="home"
+  const {
+    data: pageData,
+    error: pageError,
+    isLoading,
+  } = useGetPageBySlugQuery("home");
 
-export const Home = () => {
-  //const [activeDelivery, setactiveDelivery] = useState(true);
-  //const [activePickup, setactivePickup] = useState(false);
-  // const [showModal, setshowModal] = useState(false);
+  // 2) Función auxiliar para renderizar una sección concreta si existe
+  const renderSection = (sections: Section[], key: string) => {
+    const sec = sections.find((s) => s.key === key);
+    if (!sec) return null;
 
-  /*  const toDelivery = () => {
-    setactiveDelivery(true);
+    // a) Des-escapar barras y comillas
+    const unescaped = sec.html.replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+
+    // b) Saneamiento
+    const clean = DOMPurify.sanitize(unescaped);
+    return <div dangerouslySetInnerHTML={{ __html: clean }} />;
   };
-  const toPickUp = () => {
-    setactiveDelivery(true);
-  };*/
+
+  // 3) Mientras carga, mostramos un indicador simple
+  if (isLoading) {
+    return <div className="text-center py-10">Cargando...</div>;
+  }
+
+  // 4) Si hay error, NO salimos: mostramos los componentes estáticos por defecto
+  const hasError = Boolean(pageError);
+
+  // 5) Si la petición fue exitosa, extraemos layout.sections y layout.css
+  let sections: Section[] = [];
+  let cssFromBackend = "";
+
+  if (!hasError && pageData) {
+    const layout = pageData.layout as unknown;
+    let layoutObj: Layout = { sections: [] };
+
+    if (typeof layout === "string") {
+      try {
+        layoutObj = JSON.parse(layout);
+      } catch {
+        layoutObj = { sections: [] };
+      }
+    } else if (layout && typeof layout === "object") {
+      layoutObj = layout as Layout;
+    }
+
+    sections = layoutObj.sections || [];
+    cssFromBackend = layoutObj.css || "";
+  }
+
   return (
-    <div className="justify-center   ">
-      {/* <button
-        className=" text-valentino-950 text-xl flex items-center gap-2 bg-green-300 p-2 justify-center "
-        onClick={toDelivery}
-      >
-        <>
-          <MdDeliveryDining size={50} className="text-pink-400 " />
-          <h1 className="align-bottom"></h1>Delivery
-        </>
-      </button>
-      <button
-        className=" text-valentino-950 text-xl m-5  bg-green-300 p-2 "
-        onClick={toPickUp}
-      >
-        <MdDeliveryDining size={50} className="text-pink-400" />
-        Pickup
-      </button>
-      <button
-        onClick={toDelivery}
-        className={`flex h-20 items-center justify-center gap-2 mt-20 px-4 py-2 bg-blue-600 text-2xl text-white font-medium rounded-2xl hover:bg-blue-700 transition-all`}
-      >
-        {<MdDeliveryDining className="w-10 h-10 text-pink-400" />}
-        <span>Pickup</span>
-      </button> */}
+    <div className="justify-center lg:pt-6">
+      {/* 6) Inyectamos CSS si existe y no hubo error */}
+      {!hasError && cssFromBackend && (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: cssFromBackend.replace(/\\"/g, '"'),
+          }}
+        />
+      )}
 
-      <AddressSelector />
-      <div className="flex flex-col  md:flex-row items-center bg-midnight-blue-950  opacity-90 my-20  min-h-[300px] md:min-h-[450px]">
-        {/* Contenedor del texto y el botón */}
+      <Slider />
+      {/* <AddressSelector /> */}
+      <AnimatedCategories />
 
-        <div className="text-center md:text-left md:ml-40 flex flex-col justify-center items-center md:items-start space-y-4 md:w-1/2 p-4 md:p-8">
-          <h1 className="text-2xl uppercase md:text-5xl font-bold text-white font-CamilaFont max-w-sm">
-            Most Popular AT the bakery
-          </h1>
-          <h3 className="text-[18px] uppercase  text-white font-ArialBold">
-            Pick a Warm, Delicious 12-packs.
-          </h3>
-          <button className="bg-rose-600  text-white py-2 px-12 mt-10 rounded-full shadow-md hover:bg-rose-800 transition">
-            <h4 className="uppercase font-ArialBold px-2">Order Now</h4>
-          </button>
-        </div>
-
-        {/* Contenedor de la imagen */}
-        <div className="flex justify-center  md:justify-end w-full md:w-1/2 lg:w-1/2">
-          <img
-            src={ImageCoockie}
-            alt="Cookies Images"
-            loading="lazy"
-            className="w-full h-auto object-cover md:max-w-lg lg:max-w-xl"
-          />
-        </div>
+      <div className="flex flex-col items-center">
+        {hasError ? (
+          // 7) En caso de error, siempre renderizamos las secciones por defecto
+          <>
+            <HomeSection3 />
+            <FotosSection4 />
+          </>
+        ) : (
+          // 8) Si no hay error, intentamos renderizar dinámicamente desde el backend
+          <>
+            {renderSection(sections, "HomeSection3") || <HomeSection3 />}
+            {renderSection(sections, "FotosSection4") || <FotosSection4 />}
+          </>
+        )}
       </div>
-
-      <DessertCarousel />
-      <BackgroundWithHearts />
-      <FotosSection4 />
-      <HomeSection5 />
-
-      <AppPromo />
-      <Footer />
     </div>
   );
 };
+
 export default Home;

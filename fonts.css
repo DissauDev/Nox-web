@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'ArialBold';
+    src: url('/src/assets/fonts/ARIALROUNDEDMTEXTRABOLD.TTF') format('truetype');
+    font-weight: bold;
+  }
+  @font-face {
+    font-family: 'ArialRegular';
+    src: url('/src/assets/fonts/ARIALROUNDEDMT.TTF') format('truetype');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'CamilaFont';
+    src: url('/src/assets/fonts/Camila.ttf') format('truetype');
+  }
+ 
