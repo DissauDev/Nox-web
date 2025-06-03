@@ -1,105 +1,109 @@
+// src/components/atoms/menu/selectors/ToppinsSelector.tsx
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
-type Topping = {
+export type ToppingOption = {
+  id: string;
   name: string;
-  price: number;
+  extraPrice: number;
+  imageUrl?: string;
 };
 
-const toppingsList: Topping[] = [
-  { name: "Extra Chocolate", price: 0.5 },
-  { name: "Sprinkles", price: 0.25 },
-  { name: "Whipped Cream", price: 0.8 },
-];
-
 type ToppinsSelectorProps = {
-  // Callback para enviar la lista de toppings y el precio total de los mismos al componente padre.
+  groupName: string;
+  minSelectable: number;
+  maxSelectable: number;
+  options: ToppingOption[];
   onToppingsChange: (
-    selectedToppings: Topping[],
+    selectedToppings: ToppingOption[],
     totalToppingsPrice: number
   ) => void;
 };
-export const ToppinsSelector = ({ onToppingsChange }: ToppinsSelectorProps) => {
-  const [selectedToppings, setSelectedToppings] = useState<{
-    [key: string]: boolean;
-  }>({});
 
-  const handleToggle = (topping: Topping) => {
-    setSelectedToppings((prev) => {
-      // Copia del estado actual
+export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
+  groupName,
+  maxSelectable,
+  options,
+  onToppingsChange,
+}) => {
+  const [selectedMap, setSelectedMap] = useState<Record<string, boolean>>({});
+
+  const handleToggle = (opt: ToppingOption) => {
+    setSelectedMap((prev) => {
       const newState = { ...prev };
-      // Si el topping ya estaba seleccionado, se desmarca, si no, se marca.
-      if (newState[topping.name]) {
-        newState[topping.name] = false;
+      const selectedKeys = Object.keys(newState).filter((k) => newState[k]);
+
+      if (newState[opt.id]) {
+        // deselect
+        newState[opt.id] = false;
       } else {
-        // Ejemplo: permitir máximo 2 toppings, desmarcando el primero si ya hay dos seleccionados
-        const selectedKeys = Object.keys(newState).filter(
-          (key) => newState[key]
-        );
-        if (selectedKeys.length >= 2) {
+        // select, respecting maxSelectable
+        if (selectedKeys.length >= maxSelectable) {
           newState[selectedKeys[0]] = false;
         }
-        newState[topping.name] = true;
+        newState[opt.id] = true;
       }
-      // Obtener el arreglo de toppings seleccionados
+
+      // build selected array
       const selectedArray = Object.entries(newState)
-        .filter(([key, value]) => value)
-        .map(([name]) => toppingsList.find((t) => t.name === name))
-        .filter((topping): topping is Topping => topping !== undefined);
+        .filter(([_, v]) => v)
+        .map(([id]) => options.find((o) => o.id === id)!)
+        .filter(Boolean);
 
       const totalToppingsPrice = selectedArray.reduce(
-        (acc, t) => acc + t.price,
+        (acc, t) => acc + t.extraPrice,
         0
       );
-
-      // Se comunica la selección actual al componente padre.
       onToppingsChange(selectedArray, totalToppingsPrice);
+
       return newState;
     });
   };
 
   return (
-    <>
-      <div className="mt-4">
-        <label className="block font-ArialBold  text-grape-800 my-4">
-          Toppings
-        </label>
-        <div className="flex flex-wrap gap-4">
-          {toppingsList.map((topping) => (
+    <div className="mt-4">
+      <label className="block font-ArialBold text-grape-800 my-4">
+        {groupName}
+      </label>
+      <div className="flex flex-wrap gap-4">
+        {options.map((opt) => {
+          const checked = !!selectedMap[opt.id];
+          return (
             <div
-              key={topping.name}
+              key={opt.id}
               className="flex items-center justify-between w-full"
             >
-              <div className="flex flex-row  items-center">
+              <div className="flex flex-row items-center">
                 <motion.div
                   className={`w-8 h-8 flex items-center justify-center rounded-full border-2 cursor-pointer transition-all ${
-                    selectedToppings[topping.name]
+                    checked
                       ? "bg-grape-950 border-grape-950"
                       : "border-gray-400"
                   }`}
                   whileTap={{ scale: 0.6 }}
-                  onClick={() => handleToggle(topping)}
+                  onClick={() => handleToggle(opt)}
                 >
                   <motion.div
                     className={`text-xl transition-all ${
-                      selectedToppings[topping.name]
-                        ? "text-white"
-                        : "text-gray-400"
+                      checked ? "text-white" : "text-gray-400"
                     }`}
                   >
                     ✓
                   </motion.div>
                 </motion.div>
-                <span className="text-grape-900 mx-4">{topping.name}</span>
+                <span className="text-grape-900 mx-4 font-ArialBold">
+                  {opt.name}
+                </span>
               </div>
-
-              <span className="text-grape-900">
-                (+${topping.price.toFixed(2)})
+              <span className="text-grape-900 font-ArialBold">
+                (+${opt.extraPrice.toFixed(2)})
               </span>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </>
+    </div>
   );
 };
+
+export default ToppinsSelector;

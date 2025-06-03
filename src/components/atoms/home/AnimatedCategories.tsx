@@ -1,59 +1,51 @@
 import React, { useState } from "react";
-
 import { useInView } from "react-intersection-observer";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-
-// Importa las imágenes correspondientes
-import IceamImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/icecream.png";
-import CoockiesImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/cookies.png";
-import MashupsImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/mashups.png";
-import DessertsImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/dessert.png";
-import ForYouImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/foryou.png";
-import DrinksImage from "../../../assets/Imnsomnia fotos/carrousel/categorias/drink.png";
 import { motion } from "framer-motion";
+import { useGetCategoriesAvailableOnCarouselQuery } from "@/store/features/api/categoriesApi";
+import { useNavigate } from "react-router-dom";
 
-const categories = [
-  {
-    id: "for-you",
-    name: "For You",
-    img: ForYouImage,
-    text: "What's better than the most irresistible offers? For You. The special category that brings together the best offers, designed just for you.",
-  },
-  {
-    id: "ice-cream",
-    name: "Ice Cream",
-    img: IceamImage,
-    text: "What is better than a cookie and ice cream? Cookie and ice cream. All your favorite cookies mixed into premium ice cream flavors.",
-  },
-  {
-    id: "cookies",
-    name: "Cookies",
-    img: CoockiesImage,
-    text: "What's better than a cookie? Cookie. All your favorite cookies come together in one irresistible delight.",
-  },
-  {
-    id: "dessert",
-    name: "Dessert",
-    img: DessertsImage,
-    text: "What is better than an exquisite dessert? Exquisite dessert. Enjoy each bite with the perfect sweetness that captivates your palate.",
-  },
-  {
-    id: "mashoops",
-    name: "Mashoops",
-    img: MashupsImage,
-    text: "What's better than Mashoops? Mashoops! Immerse yourself in an explosion of flavor that transforms each bite into pure fun.",
-  },
-  {
-    id: "drinks",
-    name: "Drinks",
-    img: DrinksImage,
-    text: "What's better than a refreshing drink? Refreshing drink. Each sip combines your favorite flavors in a unique experience.",
-  },
-];
 const AnimatedCategories = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true });
+  const navigate = useNavigate();
+  // 1) Llamada RTK Query para traer únicamente categorías AVAILABLE y onCarousel=true
+  const {
+    data: categories,
+    isLoading,
+    isError,
+    error,
+  } = useGetCategoriesAvailableOnCarouselQuery();
 
+  // 2) Estados de carga y error
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <span className="text-gray-400">Loading categories...</span>
+      </div>
+    );
+  }
+
+  if (isError || !categories) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <span className="text-red-500">
+          {error ? "Failed to load categories." : "No categories available."}
+        </span>
+      </div>
+    );
+  }
+
+  // 3) Si la API devolvió un array vacío, mostramos mensaje
+  if (categories.length === 0) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <span className="text-gray-500">No categories to display.</span>
+      </div>
+    );
+  }
+
+  // 4) Controladores de navegación entre categorías
   const prevCategory = () => {
     setSelectedIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
   };
@@ -77,7 +69,7 @@ const AnimatedCategories = () => {
       </div>
 
       {/* Carrusel de botones con indicador */}
-      <div className="relative w-full max-w-4xl mx-auto">
+      <div className="relative w-full justify-center items-center flex mx-auto">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -104,8 +96,8 @@ const AnimatedCategories = () => {
           <motion.div
             className="absolute bottom-0 border-b-4 border-grape-600"
             style={{
-              width: `${80 / categories.length}%`,
-              left: `${(selectedIndex * 106) / categories.length}%`,
+              width: `${100 / categories.length}%`,
+              left: `${(selectedIndex * 100) / categories.length}%`,
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           />
@@ -131,49 +123,54 @@ const AnimatedCategories = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             className="relative w-full md:w-1/2 flex justify-center"
           >
-            {/* Flecha izquierda (visible en todas las pantallas) */}
+            {/* Flecha izquierda */}
             <button
               onClick={prevCategory}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition"
+              className="absolute -left-0 z-10 md:-left-6 top-1/2 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition"
             >
               <FiChevronLeft size={24} />
             </button>
 
-            {/* Flecha derecha para pantallas pequeñas */}
+            {/* Flecha derecha (solo en pantallas pequeñas) */}
             <button
               onClick={nextCategory}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition md:hidden"
+              className="absolute right-0 top-1/2 z-10 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition md:hidden"
             >
               <FiChevronRight size={24} />
             </button>
 
             {/* Luz de fondo */}
-            <div className="absolute inset-0 flex justify-center items-center">
-              <div className="w-20 sm:w-28 md:w-40 lg:w-44 h-20 sm:h-28 md:h-40 lg:h-44 bg-[rgb(89,47,255)] opacity-40 blur-3xl rounded-full"></div>
+            <div className="absolute inset-0 z-0 md:left-6 flex justify-center items-center">
+              <div className="w-32 h-24 md:min-w-32 md:h-32 bg-[rgb(89,47,255)] blur-3xl rounded-full" />
             </div>
+
+            {/* Imagen dinámica proveniente de category.imageUrl */}
             <img
-              src={categories[selectedIndex].img}
+              src={categories[selectedIndex].imageUrl}
               alt={categories[selectedIndex].name}
-              className="relative w-72 sm:w-72 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
+              className="relative w-52 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
             />
           </motion.div>
 
           {/* Contenedor de texto y botón */}
-          <div className="relative text-center md:text-left w-full md:w-1/2  flex flex-col items-center md:items-start">
+          <div className="relative text-center md:text-left w-full md:w-1/2 flex flex-col items-center md:items-start">
             <h2 className="text-2xl sm:text-2xl tracking-wider md:text-2xl font-CamilaFont text-purple-800">
               {categories[selectedIndex].name}
             </h2>
             <p className="text-sm font-ArialRegular md:w-5/6 sm:text-lg md:text-lg mt-2">
-              {categories[selectedIndex].text}
+              {categories[selectedIndex].longDescription}
             </p>
-            <button className="mt-4 text-xl px-20 py-2 bg-mustard-yellow-400 rounded-full text-black font-ArialBold shadow-md hover:bg-mustard-yellow-500 transition">
+            <button
+              onClick={() => navigate("/menu")}
+              className="mt-4 text-xl px-20 py-2 bg-mustard-yellow-400 rounded-full text-black font-ArialBold shadow-md hover:bg-mustard-yellow-500 transition"
+            >
               Menu
             </button>
 
-            {/* Flecha derecha para pantallas medianas y grandes */}
+            {/* Flecha derecha (pantallas medianas y grandes) */}
             <button
               onClick={nextCategory}
-              className="hidden md:block absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition"
+              className="hidden md:block absolute -right-6 top-1/2 transform -translate-y-1/2 bg-gray-900 p-2 rounded-full shadow-md hover:bg-gray-700 transition"
             >
               <FiChevronRight size={24} />
             </button>

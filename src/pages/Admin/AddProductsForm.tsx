@@ -1,22 +1,33 @@
-import type React from "react";
-import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGetCategoriesAvailableQuery } from "@/store/features/api/categoriesApi";
+import {
+  useCreateProductMutation,
+  useUpdateProductMutation,
+} from "@/store/features/api/productsApi";
+import { Controller, useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
+import OptionGroupsSelector from "./OptionGroupsSelector";
 
 // Definición de la interfaz para un producto.
 export interface Product {
   id?: number; // opcional en caso de nuevo producto
   name: string;
-  image: string;
-  vendor: string;
-  price: string;
-  status: "Available" | "Disabled";
-  categories: string[];
+  price: number;
+  sellPrice?: number;
+  options?: any; // Array de ProductOption serializado
+  specifications?: string;
+  category: string;
+  imageLeft?: { url: string; blurHash: string };
+  description?: string;
   type: "Seasonal" | "Regular" | "Limited";
-  tags: string[];
-  date: string;
 }
 
-// Definición de las props del formulario.
 interface AddProductsFormProps {
   onClose: () => void;
   onSave: (product: Product) => void;
@@ -25,53 +36,63 @@ interface AddProductsFormProps {
 
 export default function AddProductsForm({
   onClose,
-  onSave,
   product,
 }: AddProductsFormProps) {
-  // Definir los estados iniciales en función de si se está editando o agregando un nuevo producto.
-  const [name, setName] = useState(product ? product.name : "");
-  const [image, setImage] = useState(product ? product.image : "");
-  const [vendor, setVendor] = useState(product ? product.vendor : "");
-  const [price, setPrice] = useState(product ? product.price : "");
-  const [status, setStatus] = useState<"Available" | "Disabled">(
-    product ? product.status : "Available"
-  );
-  // Manejo de categorías y etiquetas como cadenas separadas por comas, para facilitar su edición.
-  const [categories, setCategories] = useState(
-    product ? product.categories.join(", ") : ""
-  );
-  const [type, setType] = useState<"Seasonal" | "Regular" | "Limited">(
-    product ? product.type : "Regular"
-  );
-  const [tags, setTags] = useState(product ? product.tags.join(", ") : "");
-  const [date, setDate] = useState(
-    product ? product.date : new Date().toISOString().slice(0, 10)
-  );
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<{
+    name: string;
+    description: string;
+    price: number;
+    sellPrice?: number;
+    options: any;
+    category: string;
+    imageLeftUrl: string;
+  }>({
+    defaultValues: {
+      name: product?.name ?? "",
+      description: product?.description ?? "",
+      price: product?.price ?? 0,
+      sellPrice: product?.sellPrice,
+      category: product?.category.name ?? "",
+      imageLeftUrl: product?.imageLeft?.url ?? "",
+      options: product?.options?.map((o) => o.groupId) ?? [],
+    },
+  });
+  const [createProduct, { isLoading: creating }] = useCreateProductMutation();
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+  } = useGetCategoriesAvailableQuery();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Crear el objeto producto con los valores del formulario.
-    const newProduct: Product = {
-      id: product?.id, // Si se está editando, se conserva el id; en un alta se asignará posteriormente.
-      name,
-      image,
-      vendor,
-      price,
-      status,
-      // Se convierten los valores separados por coma a arreglo, eliminando espacios vacíos.
-      categories: categories
-        .split(",")
-        .map((cat) => cat.trim())
-        .filter((cat) => cat),
-      type,
-      tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
-      date,
-    };
-    // Se llama a la función onSave para procesar (agregar o actualizar) el producto.
-    onSave(newProduct);
+  const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
+  const loading = creating || updating;
+
+  const onSubmit = async (data: {
+    name: string;
+    description: string;
+    price: number;
+    sellPrice?: number;
+    category: string;
+    imageLeftUrl: string;
+  }) => {
+    try {
+      if (product?.id) {
+        // MODO EDICIÓN
+        await updateProduct({ id: product.id, ...data }).unwrap();
+      } else {
+        // MODO CREACIÓN
+        await createProduct(data).unwrap();
+      }
+      onClose();
+    } catch (err) {
+      console.error(err);
+      // aquí puedes disparar un toast de error
+    }
   };
 
   return (
@@ -79,159 +100,177 @@ export default function AddProductsForm({
       <div className="w-full max-w-md bg-[#0c0014] border border-purple-800 rounded-3xl p-6 text-white">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-medium">
-            {product ? "Editar producto" : "Agregar nuevo producto"}
+            {product ? "Edit Product" : "Add New Product"}
           </h2>
           <IoMdClose size={18} onClick={onClose} className="cursor-pointer" />
         </div>
 
-        <form onSubmit={handleSubmit}>
-          {/* Campo para el nombre */}
-          <div className="mb-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name */}
+          <div>
             <label htmlFor="name" className="block text-sm mb-1">
-              Nombre
+              Name
             </label>
             <input
-              type="text"
+              {...register("name", { required: "Name is Requiered" })}
               id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del producto"
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
-            />
-          </div>
-
-          {/* Campo para la URL de la imagen */}
-          <div className="mb-4">
-            <label htmlFor="image" className="block text-sm mb-1">
-              URL de la imagen
-            </label>
-            <input
               type="text"
-              id="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="/placeholder.svg"
+              placeholder="Product name"
               className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
             />
+            {errors.name && (
+              <span className="text-sm text-red-400 font-ArialRegular">
+                {errors.name.message}
+              </span>
+            )}
           </div>
 
-          {/* Campo para el vendor */}
-          <div className="mb-4">
-            <label htmlFor="vendor" className="block text-sm mb-1">
-              Vendor
-            </label>
-            <input
-              type="text"
-              id="vendor"
-              value={vendor}
-              onChange={(e) => setVendor(e.target.value)}
-              placeholder="Nombre del vendor"
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
-            />
-          </div>
-
-          {/* Campo para el precio */}
-          <div className="mb-4">
+          {/* Price */}
+          <div>
             <label htmlFor="price" className="block text-sm mb-1">
-              Precio
+              Price
             </label>
             <input
-              type="text"
+              {...register("price", {
+                required: "The price is Required",
+                valueAsNumber: true,
+              })}
               id="price"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="$0.00"
+              step="any"
+              type="number"
+              placeholder="0.00"
               className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
+              required
             />
+            {errors.price && (
+              <span className="text-sm text-red-400 font-ArialRegular">
+                {errors.price.message}
+              </span>
+            )}
           </div>
 
-          {/* Campo para el estado */}
-          <div className="mb-4">
-            <label htmlFor="status" className="block text-sm mb-1">
-              Estado
-            </label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value as "Available" | "Disabled")
-              }
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white appearance-none"
-            >
-              <option value="Available">Available</option>
-              <option value="Disabled">Disabled</option>
-            </select>
-          </div>
-
-          {/* Campo para categorías */}
-          <div className="mb-4">
-            <label htmlFor="categories" className="block text-sm mb-1">
-              Categorías (separadas por comas)
+          {/* Sell Price */}
+          <div>
+            <label htmlFor="sellPrice" className="block text-sm mb-1">
+              Sell Price (optional)
             </label>
             <input
+              step="any"
+              id="sellPrice"
+              type="number"
+              {...register("sellPrice", { valueAsNumber: true })}
+              placeholder="0.00"
+              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
+            />
+            {errors.sellPrice && (
+              <span className="text-sm text-red-400 font-ArialRegular">
+                {errors.sellPrice.message}
+              </span>
+            )}
+          </div>
+
+          {/* Options JSON */}
+          <div>
+            <label htmlFor="options" className="block text-sm mb-1">
+              Options ( optional)
+            </label>
+            <OptionGroupsSelector control={control} name="options" />
+          </div>
+
+          {/* Specifications */}
+          <div>
+            <label htmlFor="description" className="block text-sm mb-1">
+              Description
+            </label>
+            <textarea
+              id="description"
+              rows={2}
+              {...register("description", { required: true })}
+              placeholder="e.g. Weight: 200g"
+              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
+            />
+            {errors.description && (
+              <span className="text-sm text-red-400 font-ArialRegular">
+                {errors.description.message}
+              </span>
+            )}
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-sm mb-1">Category</label>
+
+            {categoriesLoading && <p>Loading categories...</p>}
+            {categoriesError && (
+              <p className="text-red-400">Error to load categories</p>
+            )}
+            {!categoriesLoading &&
+              !categoriesError &&
+              categories?.length === 0 && <p>No categories</p>}
+
+            {!categoriesLoading &&
+              !categoriesError &&
+              categories?.length > 0 && (
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Selecciona una categoría" }}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={loading}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Selecciona categoría" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.name}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              )}
+            {errors.category && (
+              <p className="text-sm text-red-400 mt-1">
+                {errors.category.message}
+              </p>
+            )}
+          </div>
+
+          {/* Image Left URL & BlurHash */}
+          <div>
+            <label htmlFor="imageLeftUrl" className="block text-sm mb-1">
+              Image URL
+            </label>
+            <input
+              id="imageLeftUrl"
               type="text"
-              id="categories"
-              value={categories}
-              onChange={(e) => setCategories(e.target.value)}
-              placeholder="Desserts, Cookiees"
+              {...register("imageLeftUrl", { required: true })}
+              placeholder="https://example.com/img.jpg"
               className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
             />
+            {errors.imageLeftUrl && (
+              <span className="text-sm text-red-400 font-ArialRegular">
+                {errors.imageLeftUrl.message}
+              </span>
+            )}
           </div>
 
-          {/* Campo para el tipo */}
-          <div className="mb-4">
-            <label htmlFor="type" className="block text-sm mb-1">
-              Tipo
-            </label>
-            <select
-              id="type"
-              value={type}
-              onChange={(e) =>
-                setType(e.target.value as "Seasonal" | "Regular" | "Limited")
-              }
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white appearance-none"
-            >
-              <option value="Seasonal">Seasonal</option>
-              <option value="Regular">Regular</option>
-              <option value="Limited">Limited</option>
-            </select>
-          </div>
-
-          {/* Campo para las etiquetas */}
-          <div className="mb-4">
-            <label htmlFor="tags" className="block text-sm mb-1">
-              Etiquetas (separadas por comas)
-            </label>
-            <input
-              type="text"
-              id="tags"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              placeholder="tag1, tag2"
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
-            />
-          </div>
-
-          {/* Campo para la fecha */}
-          <div className="mb-6">
-            <label htmlFor="date" className="block text-sm mb-1">
-              Fecha
-            </label>
-            <input
-              type="date"
-              id="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-transparent border border-gray-700 rounded-md p-2 text-white"
-            />
-          </div>
-
-          {/* Botón de envío */}
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-md transition duration-200"
           >
-            {product ? "Actualizar Producto" : "Crear Producto"}
+            {loading
+              ? "...Loading"
+              : product
+              ? "Update Product"
+              : "Create Product"}
           </button>
         </form>
       </div>

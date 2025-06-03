@@ -1,53 +1,36 @@
-import React, { useState } from "react";
+// src/components/organisms/ItemCards.tsx
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
-import IceCream from "../../../assets/Imnsomnia fotos/icecream.png";
-import coockie from "../../../assets/Imnsomnia fotos/coockies.png";
 import { useNavigate } from "react-router-dom";
-// Datos iniciales de ejemplo
-const productosIniciales = [
-  {
-    id: 1,
-    name: "Ice Cream Vanilla",
-    price: 2.5,
-    quantity: 2,
-    image: IceCream,
-    options: [{ id: 1, name: "Extra Chocolate", extraPrice: 0.5 }],
-  },
-  {
-    id: 2,
-    name: "Ice Cream Chocolate",
-    price: 3.0,
-    quantity: 1,
-    image: coockie,
-    options: [],
-  },
-];
+import { RootState } from "@/store/store";
+import {
+  incrementProductQuantity,
+  removeProduct,
+} from "@/store/features/slices/orderSlice";
 
-const ItemCards = () => {
-  const [products, setProducts] = useState(productosIniciales);
-
-  const handleIncrement = (id) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p))
-    );
-  };
-
-  const handleDecrementOrRemove = (product) => {
-    if (product.quantity > 1) {
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity - 1 } : p
-        )
-      );
-    } else {
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
-    }
-  };
+const ItemCards: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Calcular totales
-  const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
-  const total = subtotal; // Aquí puedes agregar impuestos o cargos extra
+  // 1️⃣ Obtener productos y totales del store
+  const products = useSelector((state: RootState) => state.orders.products);
+  const { subTotal, total } = useSelector(
+    (state: RootState) => state.orders.totals
+  );
+
+  // 2️⃣ Handlers de cantidad
+  const handleIncrement = (id: string) => {
+    dispatch(incrementProductQuantity({ id, increment: 1 }));
+  };
+
+  const handleDecrementOrRemove = (id: string, quantity: number) => {
+    if (quantity > 1) {
+      dispatch(incrementProductQuantity({ id, increment: -1 }));
+    } else {
+      dispatch(removeProduct(id));
+    }
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -74,42 +57,47 @@ const ItemCards = () => {
             <tbody className="divide-y divide-gray-200">
               {products.map((p) => (
                 <tr key={p.id}>
-                  {/* Columna Product */}
+                  {/* Product */}
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
                       <img
-                        src={p.image}
+                        src={p.imageUrl}
                         alt={p.name}
                         className="w-12 h-12 object-cover rounded-full"
                       />
                       <div>
                         <p className="font-semibold text-gray-800">{p.name}</p>
-                        {p.options &&
-                          p.options.map((op) => (
-                            <p key={op.id} className="text-xs text-gray-500">
-                              {op.name} (+${op.extraPrice})
-                            </p>
-                          ))}
+                        {p.options?.map((op) => (
+                          <p key={op.id} className="text-xs text-gray-500">
+                            {op.name} (+${op.extraPrice?.toFixed(2)})
+                          </p>
+                        ))}
                       </div>
                     </div>
                   </td>
-                  {/* Columna Price */}
+
+                  {/* Price */}
                   <td className="px-6 py-4 font-ArialRegular font-medium text-gray-800">
                     ${p.price.toFixed(2)}
                   </td>
-                  {/* Columna Quantity */}
+
+                  {/* Quantity */}
                   <td className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       {p.quantity > 1 ? (
                         <button
-                          onClick={() => handleDecrementOrRemove(p)}
+                          onClick={() =>
+                            handleDecrementOrRemove(p.id, p.quantity)
+                          }
                           className="p-1 bg-grape-700 rounded hover:bg-grape-900 transition"
                         >
                           <FiMinus />
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleDecrementOrRemove(p)}
+                          onClick={() =>
+                            handleDecrementOrRemove(p.id, p.quantity)
+                          }
                           className="p-1 bg-grape-700 rounded hover:bg-grape-900 transition"
                         >
                           <FiTrash2 />
@@ -126,7 +114,8 @@ const ItemCards = () => {
                       </button>
                     </div>
                   </td>
-                  {/* Columna Subtotal */}
+
+                  {/* Subtotal */}
                   <td className="px-6 py-4 text-right text-gray-800 font-ArialBold">
                     ${(p.price * p.quantity).toFixed(2)}
                   </td>
@@ -135,7 +124,8 @@ const ItemCards = () => {
             </tbody>
           </table>
         </div>
-        {/* Tarjeta de Totales del Carrito */}
+
+        {/* Tarjeta de Totales */}
         <div className="w-full lg:w-5/12 mt-6 lg:mt-0">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-ArialBold text-grape-900 mb-4">
@@ -144,7 +134,7 @@ const ItemCards = () => {
             <div className="flex justify-between mb-2">
               <span className="text-gray-600 font-semibold">Subtotal</span>
               <span className="text-gray-800 font-semibold">
-                ${subtotal.toFixed(2)}
+                ${subTotal.toFixed(2)}
               </span>
             </div>
             <hr className="mb-4" />
@@ -156,8 +146,7 @@ const ItemCards = () => {
             </div>
             <button
               onClick={() => navigate("/checkout")}
-              className="w-full bg-mustard-yellow-400 rounded-full
-             text-black-night-950 font-ArialBold py-2 px-full  hover:bg-mustard-yellow-500 transition"
+              className="w-full bg-mustard-yellow-400 rounded-full text-black-night-950 font-ArialBold py-2 hover:bg-mustard-yellow-500 transition"
             >
               Proceed To Checkout
             </button>

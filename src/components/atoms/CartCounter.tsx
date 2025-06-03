@@ -81,6 +81,7 @@ const CartCounter = ({ price, onQuantityChange }: cartCounterProps) => {
       <div className="flex items-center space-x-4">
         {/* Botón de decremento */}
         <button
+          type="button"
           onClick={handleDecrement}
           disabled={count === minCount}
           className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold transition text-lg ${
@@ -129,6 +130,7 @@ const CartCounter = ({ price, onQuantityChange }: cartCounterProps) => {
 
         {/* Botón de incremento */}
         <button
+          type="button"
           onClick={handleIncrement}
           disabled={count === maxCount}
           className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold transition text-lg ${

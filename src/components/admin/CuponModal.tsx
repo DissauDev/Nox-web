@@ -1,19 +1,45 @@
 // src/components/CouponModal.tsx
-import { Coupon, TabType } from "@/pages/Admin/types/cupons";
-import { Listbox } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
+import { Listbox } from "@headlessui/react";
+
+import {
+  Coupon,
+  useCreateCouponMutation,
+  useUpdateCouponMutation,
+} from "@/store/features/api/couponsApi";
+
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../ui/select";
+import { TabType } from "@/pages/Admin/types/cupons";
+import { toast } from "@/hooks/use-toast";
+
+interface FormValues {
+  code: string;
+  type: "PERCENTAGE" | "AMOUNT";
+  discountValue: number;
+  expiresAt?: string;
+  isLimited: boolean;
+  usageLimit?: number;
+  status: TabType;
+}
 
 interface CouponModalProps {
   coupon: Coupon | null;
   onClose: () => void;
-  onSave: (coupon: Coupon) => void;
+  onSave: (c: Coupon) => void;
 }
 
 const statusOptions: { value: TabType; label: string }[] = [
-  { value: "active", label: "Activo" },
-  { value: "deactivated", label: "Desactivado" },
-  { value: "expired", label: "Vencido" },
+  { value: "active", label: "Active" },
+  { value: "deactivated", label: "Deactivated" },
+  { value: "expired", label: "Expired" },
 ];
 
 const CouponModal: React.FC<CouponModalProps> = ({
@@ -21,159 +47,283 @@ const CouponModal: React.FC<CouponModalProps> = ({
   onClose,
   onSave,
 }) => {
-  // Determinamos si se trata de un cupón nuevo o de edición
   const isNew = coupon === null;
 
-  const [discountPercentage, setDiscountPercentage] = useState(
-    coupon?.discountPercentage || 0
-  );
-  const [expiryDate, setExpiryDate] = useState(coupon ? coupon.expiryDate : "");
-  const [code, setCode] = useState(coupon?.code || "");
-  const [limited, setLimited] = useState(coupon?.limited || false);
-  // Si es nuevo, "available" se definirá igual a "total", por lo que no mostramos campo de disponibilidad.
-  const [total, setTotal] = useState(coupon ? coupon.total : "");
-  // Para cupón nuevo se fuerza el estado "active"; de lo contrario se permite editar a través del dropdown
-  const [status, setStatus] = useState<TabType>(coupon?.status || "active");
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      code: coupon?.code || "",
+      type: coupon?.type || "PERCENTAGE",
+      discountValue: coupon?.discountValue || 0,
+      expiresAt: coupon?.expiresAt?.slice(0, 10) || "",
+      isLimited: coupon?.isLimited || false,
+      usageLimit: coupon?.usageLimit,
+      status: coupon?.status || "active",
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newCoupon: Coupon = coupon
-      ? { ...coupon }
-      : {
-          id: "",
-          discountPercentage: 0,
-          expiryDate: "",
-          code: "",
-          limited: false,
-          available: 0,
-          total: "",
-          used: false,
-          status: "active",
-        };
-    newCoupon.discountPercentage = discountPercentage;
-    newCoupon.expiryDate = expiryDate;
-    newCoupon.code = code;
-    newCoupon.limited = limited;
-    // Si es nuevo, la disponibilidad se iguala al total
-    newCoupon.available = isNew
-      ? parseInt(total.toString())
-      : coupon!.available;
-    newCoupon.total = total;
-    newCoupon.status = status;
-    // Para cupón nuevo, no se permite marcar como usado manualmente
-    newCoupon.used = isNew ? false : coupon!.used;
-    onSave(newCoupon);
+  const [
+    createCoupon,
+    { data: created, error: createError, isLoading: creating },
+  ] = useCreateCouponMutation();
+  const [
+    updateCoupon,
+    { data: updated, error: updateError, isLoading: updating },
+  ] = useUpdateCouponMutation();
+
+  // Cuando la mutación triunfa, avisar al padre y cerrar modal
+  useEffect(() => {
+    const result = isNew ? created : updated;
+    if (result) {
+      onSave(result);
+      onClose();
+    }
+  }, [created, updated]);
+
+  const onSubmit = (data: FormValues) => {
+    const payload = {
+      code: data.code.trim(),
+      type: data.type,
+      discountValue: data.discountValue,
+      expiresAt: data.expiresAt || null,
+      isLimited: data.isLimited,
+      usageLimit: data.isLimited ? data.usageLimit : null,
+    };
+    if (isNew) {
+      try {
+        createCoupon(payload);
+        toast({
+          title: "Successfull Created",
+          content: "The cupon has been created",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      updateCoupon({ id: coupon!.id, data: payload });
+    }
   };
+
+  const isBusy = creating || updating;
+  const limited = watch("isLimited");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white text-gray-900 rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold mb-4">
-            {isNew ? "Nuevo Cupón" : "Editar Cupón"}
+        <header className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">
+            {isNew ? "New Coupon" : "Edit Coupon"}
           </h2>
           <button
             onClick={onClose}
-            className="hover:bg-slate-100 p-1 rounded-full"
+            className="p-1 hover:bg-gray-200 rounded-full"
           >
-            <IoMdClose />
+            <IoMdClose size={20} />
           </button>
-        </div>
+        </header>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Descuento */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Code */}
           <div>
-            <label className="block text-sm font-medium">Descuento (%)</label>
+            <label className="block text-sm font-medium">Code</label>
             <input
-              type="number"
-              value={discountPercentage}
-              onChange={(e) => setDiscountPercentage(parseInt(e.target.value))}
+              {...register("code", { required: "Code is required" })}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
+              disabled={isBusy}
+            />
+            {errors.code && (
+              <p className="text-red-600 text-sm mt-1">{errors.code.message}</p>
+            )}
+          </div>
+
+          {/* Discount Type */}
+          <div>
+            <label className="block text-sm font-medium">Discount Type</label>
+            <Controller
+              name="type"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="mt-1 w-full border border-gray-300 rounded-md p-2">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PERCENTAGE">Percentage</SelectItem>
+                    <SelectItem value="AMOUNT">Fixed Amount</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
             />
           </div>
-          {/* Fecha de vencimiento */}
+
+          {/* Discount Value */}
           <div>
             <label className="block text-sm font-medium">
-              Fecha de Vencimiento
+              {watch("type") === "PERCENTAGE"
+                ? "Discount (%)"
+                : "Discount Amount"}
             </label>
             <input
-              type="date"
-              value={expiryDate}
-              onChange={(e) => setExpiryDate(e.target.value)}
+              type="number"
+              step="0.01"
+              {...register("discountValue", {
+                required: "Value is required",
+                valueAsNumber: true,
+                min: { value: 0.01, message: "Must be > 0" },
+              })}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
+              disabled={isBusy}
             />
+            {errors.discountValue && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.discountValue.message}
+              </p>
+            )}
           </div>
 
-          {/* Campo para cupón limitado */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              checked={limited}
-              onChange={(e) => setLimited(e.target.checked)}
-              className="mr-2"
-            />
-            <label className="text-sm">Ticket limitado</label>
-          </div>
-          {/* Campo Total: si es nuevo se usa para definir la disponibilidad */}
+          {/* Expiry Date */}
           <div>
-            <label className="block text-sm font-medium">Total</label>
+            <label className="block text-sm font-medium">Expiry Date</label>
             <input
-              type="text"
-              value={total}
-              onChange={(e) => setTotal(e.target.value)}
-              className={`mt-1 block w-full border border-gray-300 rounded-md p-2 `}
-              required
+              type="date"
+              {...register("expiresAt")}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              disabled={isBusy}
             />
           </div>
-          {/* Dropdown para seleccionar estado con Headless UI */}
 
-          {!isNew && (
+          {/* Limited Use */}
+          <div className="flex items-center">
+            <Controller
+              name="isLimited"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="checkbox"
+                  id="limitedUse"
+                  className="
+                    h-6 w-6
+                    accent-purple-800
+                    border-gray-300
+                    rounded
+                    focus:ring-purple-800
+                    transition duration-150
+                  "
+                  disabled={isBusy}
+                />
+              )}
+            />
+            <label htmlFor="limitedUse" className="ml-2 text-sm font-medium">
+              Limited Use
+            </label>
+          </div>
+
+          {/* Usage Limit */}
+          {limited && (
             <div>
-              <label className="block text-sm font-medium mb-1">Estado</label>
-              <Listbox value={status} onChange={setStatus}>
-                <Listbox.Button className="w-full border border-gray-300 rounded-md p-2 text-left">
-                  {
-                    statusOptions.find((option) => option.value === status)
-                      ?.label
-                  }
-                </Listbox.Button>
-                <Listbox.Options className="mt-1 border border-gray-300 rounded-md bg-white">
-                  {statusOptions.map((option) => (
-                    <Listbox.Option
-                      key={option.value}
-                      value={option.value}
-                      className={({ active }) =>
-                        `cursor-pointer px-4 py-2 ${
-                          active ? "bg-[#FEC600] text-white" : "text-gray-900"
-                        }`
-                      }
-                    >
-                      {option.label}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Listbox>
+              <label className="block text-sm font-medium">Usage Limit</label>
+              <input
+                type="number"
+                {...register("usageLimit", {
+                  required: "Usage limit required",
+                  valueAsNumber: true,
+                  min: { value: 1, message: "At least 1" },
+                })}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                disabled={isBusy}
+              />
+              {errors.usageLimit && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.usageLimit.message}
+                </p>
+              )}
             </div>
           )}
 
-          {/* Botones de acción */}
-          <div className="flex justify-end space-x-4">
+          {/* Status (edit only) */}
+          {!isNew && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Status</label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Listbox value={field.value} onChange={field.onChange}>
+                    <Listbox.Button className="w-full border border-gray-300 rounded-md p-2 text-left">
+                      {
+                        statusOptions.find((o) => o.value === field.value)
+                          ?.label
+                      }
+                    </Listbox.Button>
+                    <Listbox.Options className="mt-1 border border-gray-300 rounded-md bg-white">
+                      {statusOptions.map((option) => (
+                        <Listbox.Option
+                          key={option.value}
+                          value={option.value}
+                          className={({ active }) =>
+                            `cursor-pointer px-4 py-2 ${
+                              active
+                                ? "bg-indigo-600 text-white"
+                                : "text-gray-900"
+                            }`
+                          }
+                        >
+                          {option.label}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Listbox>
+                )}
+              />
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              disabled={isBusy}
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+              disabled={isBusy}
             >
-              Guardar
+              {isNew
+                ? creating
+                  ? "Creating..."
+                  : "Create"
+                : updating
+                ? "Saving..."
+                : "Save"}
             </button>
           </div>
+
+          {(() => {
+            const err = createError || updateError;
+            if (!err) return null;
+            // 1) Si viene de fetchBaseQuery: err.data?.message
+            const fetchErr = err.data?.message;
+            if (fetchErr)
+              return <p className="text-red-500 text-sm mt-2">{fetchErr}</p>;
+            // 2) Si es SerializedError: err.error
+            const serMsg = err.error;
+            if (serMsg)
+              return <p className="text-red-500 text-sm mt-2">{serMsg}</p>;
+            // 3) fallback
+            return <p className="text-red-500 text-sm mt-2">Fail to create</p>;
+          })()}
         </form>
       </div>
     </div>

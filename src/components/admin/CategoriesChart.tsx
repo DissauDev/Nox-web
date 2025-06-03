@@ -1,53 +1,23 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDownIcon } from "lucide-react";
-import React, { useState } from "react";
+import { Fragment, useState, useMemo } from "react";
 import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import { ChevronDownIcon } from "lucide-react";
+import { useGetCategorySalesQuery } from "@/store/features/api/analitycsApi";
+import {
+  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
-  Legend,
   Label,
   Tooltip,
+  Legend,
 } from "recharts";
 
-// Datos iniciales
-const mockData = {
-  week: [
-    { name: "For-you", value: 400 },
-    { name: "Ice-cream", value: 300 },
-    { name: "Desserts", value: 370 },
-    { name: "Coockies", value: 200 },
-    { name: "Mashoops", value: 100 },
-    { name: "Drinks", value: 460 },
-  ],
-  month: [
-    { name: "For-you", value: 450 },
-    { name: "Ice-cream", value: 330 },
-    { name: "Desserts", value: 390 },
-    { name: "Coockies", value: 289 },
-    { name: "Mashoops", value: 350 },
-    { name: "Drinks", value: 415 },
-  ],
-  sixMonths: [
-    { name: "For-you", value: 300 },
-    { name: "Ice-cream", value: 320 },
-    { name: "Desserts", value: 350 },
-    { name: "Coockies", value: 300 },
-    { name: "Mashoops", value: 190 },
-    { name: "Drinks", value: 600 },
-  ],
-  year: [
-    { name: "For-you", value: 400 },
-    { name: "Ice-cream", value: 200 },
-    { name: "Desserts", value: 310 },
-    { name: "Coockies", value: 220 },
-    { name: "Mashoops", value: 800 },
-    { name: "Drinks", value: 360 },
-  ],
-};
-
-// Colores para cada categoría
 const COLORS = [
   "#15CAB8",
   "#44A6E9",
@@ -58,208 +28,152 @@ const COLORS = [
 ];
 
 export default function CategoriesChart() {
-  // Estado del período seleccionado, datos y spinner de carga
-  const [period, setPeriod] = useState("week");
-  const [categoryData, setCategoryData] = useState(mockData[period]);
-  const [loading, setLoading] = useState(false);
+  const periodOptions = [
+    { label: "Week", value: "Week" },
+    { label: "Month", value: "Month" },
+    { label: "6 Months", value: "6 Months" },
+    { label: "Year", value: "Year" },
+  ];
+  const [period, setPeriod] = useState("Week");
+  const { data, isLoading, isError } = useGetCategorySalesQuery({ period });
 
-  // Calcula el total a partir de los datos actuales
-  const totalValue = categoryData.reduce((acc, cur) => acc + cur.value, 0);
-
-  // Función para mostrar la etiqueta según el período seleccionado
-  const getLabel = (period) => {
-    switch (period) {
-      case "week":
-        return "Semana";
-      case "month":
-        return "Mes";
-      case "sixMonths":
-        return "6 Meses";
-      case "year":
-        return "1 Año";
-      default:
-        return "Periodo";
-    }
-  };
-
-  // Función para cambiar el período: simula 2 segundos de carga
-  const handlePeriodChange = (newPeriod) => {
-    setLoading(true);
-    setTimeout(() => {
-      setCategoryData(mockData[newPeriod]);
-      setPeriod(newPeriod);
-      setLoading(false);
-    }, 2000);
-  };
+  // prepare chart data
+  const totalAll = data?.totalAll ?? 0;
+  const pieData = useMemo(() => {
+    return (data?.categories ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      value: c.sales,
+      itemsSold: c.itemsSold ?? 0,
+      pct: c.percentage,
+    }));
+  }, [data]);
 
   return (
     <div className="relative border-2 border-[#FEC600] p-4 rounded-xl">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Sales By Categories</h3>
-        {/* Dropdown con Headless UI */}
+        <h3 className="text-lg font-semibold text-white">
+          Sales by Categories
+        </h3>
         <Menu as="div" className="relative inline-block text-left">
-          <MenuButton
-            className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 
-          px-3 text-sm font-semibold text-white shadow-inner focus:outline-none hover:bg-gray-700"
-          >
-            {getLabel(period)}
+          <MenuButton className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner hover:bg-gray-700 focus:outline-none">
+            {periodOptions.find((o) => o.value === period)?.label}
             <ChevronDownIcon className="w-5 h-5 fill-white/60" />
           </MenuButton>
-          <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right z-50 rounded-xl border border-white/5 bg-gray-800/90 p-1 text-sm text-white transition duration-100 ease-out focus:outline-none">
-            <div>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handlePeriodChange("week")}
-                    className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
-                      active ? "bg-gray-700" : ""
-                    }`}
-                  >
-                    Semana
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handlePeriodChange("month")}
-                    className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
-                      active ? "bg-gray-700" : ""
-                    }`}
-                  >
-                    Mes
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handlePeriodChange("sixMonths")}
-                    className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
-                      active ? "bg-gray-700" : ""
-                    }`}
-                  >
-                    6 Meses
-                  </button>
-                )}
-              </MenuItem>
-              <MenuItem>
-                {({ active }) => (
-                  <button
-                    onClick={() => handlePeriodChange("year")}
-                    className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
-                      active ? "bg-gray-700" : ""
-                    }`}
-                  >
-                    1 Año
-                  </button>
-                )}
-              </MenuItem>
-            </div>
-          </MenuItems>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <MenuItems className="absolute right-0 mt-2 w-40 origin-top-right z-50 rounded-xl border border-white/5 bg-gray-800/90 p-1 text-sm text-white">
+              {periodOptions.map((opt) => (
+                <MenuItem key={opt.value}>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setPeriod(opt.value)}
+                      className={`flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
+                        active ? "bg-gray-700" : ""
+                      } ${period === opt.value ? "font-medium" : ""}`}
+                    >
+                      {opt.label}
+                    </button>
+                  )}
+                </MenuItem>
+              ))}
+            </MenuItems>
+          </Transition>
         </Menu>
       </div>
 
-      {/* Contenedor del gráfico */}
       <div className="relative">
-        {/* Capa de carga: se muestra sobre el gráfico con opacidad y spinner */}
-        {loading && (
+        {isLoading && (
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10 rounded-xl">
             <div className="w-8 h-8 border-4 border-[#FEC600] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
-        <ResponsiveContainer width="100%" height={220}>
-          <PieChart>
-            <Pie
-              data={categoryData}
-              dataKey="value"
-              nameKey="name"
-              cx="40%"
-              cy="50%"
-              innerRadius={76}
-              outerRadius={100}
-            >
-              {categoryData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
+        {isError ? (
+          <p className="text-red-500 text-center py-6">Error loading data</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={280}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="40%"
+                cy="50%"
+                innerRadius={76}
+                outerRadius={100}
+                paddingAngle={2}
+              >
+                {pieData.map((entry, idx) => (
+                  <Cell key={entry.id} fill={COLORS[idx % COLORS.length]} />
+                ))}
+                <Label
+                  value={`$${totalAll.toLocaleString("en-US")}`}
+                  position="center"
+                  fill="#fff"
+                  fontSize={24}
+                  className="font-semibold"
                 />
-              ))}
-              <Label
-                value={`$${totalValue.toLocaleString("en-US")}`}
-                position="center"
-                className="label-top font-ArialRegular"
-                fill="#fff"
-                fontSize={24}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#F5A623",
+                  border: "2px solid #F5A623",
+                  borderRadius: "8px",
+                  padding: "4px",
+                }}
+                itemStyle={{ color: "#000", fontWeight: 500 }}
+                labelStyle={{ color: "#FEC600", fontWeight: "bold" }}
+                cursor={{
+                  fill: "transparent",
+                  stroke: "#FEC600",
+                  strokeWidth: 1,
+                }}
               />
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#F5A623",
-                border: "2px solid #F5A623",
-                borderRadius: "8px",
-                color: "#000",
-                paddingTop: 2,
-                paddingBottom: 2,
-                paddingLeft: 2,
-                paddingRight: 2,
-              }}
-              itemStyle={{
-                color: "#000",
-                fontSize: "16px",
-                fontWeight: 500,
-                marginBottom: 0,
-              }}
-              labelStyle={{
-                color: "#FEC600",
-                fontSize: "16px",
-                fontWeight: "bold",
-                marginBottom: 4,
-              }}
-              cursor={{
-                fill: "transparent",
-                stroke: "#FEC600",
-                strokeWidth: 1,
-              }}
-            />
-            <Legend
-              iconSize={0}
-              layout="vertical"
-              align="right"
-              verticalAlign="top"
-              wrapperStyle={{ marginTop: -20 }} // <- Ajustá este valor a lo que necesites
-              formatter={(value, entry) => {
-                const category = entry.payload;
-                const percentage = (
-                  (category.value / totalValue) *
-                  100
-                ).toFixed(0);
-                const sold = Math.floor(category.value / 10);
-
-                return (
-                  <div className="flex flex-col h-3 ">
-                    <div className="flex items-center justify-between w-50">
-                      <span
-                        className="w-3 h-3 rounded-full mr-2"
-                        style={{ backgroundColor: entry.color }}
-                      />
-                      <span className="text-white text-sm flex-1">
-                        {value} ({percentage}%)
-                      </span>
-                      <span className="text-sm font-bold text-white ml-4">
-                        ${category.value}
+              <Legend
+                iconSize={0}
+                layout="vertical"
+                align="right"
+                verticalAlign="middle"
+                wrapperStyle={{
+                  marginTop: -20,
+                  height: "100%",
+                  overflowY: "auto",
+                  paddingRight: "8px",
+                }}
+                formatter={(value, entry) => {
+                  const { value: sales, itemsSold, pct } = entry.payload;
+                  return (
+                    <div className="flex flex-col mb-1 text-sm text-white">
+                      <div className="flex items-center justify-between">
+                        <span
+                          className="w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: entry.color }}
+                        />
+                        <span className="flex-1">
+                          {value} ({pct}%)
+                        </span>
+                        <span className="font-bold ml-2">
+                          ${sales.toFixed(2)}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400 ml-5">
+                        {itemsSold} products
                       </span>
                     </div>
-                    <span className="text-xs text-gray-400 ml-5">
-                      {sold} products
-                    </span>
-                  </div>
-                );
-              }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+                  );
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

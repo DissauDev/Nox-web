@@ -1,10 +1,10 @@
-"use client";
-
 import React, { useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useForgotPasswordMutation } from "@/store/features/api/userApi";
+import { toast } from "@/hooks/use-toast";
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -12,10 +12,12 @@ export default function ResetPassword() {
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validación simple de email
+    // Simple email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setIsError(true);
@@ -23,8 +25,23 @@ export default function ResetPassword() {
     }
 
     setIsError(false);
-    console.log("Password reset email sent to:", email);
-    setIsSuccess(true);
+
+    try {
+      await forgotPassword({ email }).unwrap();
+      setIsSuccess(true);
+      toast({
+        title: "Form has send correctly",
+        className: "border-l-4 border-green-500",
+        description: "Form submitted successfully.",
+      });
+    } catch (error) {
+      setIsError(true);
+      toast({
+        title: "Fail to send Link",
+        className: "border-l-4 border-red-500",
+        description: error.data.message,
+      });
+    }
   };
 
   if (isSuccess) {
@@ -35,14 +52,13 @@ export default function ResetPassword() {
             Success! Password link has been sent.
           </h1>
           <p className="mt-4 text-lg text-gray-700 font-ArialRegular">
-            You should receive an email within 10 minutes to
-            mauriciogarcia@gmail.com with a link to reset your password.
+            You should receive an email within a few minutes to{" "}
+            <strong>{email}</strong> with a link to reset your password.
           </p>
           <div className="my-6">
             <button
-              className="text-xl text-pompadour-900 font-ArialBold  underline"
+              className="text-xl text-pompadour-900 font-ArialBold underline"
               onClick={() => {
-                // Lógica para continuar al login
                 navigate("/auth");
               }}
             >
@@ -50,17 +66,22 @@ export default function ResetPassword() {
             </button>
           </div>
           <p className="text-lg text-gray-900 font-ArialRegular">
-            Didn&apos;t receive link?{" "}
+            Didn&apos;t receive the link?
           </p>
           <button
-            className=" bg-grape-900  w-full my-4 p-2 rounded-full"
-            onClick={() => {
-              // Lógica para reenviar el link
-              console.log("Send again");
-            }}
+            className="bg-grape-900 w-full my-4 p-2 rounded-full"
+            onClick={handleSubmit}
+            disabled={isLoading}
           >
-            <h1 className="font-ArialRegular">Send again</h1>
+            <h1 className="font-ArialRegular">
+              {isLoading ? "Sending..." : "Send again"}
+            </h1>
           </button>
+          {isError && (
+            <p className="text-red-500 text-center mt-2">
+              Failed to send reset link. Please try again.
+            </p>
+          )}
         </div>
       </div>
     );
@@ -78,7 +99,6 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="mt-6 relative">
           <div className="relative">
-            {/* Ícono de error (exclamación) */}
             {isError && (
               <AlertCircle className="absolute left-3 top-1/2 -translate-y-1/2 text-red-500 h-6 w-6" />
             )}
@@ -95,15 +115,18 @@ export default function ResetPassword() {
 
             <Button
               type="submit"
+              disabled={isLoading}
               className="absolute right-8 top-0 h-12 rounded-full bg-purple-900 px-6
-              font-ArialBold text-white hover:bg-purple-800"
+              font-ArialBold text-white hover:bg-purple-800 disabled:opacity-50"
             >
-              Submit
+              {isLoading ? "Sending" : "Submit"}
             </Button>
           </div>
 
           {isError && (
-            <p className="mt-2 text-sm text-red-500">Email is not valid.</p>
+            <p className="mt-2 text-sm text-red-500">
+              Email is not valid or request failed.
+            </p>
           )}
         </form>
       </div>

@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "lucide-react";
 import SkeletonCard from "../skeletons/SkeletonCard";
 import StatCard from "./Statcard";
-const getComparisonText = (period: string): string => {
+import { useGetDashboardOverviewQuery } from "@/store/features/api/analitycsApi";
+
+const getComparisonText = (period) => {
   switch (period) {
     case "Day":
       return "vs yesterday";
@@ -16,35 +17,40 @@ const getComparisonText = (period: string): string => {
       return "vs last 6 months";
     case "Year":
       return "vs last year";
+    case "All":
+      return "since inception";
     default:
       return "vs yesterday";
   }
 };
 
-const generateTrendData = () =>
-  Array.from({ length: 6 }, () => ({
-    value: Math.floor(Math.random() * 100) + 20,
-  }));
-
 const StatsCards = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("Day");
-  const [cardsData, setCardsData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, isError } = useGetDashboardOverviewQuery({
+    period: selectedPeriod,
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    const timeout = setTimeout(() => {
-      const generated = [
-        { title: "Customers", value: Math.floor(Math.random() * 1000) },
-        { title: "Orders", value: Math.floor(Math.random() * 500) },
-        { title: "Earnings", value: `$${Math.floor(Math.random() * 10000)}` },
-        { title: "Total Products", value: Math.floor(Math.random() * 300) },
-      ];
-      setCardsData(generated);
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timeout);
-  }, [selectedPeriod]);
+  const cardsData = useMemo(() => {
+    if (!data) return [];
+    return [
+      {
+        title: "Customers",
+        value: data.customers,
+        pct: data.customersPctChange,
+      },
+      { title: "Orders", value: data.orders, pct: data.ordersPctChange },
+      {
+        title: "Earnings",
+        value: `$${data.earnings.toFixed(2)}`,
+        pct: data.earningsPctChange,
+      },
+      {
+        title: "Products Sell",
+        value: data.productsSold,
+        pct: data.productsPctChange,
+      },
+    ];
+  }, [data]);
 
   return (
     <div className="mt-10">
@@ -56,47 +62,51 @@ const StatsCards = () => {
             <ChevronDownIcon className="w-5 h-5 fill-white/60" />
           </MenuButton>
           <MenuItems className="absolute right-0 mt-2 w-44 origin-top-right rounded-xl bg-gray-800 p-1 text-sm text-white shadow-lg z-50">
-            {["Day", "Week", "Month", "6 Months", "Year"].map((option) => (
-              <MenuItem key={option}>
-                {({ active }) => (
-                  <button
-                    onClick={() => setSelectedPeriod(option)}
-                    className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
-                      active ? "bg-gray-700" : ""
-                    }`}
-                  >
-                    {option}
-                  </button>
-                )}
-              </MenuItem>
-            ))}
+            {["Day", "Week", "Month", "6 Months", "Year", "All"].map(
+              (option) => (
+                <MenuItem key={option}>
+                  {({ active }) => (
+                    <button
+                      onClick={() => setSelectedPeriod(option)}
+                      className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 ${
+                        active ? "bg-gray-700" : ""
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  )}
+                </MenuItem>
+              )
+            )}
           </MenuItems>
         </Menu>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {loading
+        {isLoading
           ? Array.from({ length: 4 }).map((_, idx) => (
               <SkeletonCard key={idx} />
             ))
           : cardsData.map((card, idx) => {
-              const percentage = Math.floor(Math.random() * 101) - 50;
-              const isPositive = percentage >= 0;
-              const trendData = generateTrendData();
+              const isPositive = card.pct >= 0;
               const compareText = getComparisonText(selectedPeriod);
+              const trendData = Array.from({ length: 6 }, () => ({
+                value: card.pct,
+              }));
 
               return (
                 <StatCard
                   key={idx}
                   title={card.title}
                   value={card.value}
-                  percentage={percentage}
+                  percentage={Math.round(card.pct)}
                   isPositive={isPositive}
                   trendData={trendData}
                   comparisonText={compareText}
                 />
               );
             })}
+        {isError && <p className="text-red-500">Error loading statistics.</p>}
       </div>
     </div>
   );

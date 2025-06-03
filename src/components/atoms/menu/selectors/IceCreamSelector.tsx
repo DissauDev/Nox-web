@@ -34,7 +34,6 @@ export const IceCreamSelector = ({
       </div>
       <IceCreamFlavorSelector scoop={1} />
       <IceCreamFlavorSelector scoop={2} />
-      <ToppinsSelector onToppingsChange={onToppingsChange} />
     </>
   );
 };

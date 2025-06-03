@@ -1,20 +1,25 @@
-// authSlice.ts
+// src/features/slices/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface User {
+export interface User {
+  id:    string;
   email: string;
-  username?: string;
+  name?: string;
+  role: "ADMIN" | "EMPLOYEE" | "USER";
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   loading: boolean;
 }
 
-// Estado inicial para la autenticación
 const initialState: AuthState = {
   user: null,
+  accessToken: null,
+  refreshToken: null,
   isAuthenticated: false,
   loading: false,
 };
@@ -23,28 +28,55 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Acción para iniciar el proceso de autenticación (por ejemplo, mostrar loading)
     authStart(state) {
       state.loading = true;
     },
-    // Acción que se dispara cuando la autenticación (sign in o sign up) es exitosa
-    authSuccess(state, action: PayloadAction<User>) {
-      state.user = action.payload;
+    // payload: { user, accessToken, refreshToken }
+    loginSuccess(
+      state,
+      action: PayloadAction<{ user: User; accessToken: string; refreshToken: string }>
+    ) {
+      const { user, accessToken, refreshToken } = action.payload;
+      state.user = user;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
       state.isAuthenticated = true;
       state.loading = false;
     },
-    // Acción para manejar algún fallo en la autenticación (opcional)
     authFailure(state) {
       state.loading = false;
-      // Aquí podrías agregar un campo de error en el estado si lo requieres
     },
-    // Acción para cerrar sesión
-    signOut(state) {
+    logout(state) {
       state.user = null;
+      state.accessToken = null;
+      state.refreshToken = null;
       state.isAuthenticated = false;
+      state.loading = false;
+    },
+    // Si quieres actualizar solo el nombre del usuario:
+    updateUserName(state, action: PayloadAction<string>) {
+      if (state.user) {
+        state.user.name = action.payload;
+      }
+    },
+    // Acción para actualizar solo el accessToken y refreshToken (p. ej. tras hacer refresh)
+    refreshTokens(
+      state,
+      action: PayloadAction<{ accessToken: string; refreshToken: string }>
+    ) {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     },
   },
 });
 
-export const { authStart, authSuccess, authFailure, signOut } = authSlice.actions;
+export const {
+  authStart,
+  loginSuccess,
+  authFailure,
+  logout,
+  updateUserName,
+  refreshTokens,
+} = authSlice.actions;
+
 export default authSlice.reducer;

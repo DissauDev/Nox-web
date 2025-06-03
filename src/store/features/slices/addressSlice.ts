@@ -16,7 +16,14 @@ interface AddressState {
 }
 
 const initialState: AddressState = {
-  savedAddress: null,
+  savedAddress: {
+  id: 422,
+  postalCode: "CA 95008",
+  city: "Campbell",
+  state: "California",
+  fullAddress: "422 E Campbell Ave, Campbell, CA 95008",
+  type: "pickup"
+},
 };
 
 const addressSlice = createSlice({

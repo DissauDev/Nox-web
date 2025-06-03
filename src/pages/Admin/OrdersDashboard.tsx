@@ -1,148 +1,86 @@
-import React, { useState, Fragment, useMemo } from "react";
+import React, { useState, Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon, MailIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useGetOrdersQuery } from "@/store/features/api/ordersApi";
+import { TiMinus } from "react-icons/ti";
 
-const initialOrders = [
-  {
-    id: 8811,
-    registered: true,
-    customer: "Mauricio García",
-    date: "Mar 18, 2025",
-    status: "Processing",
-    total: "$6.10",
-    origin: "Direct",
-    reviewReminder: "Automatic review reminders are disabled",
-  },
-  {
-    id: 8810,
-    registered: true,
-    customer: "Mauricio García",
-    date: "Mar 1, 2025",
-    status: "Processing",
-    total: "$19.60",
-    origin: "Direct",
-    reviewReminder: "Automatic review reminders are disabled",
-  },
-  {
-    id: 8809,
-    registered: false,
-    customer: "cgfd fsda",
-    date: "Feb 26, 2025",
-    status: "Processing",
-    total: "$5.35",
-    origin: "Direct",
-    reviewReminder: "No customer consent received",
-  },
-  {
-    id: 8808,
-    registered: false,
-    customer: "David Bueno",
-    date: "Feb 22, 2025",
-    status: "Processing",
-    total: "$49.50",
-    origin: "Direct",
-    reviewReminder: "No customer consent received",
-  },
-  {
-    id: 8546,
-    registered: true,
-    customer: "David Bueno",
-    date: "Oct 24, 2024",
-    status: "Completed",
-    total: "$8.35",
-    origin: "Direct",
-    reviewReminder: "No customer consent received",
-  },
+const STATUS_OPTIONS = [
+  "all",
+  "PENDING",
+  "PAID",
+  "PROCESSING",
+  "READY_FOR_PICKUP",
+  "OUT_FOR_DELIVERY",
+  "COMPLETED",
+  "CANCELLED",
 ];
-
-const STATUS_OPTIONS = ["all", "Processing", "Completed"];
 const CUSTOMER_OPTIONS = ["all", "registered", "unregistered"];
 const DATE_OPTIONS = ["all", "today", "this_week", "this_month"];
 
-function parseOrderDate(str) {
-  // Assumes format "Mon DD, YYYY"
-  return new Date(str);
-}
-
 export const OrdersDashboard = () => {
   const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [customerFilter, setCustomerFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState("all");
-  const [orderNumber, setOrderNumber] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+
+  // 1️⃣ Estados de filtros y paginación
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [customerFilter, setCustomerFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
+  const [orderNumber, setOrderNumber] = useState<string>("");
+  const [originFilter, setOriginFilter] = useState<
+    "all" | "pickup" | "delivery"
+  >("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
 
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
+  // 2️⃣ Hook RTK para obtener órdenes
+  const {
+    data: result,
+    isLoading,
+    isError,
+  } = useGetOrdersQuery({
+    status: statusFilter !== "all" ? statusFilter.toUpperCase() : undefined,
+    customerType: customerFilter,
+    dateFilter: dateFilter !== "all" ? dateFilter : undefined,
+    page: currentPage,
+    origin: originFilter !== "all" ? originFilter : undefined,
+    perPage: itemsPerPage,
+    orderNumber: orderNumber
+      ? orderNumber.startsWith("ORD-")
+        ? orderNumber
+        : `ORD-${orderNumber}`
+      : undefined,
+  });
 
-  const filtered = useMemo(() => {
-    return initialOrders.filter((o) => {
-      // by status
-      if (statusFilter !== "all" && o.status !== statusFilter) return false;
-      // by customer type
-      if (customerFilter === "registered" && !o.registered) return false;
-      if (customerFilter === "unregistered" && o.registered) return false;
-      // by order number
-      if (orderNumber && !String(o.id).includes(orderNumber)) return false;
-      // by date
-      const od = parseOrderDate(o.date);
-      const diffMs = today.getTime() - od.getTime();
-      const diffDays = diffMs / (1000 * 60 * 60 * 24);
-      switch (dateFilter) {
-        case "today":
-          if (od.toDateString() !== today.toDateString()) return false;
-          break;
-        case "this_week":
-          if (diffDays < 0 || diffDays > 7) return false;
-          break;
-        case "this_month":
-          if (
-            od.getMonth() !== today.getMonth() ||
-            od.getFullYear() !== today.getFullYear()
-          )
-            return false;
-          break;
-        default:
-          break;
-      }
-      return true;
-    });
-  }, [statusFilter, customerFilter, dateFilter, orderNumber, today]);
+  if (isLoading) return <p>Cargando órdenes…</p>;
+  if (isError || !result)
+    return <p className="text-red-400">Error cargando órdenes</p>;
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const currentOrders = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    (currentPage - 1) * itemsPerPage + itemsPerPage
-  );
+  const { orders, totalPage } = result;
+  const totalPages = Math.ceil(totalPage / itemsPerPage);
 
   return (
-    <div className="p-6 text-white min-h-screen">
+    <div className="px-2 py-10 text-white min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {/* Filters */}
+        {/* — Filtros */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h1 className="text-2xl font-bold">Orders</h1>
-
           <div className="flex flex-wrap gap-2">
-            {/* Status */}
             <Dropdown
               label={`Status: ${statusFilter}`}
               options={STATUS_OPTIONS}
-              onSelect={setStatusFilter}
-              labels={undefined}
+              onSelect={(v) => {
+                setStatusFilter(v);
+                setCurrentPage(1);
+              }}
             />
-            {/* Customer */}
             <Dropdown
               label={`Customer: ${customerFilter}`}
               options={CUSTOMER_OPTIONS}
-              onSelect={setCustomerFilter}
-              labels={undefined}
+              onSelect={(v) => {
+                setCustomerFilter(v);
+                setCurrentPage(1);
+              }}
             />
-            {/* Date */}
             <Dropdown
               label={
                 {
@@ -150,18 +88,20 @@ export const OrdersDashboard = () => {
                   today: "Today",
                   this_week: "This Week",
                   this_month: "This Month",
-                }[dateFilter]
+                }[dateFilter]!
               }
               options={DATE_OPTIONS}
-              onSelect={setDateFilter}
               labels={{
                 all: "All Dates",
                 today: "Today",
                 this_week: "This Week",
                 this_month: "This Month",
               }}
+              onSelect={(v) => {
+                setDateFilter(v);
+                setCurrentPage(1);
+              }}
             />
-            {/* Order # */}
             <div className="relative">
               <input
                 type="text"
@@ -175,67 +115,95 @@ export const OrdersDashboard = () => {
               />
               <span className="absolute left-3 top-2.5 text-gray-500">#</span>
             </div>
+
+            <Dropdown
+              label={`Origin: ${originFilter}`}
+              options={["all", "pickup", "delivery"]}
+              labels={{ all: "All", pickup: "Pickup", delivery: "Delivery" }}
+              onSelect={(v) => {
+                setOriginFilter(v);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         </div>
 
-        {/* Table */}
+        {/* — Tabla */}
         <div className="overflow-x-auto">
           <table className="w-full table-auto border-collapse">
             <thead>
               <tr className="border-b border-gray-700 text-left text-gray-300">
-                <th className="px-4 py-2">Order</th>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Total</th>
-                <th className="px-4 py-2">Actions</th>
-                <th className="px-4 py-2">Origin</th>
-                <th className="px-4 py-2">Review Reminder</th>
+                {["Order", "Date", "Status", "Total", "Actions", "Origin"].map(
+                  (th) => (
+                    <th key={th} className="px-4 py-2">
+                      {th}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody>
-              {currentOrders.map((o) => (
+              {orders.map((o) => (
                 <tr
                   key={o.id}
                   className="hover:bg-gray-900 border-b border-gray-800"
                 >
-                  <td className="px-4 py-3">
-                    <a
-                      onClick={() => navigate(`/dashboard/orders/${o.id}`)}
-                      className="text-blue-400 hover:underline"
-                    >
-                      #{o.id} {o.customer}
-                    </a>
+                  {/* Order # y Cliente */}
+                  <td
+                    onClick={() => navigate(`/dashboard/orders/${o.id}`)}
+                    className="px-4 py-3 cursor-pointer text-blue-400 hover:underline"
+                  >
+                    #{o.orderNumber} {o.customerName}
                   </td>
-                  <td className="px-4 py-3">{o.date}</td>
+                  {/* Fecha formateada */}
+                  <td className="px-4 py-3">
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }).format(new Date(o.createdAt))}
+                  </td>
+                  {/* Estado */}
                   <td className="px-4 py-3">
                     <span
                       className={`inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${
-                        o.status === "Processing"
+                        o.status === "COMPLETED"
                           ? "bg-green-800 text-green-300"
-                          : "bg-blue-800 text-blue-300"
+                          : o.status === "REFUNDED"
+                          ? "bg-red-600"
+                          : "bg-yellow-800 text-yellow-300"
                       }`}
                     >
                       {o.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">{o.total}</td>
+                  {/* Total */}
+                  <td className="px-4 py-3">${o.totalAmount.toFixed(2)}</td>
+                  {/* Acciones */}
                   <td className="px-4 py-3 flex space-x-2">
                     <button className="p-1 hover:bg-gray-800 rounded-md">
-                      <CheckIcon className="h-5 w-5 text-gray-300" />
+                      {o.userId ? (
+                        <CheckIcon className="h-5 w-5 text-gray-300" />
+                      ) : (
+                        <TiMinus className="h-5 w-5 text-gray-300" />
+                      )}
                     </button>
                     <button className="p-1 hover:bg-gray-800 rounded-md">
                       <MailIcon className="h-5 w-5 text-gray-300" />
                     </button>
                   </td>
-                  <td className="px-4 py-3">{o.origin}</td>
-                  <td className="px-4 py-3 text-gray-400 text-sm">
-                    {o.reviewReminder}
+                  {/* Origen: Pickup vs Delivery */}
+                  <td className="px-4 py-3">
+                    {o.customerAddress ===
+                    "422 E Campbell Ave, Campbell, CA 95008"
+                      ? "Pickup"
+                      : "Delivery"}
                   </td>
                 </tr>
               ))}
-              {currentOrders.length === 0 && (
+              {orders.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-4 text-center text-gray-500">
+                  <td colSpan={6} className="py-4 text-center text-gray-500">
                     No matching orders.
                   </td>
                 </tr>
@@ -244,12 +212,12 @@ export const OrdersDashboard = () => {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* — Paginación */}
         <div className="flex justify-between items-center mt-6 text-sm text-gray-400">
           <div>
             Showing {(currentPage - 1) * itemsPerPage + 1}–{" "}
-            {Math.min(currentPage * itemsPerPage, filtered.length)} of{" "}
-            {filtered.length} orders
+            {Math.min(currentPage * itemsPerPage, totalPage)} of {totalPage}{" "}
+            orders
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -276,8 +244,18 @@ export const OrdersDashboard = () => {
   );
 };
 
-// Reusable dropdown component
-function Dropdown({ label, options, onSelect, labels }) {
+// — Componente Dropdown reutilizable
+function Dropdown({
+  label,
+  options,
+  onSelect,
+  labels,
+}: {
+  label: string;
+  options: string[];
+  onSelect: (v: string) => void;
+  labels?: Record<string, string>;
+}) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button className="border border-gray-600 text-gray-300 px-4 py-2 rounded-md flex items-center">
@@ -298,9 +276,7 @@ function Dropdown({ label, options, onSelect, labels }) {
             <Menu.Item key={opt}>
               {({ active }) => (
                 <button
-                  onClick={() => {
-                    onSelect(opt);
-                  }}
+                  onClick={() => onSelect(opt)}
                   className={`${
                     active ? "bg-gray-700 text-white" : "text-gray-300"
                   } block px-4 py-2 text-sm w-full text-left`}

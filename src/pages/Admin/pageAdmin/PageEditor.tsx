@@ -1,201 +1,100 @@
 // src/components/PageEditor.tsx
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import grapesjs, { Editor } from "grapesjs";
-import "grapesjs/dist/css/grapes.min.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+// Ya no necesitamos axios aquí
+import SkeletonEditor from "@/components/skeletons/SkeletonEditor";
+import GrapesEditor, { Section } from "@/components/admin/pages/GrapesEditor";
+import { useGetPageBySlugQuery } from "@/store/features/api/pageApi";
 
-interface Section {
-  key: string;
-  html: string;
-}
-interface PageResponse {
-  id: number;
-  slug: string;
-  layout?: string | { sections?: Section[] };
+interface PageLayout {
+  sections?: Section[];
+  css?: string;
 }
 
 const PageEditor: React.FC = () => {
   const navigate = useNavigate();
-  const slug = "home";
-  const recordId = 5;
+  const { slug } = useParams<{ slug: string }>();
 
+  // Estado local para las secciones y el CSS inicial:
   const [sections, setSections] = useState<Section[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [initialCss, setInitialCss] = useState<string>("");
 
-  // refs para contenedores y editores
-  const containersRef = useRef<HTMLDivElement[]>([]);
-  const editorsRef = useRef<Editor[]>([]);
+  // 1) Llamada RTK Query:
+  //    useGetPageBySlugQuery retorna { data, error, isLoading, isFetching, ... }
+  const {
+    data: pageData,
+    error: pageError,
+    isLoading,
+    isFetching,
+  } = useGetPageBySlugQuery(slug || "", {
+    // si quisieras revalidar cada vez que slug cambie
+    skip: !slug, // no se ejecuta si slug es undefined
+  });
 
-  // 1) Carga inicial de las secciones
+  // 2) Cuando RTK Query nos traiga la página, extraemos layout.sections y layout.css
   useEffect(() => {
-    (async () => {
+    if (!pageData) return;
+
+    // `pageData.layout` podría ser un string JSON o un objeto ya parseado
+    let layoutObj: PageLayout = {};
+    if (typeof pageData.layout === "string") {
       try {
-        const { data } = await axios.get<PageResponse>(
-          `https://nox-backend-3luc.onrender.com/api/pages/${slug}`
-        );
-        let obj: { sections?: Section[] } = {};
-        if (typeof data.layout === "string") obj = JSON.parse(data.layout);
-        else if (data.layout) obj = data.layout;
-        const secs = obj.sections || [];
-        if (!secs.length) throw new Error("layout.sections vacío");
-
-        // Limpieza de cada sección
-        const clean = secs.map((s) => {
-          const noBody = s.html.replace(/<\/?body[^>]*>/g, "");
-          const unesc = noBody.replace(/\\"/g, `"`).trim();
-          return { key: s.key, html: unesc };
-        });
-        setSections(clean);
-      } catch (e) {
-        console.error("Error cargando página:", e);
-        setError("No se pudo cargar la página.");
-      } finally {
-        setLoading(false);
+        layoutObj = JSON.parse(pageData.layout as string);
+      } catch {
+        layoutObj = {};
       }
-    })();
-  }, [slug]);
-
-  // 2) Inicialización de un editor por sección
-  useEffect(() => {
-    if (loading || error) return;
-
-    // Destruye instancias anteriores
-    editorsRef.current.forEach((ed) => ed.destroy());
-    editorsRef.current = [];
-
-    // Crear uno por cada sección
-    sections.forEach((sec, idx) => {
-      const container = containersRef.current[idx];
-      if (!container) return;
-
-      // Inyectar el HTML inicial en el contenedor
-      container.innerHTML = sec.html;
-
-      const editor = grapesjs.init({
-        container,
-        fromElement: true, // lee el innerHTML
-        height: "600px",
-        storageManager: { autoload: false, autosave: false },
-        canvas: { styles: [`${window.location.origin}/tailwind.css`] },
-      });
-
-      // Inyectar Tailwind en el iframe
-      editor.on("load", () => {
-        const doc = editor.Canvas.getDocument();
-        const link = doc.createElement("link");
-        link.rel = "stylesheet";
-        link.href = `${window.location.origin}/tailwind.css`;
-        doc.head.appendChild(link);
-      });
-
-      // Botón “Guardar esta sección”
-      editor.Panels.addButton("options", [
-        {
-          id: `save-${sec.key}`,
-          label: "Save",
-          command: `save-${sec.key}`,
-          attributes: { title: `Guardar ${sec.key}` },
-        },
-      ]);
-
-      // Comando para guardar sólo esta sección
-      editor.Commands.add(`save-${sec.key}`, {
-        run: async (ed: Editor) => {
-          setSaving(true);
-          try {
-            const html = ed.getHtml();
-            const updated = sections.map((s) =>
-              s.key === sec.key ? { ...s, html } : s
-            );
-            console.log("Guardando sección:", sec.key, html);
-            await axios.put(
-              `https://nox-backend-3luc.onrender.com/api/pages/${recordId}`,
-              {
-                layout: { sections: updated },
-              }
-            );
-            setSections(updated);
-            alert(`Sección ${sec.key} guardada`);
-          } catch (err) {
-            console.error("Error guardando sección:", err);
-            alert("Error al guardar. Mira la consola.");
-          } finally {
-            setSaving(false);
-          }
-        },
-      });
-
-      editorsRef.current[idx] = editor;
-    });
-
-    return () => {
-      editorsRef.current.forEach((ed) => ed.destroy());
-      editorsRef.current = [];
-    };
-  }, [loading, error, sections]);
-
-  // 3) Guardar todas las secciones de golpe
-  const handleSaveAll = async () => {
-    setSaving(true);
-    try {
-      const updated = sections.map((sec, idx) => ({
-        key: sec.key,
-        html: editorsRef.current[idx]?.getHtml() || sec.html,
-      }));
-      console.log("Guardando todas las secciones:", updated);
-      await axios.put(
-        `https://nox-backend-3luc.onrender.com/api/pages/${recordId}`,
-        {
-          layout: { sections: updated },
-        }
-      );
-      setSections(updated);
-      alert("Todas las secciones guardadas");
-    } catch (err) {
-      console.error("Error guardando todas:", err);
-      alert("Error al guardar. Revisa la consola.");
-    } finally {
-      setSaving(false);
+    } else if (pageData.layout && typeof pageData.layout === "object") {
+      layoutObj = pageData.layout as PageLayout;
     }
-  };
 
-  if (loading) return <div className="text-center py-12">Cargando página…</div>;
-  if (error)
+    const secs = layoutObj.sections || [];
+    if (secs.length) {
+      // Limpiamos el HTML de cada sección igual que antes
+      const clean = secs.map((s) => ({
+        key: s.key,
+        html: s.html
+          .replace(/<\/?body[^>]*>/g, "")
+          .replace(/\\"/g, '"')
+          .trim(),
+      }));
+      setSections(clean);
+    } else {
+      // Si no hay secciones, dejarlo vacío
+      setSections([]);
+    }
+
+    setInitialCss(layoutObj.css || "");
+  }, [pageData]);
+
+  // 3) Mostrar skeleton mientras carga o falló la petición
+  if (isLoading || isFetching) {
+    return <SkeletonEditor />;
+  }
+  if (pageError) {
     return (
       <div className="text-center py-12 text-red-600">
-        {error}
+        Error al cargar la página.
         <br />
-        <button onClick={() => navigate("/pages")}>Volver</button>
-      </div>
-    );
-
-  return (
-    <div className="space-y-6 p-4">
-      {sections.map((sec, idx) => (
-        <div key={sec.key} className="border p-2">
-          <h3 className="font-semibold mb-2">{sec.key}</h3>
-          <div
-            ref={(el) => (containersRef.current[idx] = el!)}
-            className="bg-white"
-          />
-        </div>
-      ))}
-
-      <div className="flex justify-end">
-        <button
-          onClick={handleSaveAll}
-          disabled={saving}
-          className={`px-4 py-2 rounded text-white ${
-            saving ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-          }`}
-        >
-          {saving ? "Guardando..." : "Guardar Todo"}
+        <button onClick={() => navigate("/pages")} className="underline">
+          Volver al listado
         </button>
       </div>
-    </div>
+    );
+  }
+
+  // 4) Una vez tenemos `sections` e `initialCss`, renderizamos GrapesEditor
+  return (
+    <GrapesEditor
+      slug={slug!}
+      recordId={pageData!.id}
+      sections={sections}
+      initialCss={initialCss}
+      onSaveSections={(updatedSections, updatedCss) => {
+        // Actualiza el estado local para que GrapesEditor reciba datos frescos
+        setSections(updatedSections);
+        setInitialCss(updatedCss);
+      }}
+    />
   );
 };
 

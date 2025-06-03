@@ -13,12 +13,14 @@ import {
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { MissingSomething } from "./MissingSomething";
 
 export interface MissingItem {
   id: number;
   name: string;
   price: number;
   image: string;
+  options: any[];
 }
 
 interface Props {
@@ -35,12 +37,6 @@ const initialMissingItems: MissingItem[] = [
     name: "check milk",
     price: 4.9,
     image: drinksIMg,
-  },
-  {
-    id: 2,
-    name: "cocal-cola",
-    price: 2.95,
-    image: drinksIMg2,
   },
 ];
 
@@ -93,6 +89,9 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
           name: item.name,
           price: item.price,
           quantity: 1,
+          categoryId: item.categoryId, // asegúrate de que MissingItem lo incluya
+          options: item.options || [],
+          specifications: "",
         })
       );
     }
@@ -150,7 +149,7 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
                       <div className="flex justify-between items-center mt-2">
                         <div className="flex items-center">
                           <img
-                            src={IceCreamIMg}
+                            src={p.imageUrl}
                             alt={p.name}
                             className="size-20 object-cover mr-2 rounded-full"
                           />
@@ -203,42 +202,12 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
                     </div>
                   ))}
                 </div>
-                {/* Sección Missing Something? */}
-                {localMissingItems.length > 0 && (
-                  <div className="mt-4">
-                    <p className=" font-ArialBold text-pompadour-900 text-xl mb-4">
-                      Missing Something?
-                    </p>
-                    <div className="flex ">
-                      {localMissingItems.map((item) => (
-                        <div className="relative m-2" key={item.id}>
-                          <button
-                            onClick={() => handleAddMissingItem(item)}
-                            className="flex  flex-col items-center"
-                          >
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="size-16 object-cover rounded-full"
-                            />
-                            <span className="text-sm font-ArialBold">
-                              {item.name}
-                            </span>
-                            <span className="text-sm font-ArialRegular">
-                              ${item.price}
-                            </span>
-                          </button>
-                          <button
-                            onClick={() => console.log("Añadir nuevo")}
-                            className="absolute -top-3 right-0 bg-grape-900 text-white p-1 rounded-full size-6 flex items-center justify-center"
-                          >
-                            +
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+
+                <div>
+                  {/* ... tu lista de items ... */}
+                  <MissingSomething />
+                  {/* ... resto del checkout ... */}
+                </div>
               </div>
               {/* Botón de Checkout fijo al fondo */}
               <div className="p-4 border-t">

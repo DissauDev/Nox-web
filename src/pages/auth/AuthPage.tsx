@@ -14,7 +14,9 @@ import { Input } from "@headlessui/react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { authSuccess } from "@/store/features/slices/authSlice";
+import { loginSuccess } from "@/store/features/slices/authSlice";
+import { useLoginMutation } from "@/store/features/api/userApi";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Esquema de validación para el formulario de Sign In
 const signInSchema = z.object({
@@ -27,9 +29,10 @@ const signInSchema = z.object({
 
 // Componente SignInForm
 const SignInForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
 
   const dispatch = useDispatch();
 
@@ -41,20 +44,44 @@ const SignInForm = () => {
     },
   });
 
-  async function onSubmit(values) {
-    setLoading(true);
-    setTimeout(() => {
-      console.log("Submitting sign-in:", values);
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
+    try {
+      console.log(values);
+
+      const { user, accessToken, refreshToken } = await login(values).unwrap();
       toast({
-        title: "Sign in complete",
+        title: "User login complete",
+        className: "border-l-4 border-green-500",
         description: "Form submitted successfully.",
       });
-      dispatch(authSuccess({ email: values.email }));
+
+      dispatch(
+        loginSuccess({
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+          accessToken,
+          refreshToken,
+        })
+      );
       form.reset();
-      setLoading(false);
-    }, 2000);
-    navigate("/dashboard");
-    // navigate("/my-account");
+      if (user.role === "USER") {
+        navigate("/account");
+      } else {
+        navigate("/dashboard/orders");
+      }
+    } catch (err) {
+      console.log(err);
+      toast({
+        className: "border-l-4 border-red-500",
+
+        title: "Error",
+        description: err.data?.message || err.error || "Registration failed.",
+      });
+    }
   }
 
   return (
@@ -89,20 +116,34 @@ const SignInForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    {...field}
-                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                  />
-                </FormControl>
-                <FormMessage />
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      {...field}
+                      className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                    />
+                  </FormControl>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className=" absolute right-4  top-1/2 -translate-y-1/2 text-white"
+                  >
+                    {showPassword ? (
+                      <FiEyeOff size={20} />
+                    ) : (
+                      <FiEye size={20} />
+                    )}
+                  </button>
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
           <div className="items-center justify-center mb-6 flex font-ArialBold text-sm">
             <button
+              type="button"
               onClick={() => navigate("/reset-password")}
               className="text-mustard-yellow-400 text-center hover:text-mustard-yellow-500"
             >
@@ -111,14 +152,14 @@ const SignInForm = () => {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className={`w-full py-3 rounded-full ${
-              loading
+              isLoading
                 ? "bg-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800"
             } text-white font-bold transition-colors duration-300 shadow-lg`}
           >
-            {loading ? "Loading..." : "Sign In"}
+            {isLoading ? "Loading..." : "Sign In"}
           </button>
         </form>
       </Form>

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+
 import { motion } from "framer-motion";
 import {
   Form,
@@ -14,14 +14,17 @@ import { Input } from "@headlessui/react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineDone } from "react-icons/md";
-import { authSuccess } from "@/store/features/slices/authSlice";
+import { loginSuccess } from "@/store/features/slices/authSlice";
 import { useDispatch } from "react-redux";
+import { useCreateUserMutation } from "@/store/features/api/userApi";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useState } from "react";
 
 const formSchema = z.object({
-  username: z
+  name: z
     .string()
-    .min(2, { message: "Username must be at least 2 characters long." })
-    .max(20, { message: "Username cannot exceed 20 characters." }),
+    .min(2, { message: "name must be at least 2 characters long." })
+    .max(20, { message: "name cannot exceed 20 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   password: z
     .string()
@@ -34,15 +37,16 @@ const formSchema = z.object({
 });
 
 const SignUpForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
       agreeTerms: false,
@@ -51,18 +55,41 @@ const SignUpForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    setTimeout(() => {
-      console.log("Submitting sign-up:", values);
+    try {
+      console.log(values);
+      const data = { ...values, role: "USER" };
+      const { user, accessToken, refreshToken } = await createUser(
+        data
+      ).unwrap();
+
       toast({
         title: "User register complete",
+        className: "border-l-4 border-green-500",
         description: "Form submitted successfully.",
       });
-      dispatch(authSuccess({ email: values.email, username: values.username }));
+      dispatch(
+        loginSuccess({
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+          accessToken,
+          refreshToken,
+        })
+      );
       form.reset();
-      setLoading(false);
-    }, 2000);
-    navigate("/my-account");
+      navigate("/account");
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: "Error",
+        className: "border-l-4 border-red-500",
+        variant: "destructive",
+        description: err.data?.message || err.error || "Registration failed.",
+      });
+    }
   }
 
   return (
@@ -74,7 +101,7 @@ const SignUpForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="username"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -82,7 +109,7 @@ const SignUpForm = () => {
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
-                    placeholder="Username"
+                    placeholder="name"
                     {...field}
                     className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
                     border  focus:outline-none focus:border-purple-500 transition-colors duration-300"
@@ -118,16 +145,29 @@ const SignUpForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    {...field}
-                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      {...field}
+                      className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
                     border  focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                  />
-                </FormControl>
-                <FormMessage />
+                    />
+                  </FormControl>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className=" absolute right-4  top-1/2 -translate-y-1/2 text-white"
+                  >
+                    {showPassword ? (
+                      <FiEyeOff size={20} />
+                    ) : (
+                      <FiEye size={20} />
+                    )}
+                  </button>
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
@@ -216,14 +256,14 @@ const SignUpForm = () => {
           {/* Botón de Envío con Estado de Carga */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className={`w-full py-3 rounded-full ${
-              loading
+              isLoading
                 ? "bg-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-bold transition "
             } text-white font-ArialBold transition-colors duration-300 shadow-md`}
           >
-            {loading ? "Loading..." : "Sign Up"}
+            {isLoading ? "Loading..." : "Sign Up"}
           </button>
           <div className="flex items-center justify-center mt-6">
             <a

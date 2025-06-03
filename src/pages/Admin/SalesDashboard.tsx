@@ -3,7 +3,10 @@ import DateRangeSelector, {
 } from "@/components/admin/DateRangeSelector";
 import SalesCompareCharts from "@/components/admin/SalesCompareCharts";
 import StatCard from "@/components/admin/Statcard";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
+import { useGetPerformanceQuery } from "@/store/features/api/analitycsApi";
+import SkeletonCard from "@/components/skeletons/SkeletonCard";
+import TopSellingSkeleton from "@/components/skeletons/TopSellingSkeleton";
 
 const generateTrendData = () => {
   return Array.from({ length: 7 }, () => ({
@@ -11,63 +14,66 @@ const generateTrendData = () => {
   }));
 };
 
-const simulateFetchData = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        totalSales: {
-          title: "Total Sales",
-          value: "$5,420.00",
-          percentage: 12,
-          isPositive: true,
-          comparisonText: "vs. Previous year",
-        },
-        orders: {
-          title: "Orders",
-          value: 124,
-          percentage: -8,
-          isPositive: false,
-          comparisonText: "vs. Previous year",
-        },
-        productsSold: {
-          title: "Products Sold",
-          value: 312,
-          percentage: 5,
-          isPositive: true,
-          comparisonText: "vs. Previous year",
-        },
-        variationsSold: {
-          title: "Variations Sold",
-          value: 87,
-          percentage: 3,
-          isPositive: true,
-          comparisonText: "vs. Previous year",
-        },
-      });
-    }, 1000);
-  });
-};
-
 const SalesDashboard = () => {
   const [dateRangeLabel, setDateRangeLabel] = useState("Month to date");
   const [compareLabel, setCompareLabel] = useState("Previous year");
   const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
   const [compareRange, setCompareRange] = useState<DateRange | null>(null);
-  const [data, setData] = useState<any>(null);
 
-  useEffect(() => {
-    simulateFetchData().then((res: any) => {
-      setData({
-        totalSales: { ...res.totalSales, trendData: generateTrendData() },
-        orders: { ...res.orders, trendData: generateTrendData() },
-        productsSold: { ...res.productsSold, trendData: generateTrendData() },
-        variationsSold: {
-          ...res.variationsSold,
-          trendData: generateTrendData(),
-        },
-      });
-    });
-  }, [dateRangeLabel, compareLabel]);
+  const {
+    data: perfData,
+    isLoading,
+    isError,
+  } = useGetPerformanceQuery(
+    {
+      start: selectedRange?.startDate.toISOString() ?? "",
+      end: selectedRange?.endDate.toISOString() ?? "",
+      compareStart: compareRange?.startDate.toISOString() ?? "",
+      compareEnd: compareRange?.endDate.toISOString() ?? "",
+    },
+    { skip: !selectedRange || !compareRange }
+  );
+
+  const stats = useMemo(() => {
+    if (!perfData) return null;
+    return {
+      totalSales: {
+        title: "Total Sales",
+        value: `$${perfData.totalSales.current.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`,
+        percentage: perfData.totalSales.pctChange,
+        isPositive: perfData.totalSales.pctChange >= 0,
+        comparisonText: `vs ${compareLabel}`,
+        trendData: generateTrendData(),
+      },
+      orders: {
+        title: "Orders",
+        value: perfData.orders.current,
+        percentage: perfData.orders.pctChange,
+        isPositive: perfData.orders.pctChange >= 0,
+        comparisonText: `vs ${compareLabel}`,
+        trendData: generateTrendData(),
+      },
+      productsSold: {
+        title: "Products Sold",
+        value: perfData.productsSold.current,
+        percentage: perfData.productsSold.pctChange,
+        isPositive: perfData.productsSold.pctChange >= 0,
+        comparisonText: `vs ${compareLabel}`,
+        trendData: generateTrendData(),
+      },
+      variationsSold: {
+        title: "Variations Sold",
+        value: perfData.variationsSold.current,
+        percentage: perfData.variationsSold.pctChange,
+        isPositive: perfData.variationsSold.pctChange >= 0,
+        comparisonText: `vs ${compareLabel}`,
+        trendData: generateTrendData(),
+      },
+    };
+  }, [perfData, compareLabel]);
 
   return (
     <div className="p-6 space-y-6">
@@ -86,24 +92,37 @@ const SalesDashboard = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        {data ? (
-          <>
-            <StatCard {...data.totalSales} />
-            <StatCard {...data.orders} />
-            <StatCard {...data.productsSold} />
-            <StatCard {...data.variationsSold} />
-          </>
-        ) : (
+        {isLoading || !stats ? (
           <div className="col-span-4 text-center text-gray-500">
-            Loading data...
+            <div className="flex-col">
+              <div className="flex-row">
+                <SkeletonCard />
+              </div>
+
+              <div className="flex gap-4">
+                <TopSellingSkeleton />
+                <TopSellingSkeleton />
+              </div>
+            </div>
           </div>
+        ) : isError ? (
+          <div className="col-span-4 text-center text-red-500">
+            Error loading data.
+          </div>
+        ) : (
+          <>
+            <StatCard {...stats.totalSales} />
+            <StatCard {...stats.orders} />
+            <StatCard {...stats.productsSold} />
+            <StatCard {...stats.variationsSold} />
+          </>
         )}
       </div>
 
-      {selectedRange && compareRange && (
+      {selectedRange && compareRange && perfData?.trends && (
         <SalesCompareCharts
-          selectedRange={selectedRange}
-          compareRange={compareRange}
+          salesTrend={perfData.trends.sales}
+          ordersTrend={perfData.trends.orders}
         />
       )}
     </div>

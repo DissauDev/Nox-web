@@ -156,29 +156,13 @@ export default {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
-  		
-  		fontFamily: {
-  			ArialBold: [
-  				'ArialBold',
-  				'sans-serif'
-  			],
-  			ArialRegular: [
-  				'ArialRegular',
-  				'sans-serif'
-  			],
-  			ArialLight: [
-  				'ArialLight',
-  				'sans-serif'
-  			],
-  			CamilaFont: [
-  				'CamilaFont ',
-  				'sans-serif'
-  			],
-  			FreeStyleFont: [
-  				'FreeStyleFont',
-  				'sans-serif'
-  			]
-  		},
+		  fontFamily: {
+			ArialBold:   ['ArialBold','sans-serif'],
+			ArialRegular:['ArialRegular','sans-serif'],
+			ArialLight:  ['ArialLight','sans-serif'],
+			CamilaFont:  ['CamilaFont','sans-serif'],    // ← no 'CamilaFont '
+			FreeStyleFont:['FreeStyleFont','sans-serif'],
+		  },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

@@ -1,63 +1,169 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "lucide-react";
 import { FaCheck, FaChevronLeft } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useDeleteOrderMutation,
+  useGetOrderQuery,
+  useGetUserOrdersQuery,
+  useRefundOrderMutation,
+  useUpdateOrderStatusMutation,
+} from "@/store/features/api/ordersApi";
+import { toast } from "@/hooks/use-toast";
+import { Spinner } from "@/components/ui/Spinner";
 
-export const OrderDetails = () => {
-  // --- Dummy order data
-  const [order, setOrder] = useState({
-    id: 8811,
-    date: "2025-03-18",
-    timeHour: "19",
-    timeMinute: "54",
-    status: "Processing",
-    customerType: "Guest", // Guest or Registered user
-    billing: {
-      name: "Mauricio García",
-      street: "new colorado",
-      city: "California, CA 33123",
-      email: "mauricio@gmail.com",
-      phone: "+1 690 902-6463",
-    },
-    items: [
-      {
-        image: "/placeholder.svg",
-        name: "Regular Scoop Ice Cream - Cake Cone",
-        sku: "IR",
-        variationId: 8418,
-        containers: "Cake Cone",
-        flavors: "Rainbow Sherbet",
-        cost: "$6.10",
-        qty: 1,
-        total: "$6.10",
-      },
-    ],
-    totals: {
-      subtotal: "$6.10",
-      total: "$6.10",
-    },
-    attribution: {
-      origin: "Direct",
-      device: "Desktop",
-      pageViews: 17,
-    },
-    customerHistory: {
-      totalOrders: 3,
-      totalRevenue: "$31.05",
-      avgOrder: "$10.35",
-    },
+export const OrderDetails: React.FC = () => {
+  const navigate = useNavigate();
+  const { orderkey } = useParams<{ orderkey: string }>();
+
+  const ACTIONS = ["Choose an action", "Mark as Complete"];
+  const [action, setAction] = useState(ACTIONS[0]);
+
+  // 1️⃣ Consulta la orden
+  const {
+    data: order,
+    isLoading: loadingOrder,
+    isError: errorOrder,
+  } = useGetOrderQuery(orderkey!);
+
+  // 2️⃣ Consulta el historial del usuario sólo cuando tengamos order.customerEmail
+  const {
+    data: userOrders,
+    isLoading: loadingUserOrders,
+    isError: errorUserOrders,
+  } = useGetUserOrdersQuery(order?.customerEmail ?? "", {
+    skip: !order?.customerEmail,
   });
 
-  // --- State for dropdowns
-  const [status, setStatus] = useState(order.status);
-  const [customerType, setCustomerType] = useState(order.customerType);
+  const [refundOrder, { isLoading: isRefunding }] = useRefundOrderMutation();
 
+  const handleRefund = async () => {
+    if (!order) return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      await refundOrder({
+        id: order.id,
+        totalAmount: order.totalAmount,
+      }).unwrap();
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "✅ Refund Successful",
+        description: "El reembolso se ha procesado correctamente.",
+      });
+    } catch (err) {
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "❌ Refund Failed",
+        description:
+          err.message || "Ha ocurrido un error al procesar el reembolso.",
+      });
+    }
+  };
+  const [status, setStatus] = useState<string>("");
+
+  const [updateOrderStatus, { isLoading: isUpdating }] =
+    useUpdateOrderStatusMutation();
+
+  const handleChangeStatus = async (newStatus: string) => {
+    try {
+      // Llamamos a la mutation
+      const updated = await updateOrderStatus({
+        id: order.id,
+        status: newStatus,
+      }).unwrap();
+      setStatus(updated.status);
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "✅ Status updated",
+        description: `Order status changed to "${newStatus}".`,
+      });
+    } catch (err: any) {
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "❌ Update failed",
+        description:
+          err.data?.message ||
+          err.message ||
+          "No se pudo actualizar el status.",
+      });
+    } finally {
+      setStatus(newStatus);
+    }
+  };
+
+  const [deleteOrder, { isLoading: isDeleting }] = useDeleteOrderMutation();
+
+  // Handler de reembolso, ahora sí usa order.id solo cuando order ya está definido
+  const handleDelete = async () => {
+    if (!order) return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      await deleteOrder(order.id).unwrap();
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "✅ Refund Successful",
+        description: "Order Delete Successfull",
+      });
+      navigate("/dashboard/orders");
+    } catch (err) {
+      toast({
+        className:
+          "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+        title: "❌ Delete order failed",
+        description: err.message || "Was an error to delete order",
+      });
+    }
+  };
+
+  // 3️⃣ Inicializa el estado `status` cuando llegue la orden
+  useEffect(() => {
+    if (order) {
+      setStatus(order.status);
+    }
+  }, [order]);
+
+  const handleAction = () => {
+    if (action === "Mark as Complete") {
+      handleChangeStatus("COMPLETED");
+    }
+  };
+
+  // ─── Manejo de loaders / errores ───
+  // 3.1  Espera primero la orden
+  if (loadingOrder) return <h2>Loading order…</h2>;
+  if (errorOrder || !order) {
+    return <p className="text-center text-red-500">Error loading order.</p>;
+  }
+
+  // 3.2  Luego espera el historial
+  if (loadingUserOrders) return <h2>Loading user history…</h2>;
+  if (errorUserOrders) {
+    return (
+      <p className="text-center text-red-500">Error loading user history.</p>
+    );
+  }
+
+  // A estas alturas ya tienes `order` y `userOrders` seguros
   const borderColor = "border border-[#036666]";
-  const focusBorder = "focus:border-[#15CAB8] ";
-  const navigate = useNavigate();
+  const focusBorder = "focus:border-[#15CAB8]";
+  const date = new Date(order.createdAt).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
   return (
-    <div className="p-6  text-white">
+    <div className="p-6 text-white">
       <div className="flex items-center">
         <button
           className="hover:text-gray-300"
@@ -65,122 +171,79 @@ export const OrderDetails = () => {
         >
           <FaChevronLeft size={28} className="mx-4" />
         </button>
-
-        <h1 className="text-2xl font-bold my-4">Orders Details</h1>
+        <h1 className="text-2xl font-bold my-4">Order Details</h1>
       </div>
-      <div className="max-w-7xl mx-auto flex gap-6">
-        {/* Main */}
+
+      <div className="max-w-7xl mx-auto flex  gap-6">
+        {/* ── MAIN ── */}
         <div className="flex-1 space-y-6">
           {/* General + Billing */}
           <div className="border-2 border-[#7436A2] p-6 rounded-md">
-            <div className="grid grid-cols-3 gap-6">
-              {/* Left: General (spans 2 cols) */}
+            <div className="flex lg:flex-row justify-around flex-col ">
+              {/* General (2 cols) */}
               <div className="col-span-2 space-y-6">
                 <h2 className="text-lg font-semibold">General</h2>
 
-                {/* Date & Time */}
+                {/* Date created */}
                 <div className="flex flex-wrap gap-4">
                   <label className="block">
                     <span className="text-sm text-gray-300">Date created:</span>
-                    <div>
-                      <input
-                        type="date"
-                        value={order.date}
-                        onChange={(e) =>
-                          setOrder((o) => ({ ...o, date: e.target.value }))
-                        }
-                        className={`mt-1 bg-transparent border border-[#036666]  focus:outline-none focus:ring-0
-  focus:border-[#15CAB8] rounded px-3 py-2`}
-                      />
-                    </div>
-                  </label>
-                  <label className="block">
-                    <span className="text-sm text-gray-300 ">Time:</span>
-                    <div className="flex gap-2 mt-1">
-                      <input
-                        min="0"
-                        max="23"
-                        value={order.timeHour}
-                        onChange={(e) =>
-                          setOrder((o) => ({ ...o, timeHour: e.target.value }))
-                        }
-                        className={`w-16 bg-transparent border border-[#036666] 
-                          rounded px-2 py-2 text-center  focus:outline-none focus:ring-0
-  focus:border-[#15CAB8]`}
-                      />
-                      <span className="px-1 text-gray-400">:</span>
-                      <input
-                        min="0"
-                        max="59"
-                        value={order.timeMinute}
-                        onChange={(e) =>
-                          setOrder((o) => ({
-                            ...o,
-                            timeMinute: e.target.value,
-                          }))
-                        }
-                        className={`w-16 bg-transparent border border-[#036666] 
-                          rounded px-2 py-2 text-center  focus:outline-none focus:ring-0
-  focus:border-[#15CAB8]`}
-                      />
-                    </div>
+                    <h3
+                      className={`${borderColor} ${focusBorder} mt-1 rounded px-3 py-2 bg-transparent`}
+                    >
+                      {date}
+                    </h3>
                   </label>
                 </div>
 
-                {/* Status & Customer */}
-                <div className="grid grid-cols-2 gap-4">
+                {/* Status & CustomerType */}
+                <div className="flex gap-2 text-sm ">
                   <Dropdown
                     label={`Status: ${status}`}
                     options={[
-                      "Processing",
-                      "Completed",
-                      "On Hold",
-                      "Cancelled",
+                      "PAID",
+                      "PROCESSING",
+                      "FAILED",
+                      "READY_FOR_PICKUP",
+                      "CANCELLED",
                     ]}
-                    onSelect={(v) => {
-                      setStatus(v);
-                      setOrder((o) => ({ ...o, status: v }));
-                    }}
+                    onSelect={(v) => setStatus(v)}
                     borderColor={borderColor}
                     focusBorder={focusBorder}
                   />
-                  <Dropdown
-                    label={`Customer: ${customerType}`}
-                    options={["Guest", "Registered"]}
-                    onSelect={(v) => {
-                      setCustomerType(v);
-                      setOrder((o) => ({ ...o, customerType: v }));
-                    }}
-                    borderColor={borderColor}
-                    focusBorder={focusBorder}
-                  />
+                  <button
+                    className="bg-[#036666] hover:bg-[#2a857c] px-4 py-2 rounded flex items-center justify-center"
+                    disabled={isUpdating}
+                    onClick={() => handleChangeStatus(status)}
+                  >
+                    {isUpdating ? <Spinner className="w-6 h-6" /> : <FaCheck />}
+                  </button>
                 </div>
               </div>
 
-              {/* Right: Billing */}
+              {/* Billing */}
               <div className="space-y-2 ml-2">
                 <h3 className="text-lg font-ArialBold">Billing</h3>
-                <p className="">{order.billing.name}</p>
-                <p>{order.billing.street}</p>
-                <p>{order.billing.city}</p>
+                <p>{order.customerName}</p>
+                <p>{order.customerAddress}</p>
                 <a
-                  href={`mailto:${order.billing.email}`}
+                  href={`mailto:${order.customerEmail}`}
                   className="text-blue-400 hover:underline block"
                 >
-                  {order.billing.email}
+                  {order.customerEmail}
                 </a>
                 <a
-                  href={`tel:${order.billing.phone}`}
+                  href={`tel:${order.customerPhone}`}
                   className="text-blue-400 hover:underline block"
                 >
-                  {order.billing.phone}
+                  {order.customerPhone}
                 </a>
               </div>
             </div>
           </div>
 
           {/* Items */}
-          <div className={`border-2 border-[#7436A2] p-6 rounded-md`}>
+          <div className="border-2 border-[#7436A2] p-6 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Items</h2>
             <table className="w-full text-sm">
               <thead>
@@ -192,38 +255,50 @@ export const OrderDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {order.items.map((it, i) => (
+                {order.items.map((it) => (
                   <tr
-                    key={i}
+                    key={it.id}
                     className="hover:bg-gray-900 border-b border-gray-700"
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-start gap-3">
                         <img
-                          src={it.image}
-                          alt=""
+                          src={it.product.imageLeft.url}
                           className="w-10 h-10 rounded"
+                          alt=""
                         />
                         <div>
-                          <div className="font-medium">{it.name}</div>
-                          <div className="text-xs text-gray-400">
-                            SKU: {it.sku}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            Variation ID: {it.variationId}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            Containers: {it.containers}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            Ice Cream Flavors: {it.flavors}
-                          </div>
+                          <div className="font-medium">{it.product.name}</div>
+
+                          {/* Opciones de item */}
+                          {it.chosenOptions.length > 0 && (
+                            <div className="text-xs text-gray-400 space-y-1">
+                              {it.chosenOptions.map((opt) => (
+                                <p key={opt.id}>
+                                  <span className="font-ArialBold">
+                                    {opt.groupName}:
+                                  </span>{" "}
+                                  {opt.name}
+                                  {opt.extraPrice! > 0 &&
+                                    ` (+$${opt.extraPrice.toFixed(2)})`}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+                          {/* Specifications opcional */}
+                          {it.product.specifications && (
+                            <p className="text-xs italic text-gray-500 mt-1">
+                              Specs: {it.product.specifications}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{it.cost}</td>
-                    <td className="px-4 py-3">{it.qty}</td>
-                    <td className="px-4 py-3">{it.total}</td>
+                    <td className="px-4 py-3">${it.price.toFixed(2)}</td>
+                    <td className="px-4 py-3">{it.quantity}</td>
+                    <td className="px-4 py-3">
+                      ${(it.price * it.quantity).toFixed(2)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -231,108 +306,105 @@ export const OrderDetails = () => {
 
             {/* Totals & Refund */}
             <div className="flex justify-between items-center mt-6">
-              <button className="bg-rose-700 hover:bg-rose-800 font-ArialBold px-4 py-2 rounded">
-                Refund
+              <button
+                className="bg-rose-700 hover:bg-rose-800 font-ArialBold px-4 py-2 rounded"
+                onClick={handleRefund}
+                disabled={isRefunding}
+              >
+                {isRefunding ? <Spinner className="w-6 h-6" /> : "Refund"}
               </button>
               <div className="text-right space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span>Items Subtotal:</span>
-                  <span>{order.totals.subtotal}</span>
+                  <span>${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-semibold">
                   <span>Order Total:</span>
-                  <span>{order.totals.total}</span>
+                  <span>${order.totalAmount.toFixed(2)}</span>
                 </div>
               </div>
             </div>
-
             <p className="mt-4 text-gray-500 text-xs">
               ● This order is no longer editable.
             </p>
           </div>
         </div>
-        {/* Sidebar */}
-        <aside className="w-80 space-y-6">
+
+        {/* ── SIDEBAR ── */}
+        <aside className=" space-y-6">
           {/* Order Actions */}
-          <div className={`border-2 border-[#7436A2] p-6 rounded-md space-y-4`}>
+          <div className="border-2 border-[#7436A2] p-2 rounded-md space-y-4">
             <h2 className="font-semibold">Order Actions</h2>
-            <div className="flex gap-2 min-w-full">
+            <div className="flex gap-2 text-sm">
               <Dropdown
-                label={` ${status}`}
-                options={[
-                  "Chosse an action",
-                  "Mark as Complete",
-                  "Send Invoce",
-                ]}
-                onSelect={(v) => {
-                  setStatus(v);
-                  setOrder((o) => ({ ...o, status: v }));
-                }}
+                label={`Action: ${action}`}
+                options={ACTIONS}
+                onSelect={setAction}
                 borderColor={borderColor}
                 focusBorder={focusBorder}
               />
-              {/* <select
-                className={`bg-gray-900 ${borderColor} ${focusBorder} rounded px-3 py-2 flex-1`}
+              <button
+                className="bg-[#036666] hover:bg-[#2a857c] px-4 py-2 rounded flex items-center justify-center disabled:opacity-50"
+                onClick={handleAction}
+                disabled={action === ACTIONS[0] || isUpdating}
               >
-                <option>Choose an action...</option>
-                <option>Mark as Complete</option>
-                <option>Send Invoice</option>
-              </select> */}
-              <button className="bg-[#036666] hover:bg-[#2a857c] px-4 py-2 rounded">
-                <FaCheck />
+                {isUpdating ? <Spinner className="w-5 h-5" /> : <FaCheck />}
               </button>
             </div>
-            <button className="text-rose-600 hover:underline text-sm">
-              Move to Trash
+            <button
+              disabled={isDeleting || isRefunding || isUpdating}
+              className="text-rose-600 hover:underline text-sm h-6"
+              onClick={handleDelete}
+            >
+              {isDeleting ? "Deleting..." : " Move to Trash"}
             </button>
           </div>
 
-          {/* Order Attribution */}
-          <div
-            className={`border-2  border-[#7436A2]  p-6 rounded-md space-y-2`}
-          >
+          <div className="border-2 border-[#7436A2] p-6 rounded-md space-y-2">
             <h2 className="font-semibold">Order Attribution</h2>
             <div className="text-sm text-gray-300">
               <p>
                 <span className="font-medium">Origin:</span>{" "}
-                {order.attribution.origin}
-              </p>
-              <p>
-                <span className="font-medium">Device type:</span>{" "}
-                {order.attribution.device}
-              </p>
-              <p>
-                <span className="font-medium">Session page views:</span>{" "}
-                {order.attribution.pageViews}
+                {order.customerAddress ===
+                "422 E Campbell Ave, Campbell, CA 95008"
+                  ? "Pickup"
+                  : "Delivery"}
               </p>
             </div>
           </div>
 
-          {/* Customer History */}
-          <div
-            className={`border-2  border-[#7436A2]  p-6 rounded-md space-y-2`}
-          >
+          <div className="border-2 border-[#7436A2] p-6 rounded-md space-y-2">
             <h2 className="font-semibold">Customer History</h2>
-            <div className="text-sm text-gray-300">
-              <p>
-                <span className="font-medium">Total orders:</span>{" "}
-                {order.customerHistory.totalOrders}
-              </p>
-              <p>
-                <span className="font-medium">Total revenue:</span>{" "}
-                {order.customerHistory.totalRevenue}
-              </p>
-              <p>
-                <span className="font-medium">Average order value:</span>{" "}
-                {order.customerHistory.avgOrder}
-              </p>
-            </div>
+            {loadingUserOrders ? (
+              <div className="text-sm text-gray-300 space-y-2">
+                <div className="h-4 bg-gray-700 rounded w-1/3 animate-pulse"></div>
+                <div className="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
+                <div className="h-4 bg-gray-700 rounded w-2/5 animate-pulse"></div>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-300">
+                <p>
+                  <span className="font-medium">Total orders:</span>{" "}
+                  {userOrders.resume.count}
+                </p>
+                <p>
+                  <span className="font-medium">Total revenue:</span> $
+                  {userOrders.resume.totalSpent}
+                </p>
+                <p>
+                  <span className="font-medium">Avg. order:</span> $
+                  {userOrders.resume.average}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Order Notes */}
-          <div className={`border-2  border-[#7436A2]  p-6 rounded-md`}>
+          <div className="border-2 border-[#7436A2] p-6 rounded-md">
             <h2 className="font-semibold">Order Notes</h2>
-            <p className="text-gray-500 text-sm">No notes yet.</p>
+            <p className="text-gray-500 text-sm">
+              {order.specifications || "No notes yet."}
+            </p>
           </div>
         </aside>
       </div>
@@ -343,7 +415,7 @@ export const OrderDetails = () => {
 // Simple Headless UI dropdown
 function Dropdown({ label, options, onSelect, borderColor, focusBorder }) {
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative inline-block text-left w-50">
       <Menu.Button
         className={`w-full text-left  ${borderColor} ${focusBorder} rounded px-4 py-2 flex items-center justify-between`}
       >

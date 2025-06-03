@@ -1,27 +1,31 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import NoxBanner from "../../assets/nox-banner.png";
 import NoxSideBar from "../../assets/nox-sideBar.png";
 import { FiShoppingBag, FiTruck } from "react-icons/fi";
-import { setAddress } from "../../store/features/slices/addressSlice";
-import AddressModal from "../atoms/home/AddressModal";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+//import { setAddress } from "../../store/features/slices/addressSlice";
+//import AddressModal from "../atoms/home/AddressModal";
+import { useAppSelector } from "../../store/hooks";
 import CustomModal from "./CustomModal";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [addressModalOpen, setAddressModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
+  //const [addressModalOpen, setAddressModalOpen] = useState(false);
+  //const dispatch = useAppDispatch();
+
+  const location = useLocation();
   const savedAddress = useAppSelector((state) => state.address.savedAddress);
   const products = useAppSelector((state) => state.orders.products);
   const totalQuantity = products.length;
+  const userAuth = useAppSelector((state) => state.auth.user);
   const [modalType, setModalType] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const bannerRef = useRef<HTMLDivElement>(null);
-
+  const showAddressSection =
+    location.pathname === "/" || location.pathname === "/home";
   // Función para actualizar la variable CSS de la altura del banner
   const updateBannerHeight = () => {
     if (bannerRef.current) {
@@ -132,7 +136,7 @@ export const Banner: React.FC = () => {
           <li>
             {isAuth ? (
               <NavLink
-                to="/my-account"
+                to={userAuth.role === "USER" ? "/account" : "/dashboard"}
                 className={({ isActive }) =>
                   `hover:text-mustard-yellow-400 transition duration-300 ${
                     isActive
@@ -141,7 +145,7 @@ export const Banner: React.FC = () => {
                   }`
                 }
               >
-                My account
+                {userAuth.role === "USER" ? " My account" : "Dashboard"}
               </NavLink>
             ) : (
               <NavLink
@@ -204,12 +208,15 @@ export const Banner: React.FC = () => {
             className="h-10 w-auto object-contain"
           />
         </NavLink>
-        <NavLink
-          to="/signin"
-          className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
-        >
-          Sign In / Sign Up
-        </NavLink>
+        {!isAuth && (
+          <NavLink
+            to="/auth"
+            className="font-ArialBold p-2 rounded-full bg-mustard-yellow-400 text-black-night-950 hover:bg-mustard-yellow-500 transition duration-300"
+          >
+            Sign In / Sign Up
+          </NavLink>
+        )}
+
         <button onClick={toggleModal} className="text-white text-2xl">
           {modalOpen ? <FaTimes /> : <FaBars />}
         </button>
@@ -251,24 +258,57 @@ export const Banner: React.FC = () => {
               ></span>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-6 text-lg font-medium">
-            {["Profile", "Contact us", "Blog", "About us"].map(
-              (item, index) => (
-                <button
-                  key={index}
-                  className="hover:opacity-75 transition duration-300 text-valentino-950"
-                  onClick={() => setModalOpen(false)}
-                >
-                  {item}
-                </button>
-              )
+          {/* Nuevos enlaces dinámicos: Profile, Contact Us, Blog */}
+          <div className="grid grid-cols-1 gap-6 text-lg font-medium">
+            {/* Profile */}
+            {isAuth ? (
+              <NavLink
+                to={userAuth.role === "USER" ? "/account" : "/dashboard"}
+                className={({ isActive }) =>
+                  `hover:text-mustard-yellow-400 transition duration-300 ${
+                    isActive
+                      ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                      : ""
+                  }`
+                }
+              >
+                {userAuth.role === "USER" ? " My account" : "Dashboard"}
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/auth"
+                className="hover:opacity-75 transition duration-300 text-valentino-950 text-center"
+                onClick={() => setModalOpen(false)}
+              >
+                Profile
+              </NavLink>
             )}
+
+            {/* Contact Us */}
+            <NavLink
+              to="/contact-us"
+              className="hover:opacity-75 transition duration-300 text-valentino-950 text-center"
+              onClick={() => setModalOpen(false)}
+            >
+              Contact Us
+            </NavLink>
+
+            {/* Blog (externo) */}
+            <a
+              href="https://nox.dissau.site/blog/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-75 transition duration-300 text-valentino-950 text-center"
+              onClick={() => setModalOpen(false)}
+            >
+              Blog
+            </a>
           </div>
         </div>
       )}
 
       {/* Se muestra extensión si hay dirección guardada */}
-      {savedAddress && (
+      {showAddressSection && savedAddress && (
         <div className="border-t border-gray-300">
           <div className="hidden md:flex items-center px-14 py-2">
             <div className="flex items-center space-x-2">
@@ -293,12 +333,13 @@ export const Banner: React.FC = () => {
               <span className="text-affair-500 font-ArialBold">
                 {savedAddress.fullAddress}
               </span>
-              <button
-                onClick={() => setAddressModalOpen(true)}
+              <a
+                target="_blank"
+                href="https://www.google.com/maps/place/422+E+Campbell+Ave,+Campbell,+CA+95008/@37.2869301,-121.9425607,16z/data=!3m1!4b1!4m6!3m5!1s0x808e34de644e1383:0xc1a0f0116d73eac4!8m2!3d37.2869301!4d-121.9425607!16s%2Fg%2F11c177bkr9?entry=ttu&g_ep=EgoyMDI1MDUyNi4wIKXMDSoASAFQAw%3D%3D"
                 className="text-mustard-yellow-400 hover:border-b-2 font-ArialRegular border-mustard-yellow-400"
               >
-                Change
-              </button>
+                On Map
+              </a>
             </div>
           </div>
           <div className="md:hidden px-6 py-2">
@@ -315,18 +356,19 @@ export const Banner: React.FC = () => {
               <span className="text-affair-500 font-bold">
                 {savedAddress.fullAddress}
               </span>
-              <button
-                onClick={() => setAddressModalOpen(true)}
+              <a
+                target="_blank"
+                href="https://www.google.com/maps/place/422+E+Campbell+Ave,+Campbell,+CA+95008/@37.2869301,-121.9425607,16z/data=!3m1!4b1!4m6!3m5!1s0x808e34de644e1383:0xc1a0f0116d73eac4!8m2!3d37.2869301!4d-121.9425607!16s%2Fg%2F11c177bkr9?entry=ttu&g_ep=EgoyMDI1MDUyNi4wIKXMDSoASAFQAw%3D%3D"
                 className="text-mustard-yellow-400 hover:underline"
               >
-                Change
-              </button>
+                On Map
+              </a>
             </div>
           </div>
         </div>
       )}
 
-      {addressModalOpen && (
+      {/*addressModalOpen && (
         <AddressModal
           isOpen={addressModalOpen}
           onClose={() => setAddressModalOpen(false)}
@@ -335,7 +377,7 @@ export const Banner: React.FC = () => {
             dispatch(setAddress({ ...address, type }));
           }}
         />
-      )}
+      ) */}
     </header>
   );
 };
