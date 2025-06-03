@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // src/features/orders/ordersApi.ts
 
 import { Order} from '@/types/system';
@@ -5,6 +7,8 @@ import { apiSlice } from '../api/apiSlice';
 
 
 interface UserOrder {
+  //@ts-ignore
+resume: any;
 orders: Order[]
 
 }

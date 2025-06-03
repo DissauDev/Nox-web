@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/features/products/productsApi.ts
 
 import { Product, ProductOption } from '@/types/system';
@@ -90,7 +91,7 @@ export const productsApi = apiSlice.injectEndpoints({
     // 8. Listar opciones de un producto
     getProductOptions: build.query<ProductOption[], string>({
       query: (id) => ({ url: `/products/${id}/options`, method: 'GET' }),
-      providesTags: (result = [], _err, id) => [
+      providesTags: (result = [], _err,) => [
         { type: 'ProductOptions' as const, id: 'LIST' },
         ...result.map(({ id: optId }) => ({ type: 'ProductOptions' as const, id: optId })),
       ],

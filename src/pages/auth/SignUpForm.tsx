@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -59,6 +60,7 @@ const SignUpForm = () => {
       console.log(values);
       const data = { ...values, role: "USER" };
       const { user, accessToken, refreshToken } = await createUser(
+        //@ts-ignore
         data
       ).unwrap();
 

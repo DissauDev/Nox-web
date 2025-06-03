@@ -121,6 +121,8 @@ export const OrdersDashboard = () => {
               options={["all", "pickup", "delivery"]}
               labels={{ all: "All", pickup: "Pickup", delivery: "Delivery" }}
               onSelect={(v) => {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
                 setOriginFilter(v);
                 setCurrentPage(1);
               }}

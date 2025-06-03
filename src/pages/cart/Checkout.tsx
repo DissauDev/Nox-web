@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";

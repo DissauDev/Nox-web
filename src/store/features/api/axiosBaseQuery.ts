@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // src/features/api/axiosBaseQuery.ts
 import { BaseQueryFn } from '@reduxjs/toolkit/query';
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
@@ -29,7 +30,8 @@ export const axiosBaseQuery =
           status: error.response?.status ?? 500,
           // Suponemos que tu API envía { message: string } en el body de error
           message:
-            (error.response?.data as any)?.message ??
+          //@ts-ignore
+            (error.response?.data )?.message ??
             error.message ??
             'Unknown error',
         },

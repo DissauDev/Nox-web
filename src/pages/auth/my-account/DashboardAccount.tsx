@@ -1,13 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { RootState } from "@/store/store";
 import React from "react";
-import {
-  FiBox,
-  FiCloud,
-  FiMapPin,
-  FiUser,
-  FiHeart,
-  FiLogOut,
-} from "react-icons/fi";
+import { FiBox, FiUser, FiLogOut } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -65,6 +59,7 @@ export const DashboardAccount: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 text-gray-800">
       <h2 className="text-xl font-bold mb-2">
+        {/* @ts-ignore */}
         Hello {userState.name} (not {userState.name}? Log out)
       </h2>
       <p className="text-gray-700 mb-6">

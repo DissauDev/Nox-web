@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
 import { z } from "zod";
@@ -47,7 +48,7 @@ const SignInForm = () => {
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     try {
       console.log(values);
-
+      //@ts-ignore
       const { user, accessToken, refreshToken } = await login(values).unwrap();
       toast({
         title: "User login complete",

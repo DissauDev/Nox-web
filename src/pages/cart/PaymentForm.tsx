@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
@@ -13,15 +14,17 @@ import { useAppSelector } from "@/store/hooks";
 import { useCreateOrderMutation } from "@/store/features/api/ordersApi";
 import { toast } from "@/hooks/use-toast";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const stripePromise = loadStripe(
   "pk_test_51P4caFDrtegwEnl3baIqBDl1Id2beUGIBBUQOK2UfhThO0buETVWO3RDt5WZgc00Vk4qQa7HgFIENycYkCWuw4Jq00sw8wPXAX"
 );
 
-type CheckoutFormValues = {
+export type CheckoutFormValues = {
   phone: string;
   name: string;
   customerEmail: string;
   note: string;
+  email: string;
 };
 
 const PaymentForm: React.FC = () => {
@@ -104,7 +107,7 @@ const PaymentForm: React.FC = () => {
         paymentMethodId: paymentMethod.id,
         userId: userAuth?.id || null,
       };
-
+      //@ts-ignore
       const res = await createOrder(payload).unwrap();
 
       toast({

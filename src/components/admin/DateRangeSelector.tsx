@@ -7,6 +7,7 @@ import Presets from "./ui/Presets";
 import Calendar from "./ui/Calendar";
 
 export type DateRange = {
+  sales?: unknown;
   startDate: Date;
   endDate: Date;
 };
@@ -51,6 +52,7 @@ export default function DateRangeSelector({
       const newCompare: DateRange = {
         startDate: subYears(selectedRange.startDate, 1),
         endDate: subYears(selectedRange.endDate, 1),
+        sales: undefined,
       };
       setCompareRange(newCompare);
       onUpdate?.(
@@ -71,6 +73,7 @@ export default function DateRangeSelector({
       const newCompare: DateRange = {
         startDate: periodStartDate,
         endDate: periodEndDate,
+        sales: undefined,
       };
       setCompareRange(newCompare);
       onUpdate?.(

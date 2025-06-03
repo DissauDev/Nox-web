@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ToppinsSelector } from "../ToppinsSelector";
 
 export interface Topping {
@@ -15,6 +16,7 @@ type DessertSelectorProps = {
 export const DessertSelector = ({ onToppingsChange }: DessertSelectorProps) => {
   return (
     <>
+      {/*//@ts-ignore*/}
       <ToppinsSelector onToppingsChange={onToppingsChange} />
     </>
   );

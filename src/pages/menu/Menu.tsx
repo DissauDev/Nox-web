@@ -15,6 +15,7 @@ const Menu = () => {
   const { isLoading, data: dataMenu } = useGetMenuQuery();
 
   // 3. Generamos dinámicamente las secciones a partir de dataMenu (si existe)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sections: string[] = dataMenu
     ? dataMenu.map((cat) => cat.category)
     : [];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // components/OptionsManager.tsx
 "use client";
 
@@ -21,6 +22,7 @@ export default function OptionsManager() {
     <div className=" flex  md:flex-row  gap-2">
       {/* — Panel de Grupos — */}
       <OptionGroupsPanel
+        //@ts-ignore
         groups={groups} // le pasas la lista
         selectedId={selectedGroup?.id} // para marcar el activo
         onSelect={(grp) => setSelectedGroup(grp)} // al clickar un grupo

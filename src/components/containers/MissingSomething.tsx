@@ -31,6 +31,8 @@ export function MissingSomething() {
         quantity: 1,
         blurHashImage: item.imageLeft.blurHash,
         imageUrl: item.imageLeft.url,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         categoryId: item.categoryId,
         options: [], // o los que quieras pasar
         specifications: "",

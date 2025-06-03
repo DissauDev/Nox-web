@@ -2,15 +2,15 @@ import { RootState } from "@/store/store";
 import { FaTimes } from "react-icons/fa";
 import { FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import IceCreamIMg from "../../assets/imagenMuestra IceCream.png";
-import drinksIMg from "../../assets/Imnsomnia fotos/drinks1.png";
-import drinksIMg2 from "../../assets/Imnsomnia fotos/drinks3.png";
+
+//import drinksIMg from "../../assets/Imnsomnia fotos/drinks1.png";
+
 import {
-  addProduct,
+  // addProduct,
   incrementProductQuantity,
   removeProduct,
 } from "@/store/features/slices/orderSlice";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MissingSomething } from "./MissingSomething";
@@ -20,7 +20,7 @@ export interface MissingItem {
   name: string;
   price: number;
   image: string;
-  options: any[];
+  options: unknown[];
 }
 
 interface Props {
@@ -31,21 +31,22 @@ interface Props {
 }
 
 // Items iniciales para la sección Missing Something?
-const initialMissingItems: MissingItem[] = [
+/*const initialMissingItems: MissingItem[] = [
   {
     id: 1,
     name: "check milk",
     price: 4.9,
     image: drinksIMg,
+    options: []
   },
-];
+];*/
 
 export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const orderState = useSelector((state: RootState) => state.orders);
-  const [localMissingItems, setLocalMissingItems] =
-    useState<MissingItem[]>(initialMissingItems);
+  // const [localMissingItems, setLocalMissingItems] =
+  // useState<MissingItem[]>(initialMissingItems);
 
   // Deshabilitar el scroll del body cuando el modal esté abierto
   useEffect(() => {
@@ -78,7 +79,8 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
   };
 
   // Agrega el item missing al carrito y lo remueve de la lista de missing items
-  const handleAddMissingItem = (item: MissingItem) => {
+  {
+    /* const handleAddMissingItem = (item: MissingItem) => {
     const exists = orderState.products.find((p) => p.id === item.id.toString());
     if (exists) {
       dispatch(incrementProductQuantity({ id: exists.id, increment: 1 }));
@@ -96,7 +98,8 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
       );
     }
     setLocalMissingItems((prev) => prev.filter((mi) => mi.id !== item.id));
-  };
+  }; */
+  }
 
   const handlecheckout = () => {
     setIsOpen(false);

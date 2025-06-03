@@ -5,9 +5,9 @@ import { useFormContext } from "react-hook-form";
 import InputMask from "react-input-mask";
 import { FaMapMarkerAlt, FaStore } from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
-import { CheckoutFormValues } from "./Checkout";
 
 import { Controller } from "react-hook-form";
+import { CheckoutFormValues } from "./PaymentForm";
 
 export const CheckOutOrderDetails: React.FC = () => {
   const addressState = useSelector((s: RootState) => s.address);
@@ -60,7 +60,7 @@ export const CheckOutOrderDetails: React.FC = () => {
               }}
               render={({ field }) => (
                 <InputMask mask="+1 (999) 999-9999" {...field}>
-                  {(inputProps: any) => (
+                  {(inputProps) => (
                     <input
                       {...inputProps}
                       type="tel"

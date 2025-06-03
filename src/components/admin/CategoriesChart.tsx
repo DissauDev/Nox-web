@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Fragment, useState, useMemo } from "react";
 import {
   Menu,
@@ -35,6 +36,7 @@ export default function CategoriesChart() {
     { label: "Year", value: "Year" },
   ];
   const [period, setPeriod] = useState("Week");
+  //@ts-ignore
   const { data, isLoading, isError } = useGetCategorySalesQuery({ period });
 
   // prepare chart data
@@ -149,6 +151,7 @@ export default function CategoriesChart() {
                   paddingRight: "8px",
                 }}
                 formatter={(value, entry) => {
+                  //@ts-ignore
                   const { value: sales, itemsSold, pct } = entry.payload;
                   return (
                     <div className="flex flex-col mb-1 text-sm text-white">

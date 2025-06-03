@@ -1,12 +1,10 @@
-// components/OptionGroupsSelector.tsx
-
 import { useGetOptionGroupsQuery } from "@/store/features/api/optionGroupApi";
 import React from "react";
 import { Controller, Control } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
 
 interface OptionGroupsSelectorProps {
-  control: Control<any>;
+  control: Control;
   name: string;
 }
 
