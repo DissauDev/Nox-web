@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState, useMemo } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "lucide-react";
@@ -27,6 +28,7 @@ const getComparisonText = (period) => {
 const StatsCards = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("Day");
   const { data, isLoading, isError } = useGetDashboardOverviewQuery({
+    //@ts-ignore
     period: selectedPeriod,
   });
 

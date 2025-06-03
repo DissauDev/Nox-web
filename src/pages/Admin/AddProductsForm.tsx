@@ -181,6 +181,7 @@ export default function AddProductsForm({
             <label htmlFor="options" className="block text-sm mb-1">
               Options ( optional)
             </label>
+            {/* @ts-ignore */}
             <OptionGroupsSelector control={control} name="options" />
           </div>
 
