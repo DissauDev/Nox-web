@@ -48,6 +48,7 @@
     "html-react-parser": "^5.2.3",
     "leaflet": "^1.9.4",
     "leaflet.fullscreen": "^3.0.2",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.475.0",
     "react": "^19.1.0",
     "react-blurhash": "^0.3.0",
