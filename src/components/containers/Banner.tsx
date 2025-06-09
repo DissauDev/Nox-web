@@ -9,6 +9,7 @@ import { FiShoppingBag, FiTruck } from "react-icons/fi";
 //import AddressModal from "../atoms/home/AddressModal";
 import { useAppSelector } from "../../store/hooks";
 import CustomModal from "./CustomModal";
+import { toast } from "@/hooks/use-toast";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -234,19 +235,47 @@ export const Banner: React.FC = () => {
           <ul className="text-center space-y-8 text-2xl font-bold">
             {["Home", "Menu", "Cart"].map((item, index) => (
               <li key={index}>
-                <NavLink
-                  to={`/${item.toLowerCase()}`}
-                  className={({ isActive }) =>
-                    `hover:text-grape-200 transition duration-300 ${
-                      isActive
-                        ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
-                        : ""
-                    }`
-                  }
-                  onClick={() => setModalOpen(false)}
-                >
-                  {item}
-                </NavLink>
+                {item === "Cart" ? (
+                  <NavLink
+                    to={products.length === 0 ? "#" : "/cart"}
+                    onClick={(e) => {
+                      if (products.length === 0) {
+                        e.preventDefault(); // cancela navegación
+                        toast({
+                          className: "border-l-4 border-yellow-500",
+                          title: "🛒 Cart is Empty",
+                          description:
+                            "Please select at least one item to proceed.",
+                        });
+                      } else {
+                        setModalOpen(false);
+                      }
+                    }}
+                    className={({ isActive }) =>
+                      `hover:text-grape-200 transition duration-300 ${
+                        isActive
+                          ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                          : ""
+                      }`
+                    }
+                  >
+                    {item}
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to={`/${item.toLowerCase()}`}
+                    className={({ isActive }) =>
+                      `hover:text-grape-200 transition duration-300 ${
+                        isActive
+                          ? "border-b-2 border-mustard-yellow-400 rounded-sm px-2 py-1"
+                          : ""
+                      }`
+                    }
+                    onClick={() => setModalOpen(false)}
+                  >
+                    {item}
+                  </NavLink>
+                )}
               </li>
             ))}
           </ul>

@@ -4,6 +4,8 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useGetCategoriesAvailableOnCarouselQuery } from "@/store/features/api/categoriesApi";
 import { useNavigate } from "react-router-dom";
+import { DataError } from "../DataError";
+import { EmptyData } from "../EmptyData";
 
 const AnimatedCategories = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -14,7 +16,6 @@ const AnimatedCategories = () => {
     data: categories,
     isLoading,
     isError,
-    error,
   } = useGetCategoriesAvailableOnCarouselQuery();
 
   // 2) Estados de carga y error
@@ -27,22 +28,12 @@ const AnimatedCategories = () => {
   }
 
   if (isError || !categories) {
-    return (
-      <div className="flex justify-center items-center py-10">
-        <span className="text-red-500">
-          {error ? "Failed to load categories." : "No categories available."}
-        </span>
-      </div>
-    );
+    return <DataError title="Error to load Categories" darkTheme={true} />;
   }
 
   // 3) Si la API devolvió un array vacío, mostramos mensaje
   if (categories.length === 0) {
-    return (
-      <div className="flex justify-center items-center py-10">
-        <span className="text-gray-500">No categories to display.</span>
-      </div>
-    );
+    return <EmptyData title="No Categories to load" darkTheme={true} />;
   }
 
   // 4) Controladores de navegación entre categorías

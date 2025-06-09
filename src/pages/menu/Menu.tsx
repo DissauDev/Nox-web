@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 import DessertCard from "../../components/atoms/menu/DessertCard";
 import { Slider } from "../../components/atoms/Slider";
 import { useGetMenuQuery } from "@/store/features/api/productsApi";
+import { DataError } from "@/components/atoms/DataError";
+import { EmptyData } from "@/components/atoms/EmptyData";
+import Lottie from "lottie-react";
+import animationData from "../../assets/lotties/Animation - 1749432478619.json"; // o usa una URL remota
 
 const Menu = () => {
   const navigate = useNavigate();
@@ -12,7 +16,7 @@ const Menu = () => {
   const [activeTab, setActiveTab] = useState<string>("");
 
   // 2. Hacemos la petición RTK Query
-  const { isLoading, data: dataMenu } = useGetMenuQuery();
+  const { isLoading, data: dataMenu, isError } = useGetMenuQuery();
 
   // 3. Generamos dinámicamente las secciones a partir de dataMenu (si existe)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,11 +69,26 @@ const Menu = () => {
   };
 
   // 8. Mientras carga, mostramos un simple loading screen
-  if (isLoading) return <h1>....Loading</h1>;
+  if (isLoading)
+    return (
+      <div className="flex flex-col justify-center items-center w-full h-auto p-4 space-y-4">
+        <h2 className="font-ArialBold text-center text-2xl mt-10 text-grape-900">
+          {"Loading ..."}
+        </h2>
+        <Lottie
+          animationData={animationData}
+          loop
+          className="w-full max-w-[300px] h-auto"
+        />
+      </div>
+    );
 
   // 9. Si dataMenu está vacío o indefinido, podemos mostrar un mensaje
-  if (!dataMenu || dataMenu.length === 0)
-    return <h1>No hay productos para mostrar.</h1>;
+  if (dataMenu?.length === 0)
+    return <EmptyData title={"No Products to show"} darkTheme={false} />;
+
+  if (isError)
+    return <DataError title={"Error to load Menu"} darkTheme={false} />;
 
   return (
     <div className="menu-wrapper">
@@ -121,7 +140,7 @@ const Menu = () => {
 
         {/* Secciones de productos con animaciones */}
         <div className="px-4 mt-14">
-          {dataMenu.map((cat) => (
+          {dataMenu?.map((cat) => (
             <motion.div
               id={cat.category}
               key={cat.category}

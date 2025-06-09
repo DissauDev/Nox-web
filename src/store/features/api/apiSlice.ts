@@ -13,7 +13,7 @@ import { logout, refreshTokens } from '../slices/authSlice';
  * Base fetch logic: inyecta Content-Type y Authorization con Bearer <accessToken>.
  */
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:3000/api',
+  baseUrl: 'https://app.nox.dissau.online/api',
   prepareHeaders: (headers, { getState }) => {
     headers.set('Content-Type', 'application/json');
     const token = (getState() as RootState).auth.accessToken;
