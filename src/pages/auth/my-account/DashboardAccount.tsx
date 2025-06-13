@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { RootState } from "@/store/store";
 import React from "react";
-import { FiBox, FiUser, FiLogOut } from "react-icons/fi";
+import { FiBox, FiUser, FiLogOut, FiHeart } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -30,11 +30,11 @@ const items = [
     path: "/account/details",
   },
 
-  /*
+  {
     label: "Wishlist",
     icon: <FiHeart size={32} className="mx-auto mb-2 text-gray-600" />,
     path: "/account/wishlist",
- */
+  },
 
   {
     label: "Logout",

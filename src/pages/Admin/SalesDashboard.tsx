@@ -22,19 +22,26 @@ const SalesDashboard = () => {
   const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
   const [compareRange, setCompareRange] = useState<DateRange | null>(null);
 
-  const {
-    data: perfData,
-    isLoading,
-    isError,
-  } = useGetPerformanceQuery(
-    {
+  // 1️⃣ Memoiza los argumentos para que no cambien de referencia en cada render
+  const queryArgs = useMemo(
+    () => ({
       start: selectedRange?.startDate.toISOString() ?? "",
       end: selectedRange?.endDate.toISOString() ?? "",
       compareStart: compareRange?.startDate.toISOString() ?? "",
       compareEnd: compareRange?.endDate.toISOString() ?? "",
-    },
-    { skip: !selectedRange || !compareRange }
+    }),
+    [selectedRange, compareRange]
   );
+
+  // 2️⃣ Desactiva refetch en cada mount//arg change
+  const {
+    data: perfData,
+    isLoading,
+    isError,
+  } = useGetPerformanceQuery(queryArgs, {
+    skip: !selectedRange || !compareRange,
+    refetchOnMountOrArgChange: false,
+  });
 
   const stats = useMemo(() => {
     if (!perfData) return null;

@@ -4,7 +4,7 @@ import exampleReducer from './features/exampleSlice';
 import addressReducer from './features/slices/addressSlice';
 import ordersReducer from './features/slices/orderSlice';
 import authReducer from './features/slices/authSlice';
-
+import whishlistReducer from './features/slices/whishlistSlice'
 // redux-persist
 import {
   persistStore,
@@ -23,7 +23,7 @@ const rootPersistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth', 'orders'],
+  whitelist: ['auth', 'orders', 'whishlist'],
 };
 
 // 2) Reducer combinado “puro” (sin persist todavía)
@@ -31,6 +31,7 @@ const rootReducer = combineReducers({
   address: addressReducer,
   auth: authReducer,
   example: exampleReducer,
+  whishlist: whishlistReducer,
   orders: ordersReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });

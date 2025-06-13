@@ -16,10 +16,10 @@ export default function OptionGroupsSelector({
 
   return (
     <div className="space-y-2">
-      {isLoading && <p>Cargando opciones…</p>}
-      {isError && <p className="text-red-400">Error cargando opciones</p>}
+      {isLoading && <p>Loading options…</p>}
+      {isError && <p className="text-red-400">Error to load options</p>}
       {!isLoading && !isError && groups?.length === 0 && (
-        <p>No hay opciones disponibles</p>
+        <p>No options to show</p>
       )}
 
       {!isLoading && !isError && groups?.length > 0 && (

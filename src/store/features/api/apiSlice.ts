@@ -9,11 +9,11 @@ import {
 import type { RootState } from '@/store/store'; // ← así debe importarse
 import { logout, refreshTokens } from '../slices/authSlice';
 
-/**
- * Base fetch logic: inyecta Content-Type y Authorization con Bearer <accessToken>.
- */
+
+export  const baseUrl = 'https://app.nox.dissau.online/api'
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://app.nox.dissau.online/api',
+  baseUrl: baseUrl,
   prepareHeaders: (headers, { getState }) => {
     headers.set('Content-Type', 'application/json');
     const token = (getState() as RootState).auth.accessToken;
@@ -88,6 +88,7 @@ export const apiSlice = createApi({
     'ProductSuggestions',
     'Order',
     'Product',
+    'Images',
     'ProductOptions',
     'OptionGroup',
     'OptionValue',

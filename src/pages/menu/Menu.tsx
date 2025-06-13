@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -89,6 +90,7 @@ const Menu = () => {
 
   if (isError)
     return <DataError title={"Error to load Menu"} darkTheme={false} />;
+  console.log(dataMenu);
 
   return (
     <div className="menu-wrapper">
@@ -207,8 +209,11 @@ const Menu = () => {
                       name={product.name}
                       description={product.description}
                       imageLeft={product.imageLeft.url}
+                      sellPrice={product?.sellPrice || product.price}
                       imageRight={product.imageRight}
                       price={product.price}
+                      //@ts-ignore
+                      product={product}
                       onAdd={() => handleItemClick(cat.category, product.id)}
                     />
                   </motion.div>

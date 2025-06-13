@@ -12,6 +12,8 @@ import {
   useUpdateCategoryStatusMutation,
 } from "@/store/features/api/categoriesApi";
 import { Category } from "@/types/system";
+import { DataError } from "@/components/atoms/DataError";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
 
 export const Categories = () => {
   // State for the list of categories
@@ -123,8 +125,9 @@ export const Categories = () => {
     }).unwrap();
   };
 
-  if (isLoading) return <p>Cargando productos…</p>;
-  if (isError) return <p className="text-red-400">Error cargando productos</p>;
+  if (isLoading) return <TableSkeleton />;
+  if (isError)
+    return <DataError darkTheme={true} title="Error to show categories" />;
 
   return (
     <div className="px-2 pb-6 md:p-6 text-white">

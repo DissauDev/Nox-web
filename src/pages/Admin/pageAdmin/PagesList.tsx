@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetPagesQuery } from "@/store/features/api/pageApi";
+import { DataError } from "@/components/atoms/DataError";
+import { EmptyData } from "@/components/atoms/EmptyData";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -14,23 +16,16 @@ export default function PagesList() {
 
   const navigate = useNavigate();
 
-  /**
-   * 1) Transformamos el sortOrder local ("asc"|"desc") al valor que espera la API,
-   *    por ejemplo 'oldest' o 'newest'.
-   */
   const apiSort = useMemo<"oldest" | "newest">(
     () => (sortOrder === "asc" ? "oldest" : "newest"),
     [sortOrder]
   );
 
-  /**
-   * 2) Invocamos el hook de RTK Query:
-   *    - params: { search?, sort?, page?, limit? }
-   */
   const {
     data: apiResponse,
     isLoading,
     isError,
+    isSuccess,
   } = useGetPagesQuery({
     search: search || undefined,
     sort: apiSort,
@@ -38,27 +33,18 @@ export default function PagesList() {
     limit: ITEMS_PER_PAGE,
   });
 
-  // 3) Si la consulta está cargando, mostramos un placeholder
-  if (isLoading) {
-    return (
-      <div className="p-6 text-white">
-        <p className="text-center">Cargando páginas…</p>
-      </div>
-    );
+  // 4) Si hubo error, lo mostramos
+  if (isError) {
+    return <DataError title={"Error to show pages"} darkTheme={true} />;
   }
 
-  // 4) Si hubo error, lo mostramos
-  if (isError || !apiResponse) {
-    return (
-      <div className="p-6 text-red-500 text-center">
-        <p>Error al cargar las páginas.</p>
-      </div>
-    );
+  if (isSuccess && apiResponse.data.length === 0) {
+    return <EmptyData darkTheme={true} title="No pages to show" />;
   }
 
   // 5) Extraemos data y meta de la respuesta
-  const pages = apiResponse.data; // Array<Page>
-  const totalItems = apiResponse.meta.total; // Total de registros
+  const pages = apiResponse?.data; // Array<Page>
+  const totalItems = apiResponse?.meta.total; // Total de registros
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
@@ -101,43 +87,59 @@ export default function PagesList() {
             </tr>
           </thead>
           <tbody>
-            {pages.map((p) => (
-              <tr
-                key={p.id}
-                className="border-b border-gray-800 hover:bg-gray-800 group"
-              >
-                <td className="p-3">
-                  <div className="text-grape-700 font-medium cursor-pointer">
-                    {p.title}
-                  </div>
-                  <div className="hidden group-hover:flex gap-4 mt-1 text-sm text-grape-300">
-                    <button
-                      className="hover:underline"
-                      onClick={() => navigate(`/${p.slug}`)}
-                    >
-                      View
-                    </button>
-                    <button
-                      className="hover:underline"
-                      onClick={() =>
-                        navigate(`/dashboard/pages/editor/${p.slug}`)
-                      }
-                    >
-                      Quick Edit
-                    </button>
-                    <button className="hover:underline text-red-400">
-                      Trash
-                    </button>
-                  </div>
-                </td>
-                <td className="p-3 text-right text-gray-400 whitespace-nowrap">
-                  <div>{p.author}</div>
-                  <div className="text-xs">
-                    {format(new Date(p.createdAt), "yyyy/MM/dd · h:mm a")}
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {isLoading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr
+                    key={i}
+                    className="border-b border-gray-800 animate-pulse"
+                  >
+                    <td className="p-3">
+                      <div className="h-4 bg-gray-700 rounded w-1/3 mb-2" />
+                      <div className="h-3 bg-gray-600 rounded w-1/4" />
+                    </td>
+                    <td className="p-3 text-right whitespace-nowrap">
+                      <div className="h-4 bg-gray-700 rounded w-1/4 mb-2 mx-auto" />
+                      <div className="h-3 bg-gray-600 rounded w-1/5 mx-auto" />
+                    </td>
+                  </tr>
+                ))
+              : pages.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="border-b border-gray-800 hover:bg-gray-800 group"
+                  >
+                    <td className="p-3">
+                      <div className="text-grape-700 font-medium cursor-pointer">
+                        {p.title}
+                      </div>
+                      <div className="hidden group-hover:flex gap-4 mt-1 text-sm text-grape-300">
+                        <button
+                          className="hover:underline"
+                          onClick={() => navigate(`/${p.slug}`)}
+                        >
+                          View
+                        </button>
+                        <button
+                          className="hover:underline"
+                          onClick={() =>
+                            navigate(`/dashboard/pages/editor/${p.slug}`)
+                          }
+                        >
+                          Quick Edit
+                        </button>
+                        <button className="hover:underline text-red-400">
+                          Trash
+                        </button>
+                      </div>
+                    </td>
+                    <td className="p-3 text-right text-gray-400 whitespace-nowrap">
+                      <div>{p.author}</div>
+                      <div className="text-xs">
+                        {format(new Date(p.createdAt), "yyyy/MM/dd · h:mm a")}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

@@ -1,5 +1,12 @@
+import {
+  Product,
+  toggleWishlist,
+} from "@/store/features/slices/whishlistSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { selectIsInWishlist } from "@/store/whishlistSelector";
 import React from "react";
 import { FaPlus } from "react-icons/fa6";
+import { FiHeart, FiHeart as FiHeartFilled } from "react-icons/fi";
 
 interface ProductCardProps {
   imageLeft: string;
@@ -7,7 +14,9 @@ interface ProductCardProps {
   name: string;
   description: string;
   price: number;
+  sellPrice?: number;
   onAdd: () => void;
+  product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -16,8 +25,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   name,
   description,
   price,
+  sellPrice,
+  product,
   onAdd,
 }) => {
+  const dispatch = useAppDispatch();
+  const inWishlist = useAppSelector(selectIsInWishlist(product.id));
+
+  // Evita que el click en el corazón dispare otros handlers (e.g. onAdd)
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(toggleWishlist(product));
+  };
   return (
     <div
       onClick={onAdd}
@@ -25,6 +44,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
       tabIndex={0}
       className="group relative bg-white border m-6 border-[#45205d] rounded-2xl w-80 h-80 max-w-xs md:max-w-sm overflow-visible p-3 transition-all duration-300 shadow-2xl hover:shadow-pompadour-500 cursor-pointer"
     >
+      {/* ▶️ BOTÓN WISHLIST */}
+      <button
+        onClick={handleWishlistClick}
+        className="absolute top-2 right-2 p-1 bg-white items-center justify-center rounded-full shadow-md hover:scale-110 transition"
+      >
+        {inWishlist ? (
+          <FiHeartFilled
+            size={20}
+            className="text-red-500 justify-center items-center"
+          />
+        ) : (
+          <FiHeart size={20} className="text-gray-400" />
+        )}
+      </button>
+
       <div className="flex justify-between">
         <div className="w-1"></div>
         <img
@@ -51,7 +85,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <p className="text-sm font-ArialRegular text-grape-950">
             {description}
           </p>
-          <span className="text-lg text-grape-950 font-ArialBold">{price}</span>
+          {sellPrice && sellPrice > price ? (
+            <span className="text-lg text-grape-950 font-ArialBold">
+              $ ? `${sellPrice.toFixed(2)}`
+            </span>
+          ) : null}
+
+          <span className="text-lg text-grape-950 font-ArialBold">
+            ${price}
+          </span>
         </div>
       </div>
 

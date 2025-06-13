@@ -13,6 +13,9 @@ import {
 } from "@/store/features/api/ordersApi";
 import { toast } from "@/hooks/use-toast";
 import { Spinner } from "@/components/ui/Spinner";
+import { DataError } from "@/components/atoms/DataError";
+import animationData from "../../assets/lotties/Animation 8.json"; // o usa una URL remota
+import Lottie from "lottie-react";
 
 export const OrderDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +45,6 @@ export const OrderDetails: React.FC = () => {
   const handleRefund = async () => {
     if (!order) return;
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       await refundOrder({
         id: order.id,
@@ -51,16 +53,15 @@ export const OrderDetails: React.FC = () => {
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "✅ Refund Successful",
-        description: "El reembolso se ha procesado correctamente.",
+        title: "✅ Success",
+        description: "Refund Successfully",
       });
     } catch (err) {
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "❌ Refund Failed",
-        description:
-          err.message || "Ha ocurrido un error al procesar el reembolso.",
+        title: "❌ Error",
+        description: err.message || "refund Failed",
       });
     }
   };
@@ -81,18 +82,15 @@ export const OrderDetails: React.FC = () => {
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "✅ Status updated",
+        title: "✅ Success",
         description: `Order status changed to "${newStatus}".`,
       });
     } catch (err) {
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "❌ Update failed",
-        description:
-          err.data?.message ||
-          err.message ||
-          "No se pudo actualizar el status.",
+        title: "❌ Error",
+        description: err.data?.message || err.message || "Update failed",
       });
     } finally {
       setStatus(newStatus);
@@ -105,13 +103,12 @@ export const OrderDetails: React.FC = () => {
   const handleDelete = async () => {
     if (!order) return;
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       await deleteOrder(order.id).unwrap();
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "✅ Refund Successful",
+        title: "✅ Success",
         description: "Order Delete Successfull",
       });
       navigate("/dashboard/orders");
@@ -119,7 +116,7 @@ export const OrderDetails: React.FC = () => {
       toast({
         className:
           "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
-        title: "❌ Delete order failed",
+        title: "❌ Error",
         description: err.message || "Was an error to delete order",
       });
     }
@@ -138,19 +135,26 @@ export const OrderDetails: React.FC = () => {
     }
   };
 
-  // ─── Manejo de loaders / errores ───
-  // 3.1  Espera primero la orden
-  if (loadingOrder) return <h2>Loading order…</h2>;
+  if (loadingOrder)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Lottie
+          animationData={animationData}
+          loop
+          height={200}
+          width={200}
+          // clases responsive
+          className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48"
+        />
+      </div>
+    );
+
   if (errorOrder || !order) {
-    return <p className="text-center text-red-500">Error loading order.</p>;
+    return <DataError title={"Error to load order"} darkTheme={true} />;
   }
 
-  // 3.2  Luego espera el historial
-  if (loadingUserOrders) return <h2>Loading user history…</h2>;
   if (errorUserOrders) {
-    return (
-      <p className="text-center text-red-500">Error loading user history.</p>
-    );
+    return <DataError title={"Error to load order"} darkTheme={true} />;
   }
 
   // A estas alturas ya tienes `order` y `userOrders` seguros

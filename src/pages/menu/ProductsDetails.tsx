@@ -16,6 +16,7 @@ import ToppinsSelector, {
 
 import MashoopSelector from "@/components/atoms/menu/selectors/MashoopSelector";
 import IceCreamFlavorSelector from "@/components/atoms/menu/IceCreamFlavorSelector";
+import ProductDetailsSkeleton from "@/components/skeletons/ProductDetailsSkeleton";
 
 const ProductDetails: React.FC = () => {
   const { toast } = useToast();
@@ -148,8 +149,8 @@ const ProductDetails: React.FC = () => {
     });
   };
 
-  if (isLoading || !product) return <h1>Cargando...</h1>;
-
+  if (isLoading || !product) return <ProductDetailsSkeleton />;
+  console.log(product.sellPrice);
   return (
     <div className="flex justify-center mb-20 p-4">
       <div className="w-full flex flex-col lg:flex-row items-center lg:items-start gap-8 mt-10">
@@ -176,6 +177,11 @@ const ProductDetails: React.FC = () => {
             {product.name}
           </h1>
           <p className="text-grape-900 text-lg mb-2">{product.description}</p>
+          <p className="text-2xl text-grape-900 font-semibold  line-through">
+            {product?.sellPrice && product?.sellPrice > product.price
+              ? ` $${product.sellPrice.toFixed(2)}`
+              : null}
+          </p>
           <p className="text-2xl text-grape-900 font-semibold mb-6">
             ${product.price.toFixed(2)}
           </p>

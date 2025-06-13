@@ -7,7 +7,7 @@ const menuItems = [
   { label: "Orders", path: "/account/orders" },
   // { label: "Addresses", path: "/account/addresses" },
   { label: "Account details", path: "/account/details" },
-  // { label: "Wishlist", path: "/account/wishlist" },
+  { label: "Wishlist", path: "/account/wishlist" },
 ];
 
 export const AccountSidebar = ({

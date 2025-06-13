@@ -4,6 +4,7 @@ import { CheckIcon, ChevronDownIcon, MailIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetOrdersQuery } from "@/store/features/api/ordersApi";
 import { TiMinus } from "react-icons/ti";
+import { DataError } from "@/components/atoms/DataError";
 
 const STATUS_OPTIONS = [
   "all",
@@ -51,11 +52,11 @@ export const OrdersDashboard = () => {
       : undefined,
   });
 
-  if (isLoading) return <p>Cargando órdenes…</p>;
-  if (isError || !result)
-    return <p className="text-red-400">Error cargando órdenes</p>;
+  if (isError)
+    return <DataError title={"Error to show orders"} darkTheme={true} />;
+  const orders = result?.orders ?? [];
+  const totalPage = result?.totalPage ?? 0;
 
-  const { orders, totalPage } = result;
   const totalPages = Math.ceil(totalPage / itemsPerPage);
 
   return (
@@ -145,64 +146,102 @@ export const OrdersDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((o) => (
-                <tr
-                  key={o.id}
-                  className="hover:bg-gray-900 border-b border-gray-800"
-                >
-                  {/* Order # y Cliente */}
-                  <td
-                    onClick={() => navigate(`/dashboard/orders/${o.id}`)}
-                    className="px-4 py-3 cursor-pointer text-blue-400 hover:underline"
-                  >
-                    #{o.orderNumber} {o.customerName}
-                  </td>
-                  {/* Fecha formateada */}
-                  <td className="px-4 py-3">
-                    {new Intl.DateTimeFormat("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }).format(new Date(o.createdAt))}
-                  </td>
-                  {/* Estado */}
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${
-                        o.status === "COMPLETED"
-                          ? "bg-green-800 text-green-300"
-                          : o.status === "REFUNDED"
-                          ? "bg-red-600"
-                          : "bg-yellow-800 text-yellow-300"
-                      }`}
+              {isLoading
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <tr
+                      key={i}
+                      className="border-b border-gray-800 animate-pulse"
                     >
-                      {o.status}
-                    </span>
-                  </td>
-                  {/* Total */}
-                  <td className="px-4 py-3">${o.totalAmount.toFixed(2)}</td>
-                  {/* Acciones */}
-                  <td className="px-4 py-3 flex space-x-2">
-                    <button className="p-1 hover:bg-gray-800 rounded-md">
-                      {o.userId ? (
-                        <CheckIcon className="h-5 w-5 text-gray-300" />
-                      ) : (
-                        <TiMinus className="h-5 w-5 text-gray-300" />
-                      )}
-                    </button>
-                    <button className="p-1 hover:bg-gray-800 rounded-md">
-                      <MailIcon className="h-5 w-5 text-gray-300" />
-                    </button>
-                  </td>
-                  {/* Origen: Pickup vs Delivery */}
-                  <td className="px-4 py-3">
-                    {o.customerAddress ===
-                    "422 E Campbell Ave, Campbell, CA 95008"
-                      ? "Pickup"
-                      : "Delivery"}
-                  </td>
-                </tr>
-              ))}
+                      {/* Order # y Cliente */}
+                      <td className="px-4 py-3">
+                        <div className="h-4 bg-gray-700 rounded w-3/4" />
+                      </td>
+
+                      {/* Fecha formateada */}
+                      <td className="px-4 py-3">
+                        <div className="h-4 bg-gray-700 rounded w-1/3 mx-auto" />
+                      </td>
+
+                      {/* Estado */}
+                      <td className="px-4 py-3">
+                        <div className="inline-block h-4 bg-gray-700 rounded-full w-16" />
+                      </td>
+
+                      {/* Total */}
+                      <td className="px-4 py-3">
+                        <div className="h-4 bg-gray-700 rounded w-1/5" />
+                      </td>
+
+                      {/* Acciones */}
+                      <td className="px-4 py-3 flex space-x-2">
+                        <div className="h-5 w-5 bg-gray-700 rounded" />
+                        <div className="h-5 w-5 bg-gray-700 rounded" />
+                      </td>
+
+                      {/* Origen */}
+                      <td className="px-4 py-3">
+                        <div className="h-4 bg-gray-700 rounded w-1/4 mx-auto" />
+                      </td>
+                    </tr>
+                  ))
+                : orders.map((o) => (
+                    <tr
+                      key={o.id}
+                      className="hover:bg-gray-900 border-b border-gray-800"
+                    >
+                      {/* Order # y Cliente */}
+                      <td
+                        onClick={() => navigate(`/dashboard/orders/${o.id}`)}
+                        className="px-4 py-3 cursor-pointer text-blue-400 hover:underline"
+                      >
+                        #{o.orderNumber} {o.customerName}
+                      </td>
+                      {/* Fecha formateada */}
+                      <td className="px-4 py-3">
+                        {new Intl.DateTimeFormat("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }).format(new Date(o.createdAt))}
+                      </td>
+                      {/* Estado */}
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${
+                            o.status === "COMPLETED"
+                              ? "bg-green-800 text-green-300"
+                              : o.status === "REFUNDED"
+                              ? "bg-red-600"
+                              : "bg-yellow-800 text-yellow-300"
+                          }`}
+                        >
+                          {o.status}
+                        </span>
+                      </td>
+                      {/* Total */}
+                      <td className="px-4 py-3">${o.totalAmount.toFixed(2)}</td>
+                      {/* Acciones */}
+                      <td className="px-4 py-3 flex space-x-2">
+                        <button className="p-1 hover:bg-gray-800 rounded-md">
+                          {o.userId ? (
+                            <CheckIcon className="h-5 w-5 text-gray-300" />
+                          ) : (
+                            <TiMinus className="h-5 w-5 text-gray-300" />
+                          )}
+                        </button>
+                        <button className="p-1 hover:bg-gray-800 rounded-md">
+                          <MailIcon className="h-5 w-5 text-gray-300" />
+                        </button>
+                      </td>
+                      {/* Origen: Pickup vs Delivery */}
+                      <td className="px-4 py-3">
+                        {o.customerAddress ===
+                        "422 E Campbell Ave, Campbell, CA 95008"
+                          ? "Pickup"
+                          : "Delivery"}
+                      </td>
+                    </tr>
+                  ))}
               {orders.length === 0 && (
                 <tr>
                   <td colSpan={6} className="py-4 text-center text-gray-500">

@@ -156,7 +156,6 @@ export const Employees: React.FC = () => {
     <div className="p-6 text-white">
       <h1 className="text-3xl my-4 font-semibold">Employees</h1>
 
-      {/* Card */}
       <div className="border-2 border-[#7436A2] rounded-lg shadow p-6">
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-3 md:space-y-0">
@@ -174,9 +173,9 @@ export const Employees: React.FC = () => {
           </div>
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 w-24 flex font-ArialBold items-center bg-mustard-yellow-500 rounded hover:bg-mustard-yellow-400 transition text-white"
+            className="bg-yellow-400 flex justify-center items-center hover:bg-yellow-500 text-xl text-black font-bold py-2 px-6 rounded transition"
           >
-            <FaPlus /> ADD
+            <FaPlus className="mr-2" /> Add
           </button>
         </div>
 
@@ -198,21 +197,35 @@ export const Employees: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700">
-              {isLoading && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-3 text-center text-gray-400"
+              {isLoading &&
+                Array.from({ length: 3 }).map((_, i) => (
+                  <tr
+                    key={i}
+                    className="hover:bg-transparent transition-colors duration-150"
                   >
-                    Loading…
-                  </td>
-                </tr>
-              )}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="h-4 bg-gray-700 rounded w-24" />
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="h-4 bg-gray-700 rounded w-32" />
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="h-4 bg-gray-700 rounded w-20" />
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="h-4 bg-gray-700 rounded w-28" />
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap space-x-2">
+                      <div className="inline-block h-5 w-5 bg-gray-700 rounded" />
+                      <div className="inline-block h-5 w-5 bg-gray-700 rounded" />
+                    </td>
+                  </tr>
+                ))}
               {isError && (
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-4 py-3 text-center text-red-500"
+                    className="px-4 py-3 text-center text-red-500 font-ArialBold"
                   >
                     Error loading employees
                   </td>
