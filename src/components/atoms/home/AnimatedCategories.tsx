@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion } from "framer-motion";
@@ -6,8 +6,13 @@ import { useGetCategoriesAvailableOnCarouselQuery } from "@/store/features/api/c
 import { useNavigate } from "react-router-dom";
 import { DataError } from "../DataError";
 import { EmptyData } from "../EmptyData";
-
+import { encode } from "blurhash";
+import { Blurhash } from "react-blurhash";
+import Lottie from "lottie-react";
+import animationData from "../../../assets/lotties/Animation - 10.json";
 const AnimatedCategories = () => {
+  const [blurHashes, setBlurHashes] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState<boolean[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true });
   const navigate = useNavigate();
@@ -19,10 +24,44 @@ const AnimatedCategories = () => {
   } = useGetCategoriesAvailableOnCarouselQuery();
 
   // 2) Estados de carga y error
+
+  useEffect(() => {
+    if (!categories) return;
+    const hashes = new Array(categories.length).fill("");
+    const loadedFlags = new Array(categories.length).fill(false);
+    setLoaded(loadedFlags);
+    categories.forEach((cat, idx) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = cat.imageUrl;
+      img.onload = () => {
+        const width = 32;
+        const height = Math.round((img.height / img.width) * 32);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        const imageData = ctx.getImageData(0, 0, width, height);
+        hashes[idx] = encode(
+          imageData.data,
+          width,
+          height,
+          4, // X components
+          4 // Y components
+        );
+        setBlurHashes([...hashes]);
+      };
+    });
+  }, [categories]);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-10">
-        <span className="text-gray-400">Loading categories...</span>
+        <Lottie
+          animationData={animationData}
+          loop
+          className="max-w-[400px] h-auto"
+        />
       </div>
     );
   }
@@ -134,11 +173,28 @@ const AnimatedCategories = () => {
             <div className="absolute inset-0 z-0 md:left-6 flex justify-center items-center">
               <div className="w-32 h-24 md:min-w-32 md:h-32 bg-[rgb(89,47,255)] blur-3xl rounded-full" />
             </div>
-
+            {/* 1) Placeholder blurhash */}
+            {blurHashes[selectedIndex] && !loaded[selectedIndex] && (
+              <Blurhash
+                hash={blurHashes[selectedIndex]}
+                resolutionX={32}
+                resolutionY={32}
+                punch={1}
+                height={"100%"}
+                width={"100%"}
+                className="relative w-52 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
+              />
+            )}
             {/* Imagen dinámica proveniente de category.imageUrl */}
             <img
               src={categories[selectedIndex].imageUrl}
               alt={categories[selectedIndex].name}
+              onLoad={() => {
+                const flags = [...loaded];
+                flags[selectedIndex] = true;
+                setLoaded(flags);
+              }}
+              style={{ display: loaded[selectedIndex] ? "block" : "none" }}
               className="relative w-52 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
             />
           </motion.div>

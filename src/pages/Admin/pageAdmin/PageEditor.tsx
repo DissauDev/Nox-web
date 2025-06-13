@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import SkeletonEditor from "@/components/skeletons/SkeletonEditor";
 import GrapesEditor, { Section } from "@/components/admin/pages/GrapesEditor";
 import { useGetPageBySlugQuery } from "@/store/features/api/pageApi";
+import { DataError } from "@/components/atoms/DataError";
 
 interface PageLayout {
   sections?: Section[];
@@ -50,13 +51,16 @@ const PageEditor: React.FC = () => {
     const secs = layoutObj.sections || [];
     if (secs.length) {
       // Limpiamos el HTML de cada sección igual que antes
-      const clean = secs.map((s) => ({
-        key: s.key,
-        html: s.html
-          .replace(/<\/?body[^>]*>/g, "")
-          .replace(/\\"/g, '"')
-          .trim(),
-      }));
+      const clean = secs.map((s) => {
+        const noBody = s.html.replace(/<\/?body[^>]*>/g, "");
+        return {
+          key: s.key,
+          html: noBody
+            .replace(/\\"/g, `"`) // quita las comillas escapadas
+            .replace(/\\\//g, "/") // quita las barras escapadas
+            .trim(),
+        };
+      });
       setSections(clean);
     } else {
       // Si no hay secciones, dejarlo vacío
@@ -72,11 +76,13 @@ const PageEditor: React.FC = () => {
   }
   if (pageError) {
     return (
-      <div className="text-center py-12 text-red-600">
-        Error al cargar la página.
-        <br />
-        <button onClick={() => navigate("/pages")} className="underline">
-          Volver al listado
+      <div className="text-center py-12 text-red-600 font-ArialBold text-xl">
+        <DataError title={"Error to load page"} darkTheme={true} />
+        <button
+          onClick={() => navigate("/dashboard/pages")}
+          className="underline font-ArialBold"
+        >
+          Back to List
         </button>
       </div>
     );

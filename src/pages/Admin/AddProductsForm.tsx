@@ -14,6 +14,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
 import OptionGroupsSelector from "./OptionGroupsSelector";
+import { toast } from "@/hooks/use-toast";
 
 // Definición de la interfaz para un producto.
 export interface Product {
@@ -85,21 +86,48 @@ export default function AddProductsForm({
     category: string;
     imageLeftUrl: string;
   }) => {
-    try {
-      if (product?.id) {
-        // MODO EDICIÓN
+    if (product?.id) {
+      // MODO EDICIÓN
+
+      try {
         //@ts-ignore
         await updateProduct({ id: product.id, ...data }).unwrap();
-      } else {
-        // MODO CREACIÓN
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "✅ Success",
+          description: "Save Successfully",
+        });
+      } catch (err) {
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "❌ Error",
+          description: err.message || "error to save product",
+        });
+      }
+    } else {
+      // MODO CREACIÓN
+
+      try {
         //@ts-ignore
         await createProduct(data).unwrap();
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "✅ Success",
+          description: "Product created successfully",
+        });
+      } catch (err) {
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "❌ Error",
+          description: err.message || "error to create product",
+        });
       }
-      onClose();
-    } catch (err) {
-      console.error(err);
-      // aquí puedes disparar un toast de error
     }
+    onClose();
   };
 
   return (
@@ -214,7 +242,7 @@ export default function AddProductsForm({
             )}
             {!categoriesLoading &&
               !categoriesError &&
-              categories?.length === 0 && <p>No categories</p>}
+              categories?.length === 0 && <p>No categories to show</p>}
 
             {!categoriesLoading &&
               !categoriesError &&

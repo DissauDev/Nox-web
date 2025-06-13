@@ -35,7 +35,7 @@ export const Home: React.FC = () => {
 
   // 3) Mientras carga, mostramos un indicador simple
   if (isLoading) {
-    return <div className="text-center py-10">Cargando...</div>;
+    return <div className="text-center py-10">Loading...</div>;
   }
 
   // 4) Si hay error, NO salimos: mostramos los componentes estáticos por defecto

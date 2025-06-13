@@ -173,21 +173,30 @@ export const Customers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700">
-              {loadingCustomers && (
-                <tr>
-                  <td
-                    colSpan={columnsConfig.length}
-                    className="px-4 py-3 text-center text-gray-400"
+              {loadingCustomers &&
+                Array.from({ length: 5 }).map((_, rowIdx) => (
+                  <tr
+                    key={rowIdx}
+                    className="border-b border-gray-800 animate-pulse"
                   >
-                    Loading…
-                  </td>
-                </tr>
-              )}
+                    {columnsConfig.map((col) =>
+                      visibleCols[col.key] ? (
+                        <td
+                          key={col.key}
+                          className="px-4 py-3 whitespace-nowrap"
+                        >
+                          {/* placeholder genérico; ajusta w-? según columna si quieres */}
+                          <div className="h-4 bg-gray-700 rounded w-3/4" />
+                        </td>
+                      ) : null
+                    )}
+                  </tr>
+                ))}
               {errorCustomers && (
                 <tr>
                   <td
                     colSpan={columnsConfig.length}
-                    className="px-4 py-3 text-center text-red-500"
+                    className="px-4 py-3 text-center font-ArialBold text-red-500"
                   >
                     Error fetching customers
                   </td>

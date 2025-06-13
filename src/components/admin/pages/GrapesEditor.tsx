@@ -6,6 +6,8 @@ import axios from "axios";
 import "grapesjs/dist/css/grapes.min.css";
 import { LoadingSVG } from "@/components/svg/LoadingSVG";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "@/store/features/api/apiSlice";
+import { toast } from "@/hooks/use-toast";
 
 export interface Section {
   key: string;
@@ -236,15 +238,22 @@ const GrapesEditor: React.FC<GrapesEditorProps> = ({
           const cleanCss = Array.from(rules).join("");
 
           // PUT to backend
-          await axios.put(`http://localhost:3000/api/pages/${recordId}`, {
+          await axios.put(`${baseUrl}/pages/${recordId}`, {
             layout: { sections: updatedSections, css: cleanCss },
           });
           // callback to parent
           onSaveSections(updatedSections, cleanCss);
-          alert("Guardado con éxito");
+          toast({
+            className: "border-l-4 border-green-500",
+            title: "✅ Success",
+            description: "The changes have been saved successfully",
+          });
         } catch (err) {
-          console.error("Error guardando:", err);
-          alert("Error guardando");
+          toast({
+            className: "border-l-4 border-red-500",
+            title: "❌ Error",
+            description: err.message || " Fail to save",
+          });
         } finally {
           setSaving(false);
         }

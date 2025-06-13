@@ -7,7 +7,7 @@ interface cartCounterProps {
   onQuantityChange: (quantity: number) => void;
 }
 
-const CartCounter = ({ price, onQuantityChange }: cartCounterProps) => {
+const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
   const maxCount = 50;
   const minCount = 1;
 
@@ -72,6 +72,7 @@ const CartCounter = ({ price, onQuantityChange }: cartCounterProps) => {
       <div className="">
         <h3 className="text-grape-900 text-xl font-ArialBold"> How Many ?</h3>
         <button
+          type="button"
           onClick={resetvalue}
           className="text-pompadour-900 font-ArialRegular text-lg"
         >

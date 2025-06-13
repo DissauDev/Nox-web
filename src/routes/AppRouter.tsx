@@ -49,9 +49,10 @@ import ForgotPassword from "@/pages/auth/ForgotPassword";
 import { OrderContent } from "@/pages/auth/my-account/OrderContent";
 import { AddressesContent } from "@/pages/auth/my-account/AddressesContent";
 import { AccountDetails } from "@/pages/auth/my-account/AccountDetails";
-import { WhisList } from "@/pages/auth/my-account/WhisList";
+
 import { DashboardAccount } from "@/pages/auth/my-account/DashboardAccount";
 import { OrdersView } from "@/pages/auth/my-account/OrdersView";
+import { WhisList } from "@/pages/auth/my-account/WhisList";
 
 // Lazy Load for ProductDetails
 const ProductsDetails = React.lazy(

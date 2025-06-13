@@ -14,10 +14,13 @@ import {
 import type { Product } from "@/types/system";
 import ActionMenu from "@/components/admin/ui/actionMenu";
 import { DropDownCategories } from "@/components/admin/ui/dropDownCategories";
+import { DataError } from "@/components/atoms/DataError";
+import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
+import { toast } from "@/hooks/use-toast";
 
 export const Products = () => {
   // 1️⃣ Load products from server
-  const { data: products = [], isLoading, isError } = useGetProductsQuery();
+  const { data: products, isLoading, isError } = useGetProductsQuery();
 
   // 2️⃣ Mutations
   const [createProduct] = useCreateProductMutation();
@@ -39,6 +42,7 @@ export const Products = () => {
     "products"
   );
 
+  if (isLoading) return <TableSkeleton />;
   // 4️⃣ Filter & paginate (now using p.category, not p.categories)
   const filtered = products.filter((p) => {
     const byStatus = activeFilter === "all" || p.status === "AVAILABLE";
@@ -66,9 +70,39 @@ export const Products = () => {
   // 6️⃣ Handlers → call RTK mutations
   const handleSaveProduct = async (prod: Product) => {
     if (prod.id) {
-      await updateProduct(prod).unwrap();
+      try {
+        await updateProduct(prod).unwrap();
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "✅ Success",
+          description: "Save Successfully",
+        });
+      } catch (err) {
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "❌ Error",
+          description: err.message || "error to save product",
+        });
+      }
     } else {
-      await createProduct(prod).unwrap();
+      try {
+        await createProduct(prod).unwrap();
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "✅ Success",
+          description: "Product created successfully",
+        });
+      } catch (err) {
+        toast({
+          className:
+            "bg-white text-gray-800 border border-gray-200 shadow-lg rounded-lg p-4",
+          title: "❌ Error",
+          description: err.message || "error to create product",
+        });
+      }
     }
     closeForm();
   };
@@ -83,9 +117,6 @@ export const Products = () => {
       status: p.status === "AVAILABLE" ? "DISABLED" : "AVAILABLE",
     }).unwrap();
   };
-
-  if (isLoading) return <p>Cargando productos…</p>;
-  if (isError) return <p className="text-red-400">Error cargando productos</p>;
 
   return (
     <div className="p-6 text-white">
@@ -219,59 +250,71 @@ export const Products = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentProducts.map((p) => (
-                        <tr
-                          key={p.id}
-                          className="border-b border-gray-800 hover:bg-gray-900"
-                        >
-                          <td className="py-3 px-4">
-                            <div className="flex items-center">
-                              <img
-                                src={p.imageLeft.url || "/placeholder.svg"}
-                                alt={p.name}
-                                className="w-10 h-10 rounded-md mr-3"
-                              />
-                              <div>
-                                <div className="font-medium">{p.name}</div>
-                                <div
-                                  className={`text-xs mt-1 px-2 py-0.5 rounded-full inline-block ${
-                                    p.status === "AVAILABLE"
-                                      ? "bg-teal-900 text-teal-300"
-                                      : "bg-red-900 text-red-300"
-                                  }`}
-                                >
-                                  {p.status}
+                      {isError ? (
+                        <DataError
+                          title={"Error to show products"}
+                          darkTheme={false}
+                        />
+                      ) : (
+                        currentProducts.map((p) => (
+                          <tr
+                            key={p.id}
+                            className="border-b border-gray-800 hover:bg-gray-900"
+                          >
+                            <td className="py-3 px-4">
+                              <div className="flex items-center">
+                                <img
+                                  src={p.imageLeft.url || "/placeholder.svg"}
+                                  alt={p.name}
+                                  className="w-10 h-10 rounded-md mr-3"
+                                />
+                                <div>
+                                  <div className="font-medium">{p.name}</div>
+                                  <div
+                                    className={`text-xs mt-1 px-2 py-0.5 rounded-full inline-block ${
+                                      p.status === "AVAILABLE"
+                                        ? "bg-teal-900 text-teal-300"
+                                        : "bg-red-900 text-red-300"
+                                    }`}
+                                  >
+                                    {p.status}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">${p.price}</td>
-                          <td className="py-3 px-4">
-                            {" "}
-                            <div className="flex flex-wrap gap-1">
-                              <span className="text-xs">{p.category.name}</span>{" "}
-                            </div>{" "}
-                          </td>
-                          <td className="py-3 px-4 text-xs">{p.type}</td>
-                          <td className="py-3 px-4 text-sm text-gray-400">
-                            {new Date(p.createdAt).toLocaleDateString("es-ES", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                            })}
-                          </td>
+                            </td>
+                            <td className="py-3 px-4">${p.price}</td>
+                            <td className="py-3 px-4">
+                              {" "}
+                              <div className="flex flex-wrap gap-1">
+                                <span className="text-xs">
+                                  {p.category.name}
+                                </span>{" "}
+                              </div>{" "}
+                            </td>
+                            <td className="py-3 px-4 text-xs">{p.type}</td>
+                            <td className="py-3 px-4 text-sm text-gray-400">
+                              {new Date(p.createdAt).toLocaleDateString(
+                                "es-ES",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                }
+                              )}
+                            </td>
 
-                          <td className="py-3 px-4 text-center relative">
-                            <ActionMenu
-                              onEdit={() => openForm(p)}
-                              isDeleting={isDeleting || isUpdatingStatus}
-                              onDelete={() => handleDeleteProduct(p.id)}
-                              onToggleStatus={() => handleToggleStatus(p.id)}
-                              isAvailable={p.status === "AVAILABLE"}
-                            />
-                          </td>
-                        </tr>
-                      ))}
+                            <td className="py-3 px-4 text-center relative">
+                              <ActionMenu
+                                onEdit={() => openForm(p)}
+                                isDeleting={isDeleting || isUpdatingStatus}
+                                onDelete={() => handleDeleteProduct(p.id)}
+                                onToggleStatus={() => handleToggleStatus(p.id)}
+                                isAvailable={p.status === "AVAILABLE"}
+                              />
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

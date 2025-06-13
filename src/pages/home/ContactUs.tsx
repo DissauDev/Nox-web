@@ -11,27 +11,27 @@ const faqs = [
   {
     question: "Do I have to pay for return shipping?",
     answer:
-      "Donec risus nulla, fringilla a rhoncus vitae, semper a massa. Vivamus ullamcorper, enim sit amet consequat laoreet, tortor tortor dictum urna, ut egestas urna ipsum nec libero.",
+      "No. We provide free return shipping on all domestic orders. Just print the pre-paid label included in your original shipment and drop the package at any carrier location.",
   },
   {
     question: "Are there any items that cannot be returned?",
     answer:
-      "Vivamus ullamcorper, enim sit amet consequat laoreet, tortor tortor dictum urna, ut egestas urna ipsum nec libero. Nulla justo leo, molestie vel tempor nec, egestas at massa.",
+      "Yes. For hygiene and safety reasons we cannot accept returns on perishable goods, gift cards, or any item marked “Final Sale.” All other products can be returned within 30 days of delivery.",
   },
-  {
+  /* {
     question: "How do I initiate a return?",
     answer:
-      "In eu ipsum vitae velit congue iaculis vitae at risus. Nullam tortor nunc, bibendum vitae semper a, volutpat eget massa.",
-  },
+      "Log in to your account, go to “Orders,” select the order you’d like to return, and click “Start a Return.” Follow the on-screen prompts to choose items and print your return label.",
+  },*/
   {
     question: "Can I use multiple payment methods for a single order?",
     answer:
-      "Vivamus ullamcorper, enim sit amet consequat laoreet, tortor tortor dictum urna, ut egestas urna ipsum nec libero. Nulla justo leo, molestie vel tempor nec, egestas at massa.",
+      "Currently we only support one payment method per order. If you’d like to split payment, you can place two separate orders and use a different method on each.",
   },
   {
     question: "When will my credit card be charged for my order?",
     answer:
-      "Integer fringilla, orci sit amet posuere auctor, orci eros pellentesque odio, nec pellentesque erat ligula nec massa. Aenean consequat lorem ut felis ullamcorper posuere gravida tellus faucibus.",
+      "Your credit card is authorized at the time you place the order, but the actual charge posts when your order ships. You’ll receive a shipping confirmation email with the exact date and amount.",
   },
 ];
 
@@ -86,34 +86,50 @@ export const ContactUs = () => {
         transition={{ duration: 0.6 }}
         className="mt-12 flex flex-wrap text-grape-950 p-4 items-center justify-evenly"
       >
-        <div className="flex flex-col m-2 justify-center items-center">
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=422+E+Campbell+Ave,+Campbell,+CA+95008"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col m-2 justify-center items-center"
+        >
           <LuMapPin size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">Address</h1>
           <h3 className="font-ArialBold text-sm text-gray-500">
             422 E Campbell Ave, Campbell, CA 95008
           </h3>
-        </div>
-        <div className="flex flex-col m-2 justify-center items-center">
+        </a>
+        <a
+          className="flex flex-col m-2 justify-center items-center"
+          href="tel:+16692739216"
+        >
           <IoPhonePortraitOutline size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">Phone Number</h1>
           <h3 className="font-ArialBold text-sm text-gray-500">
             (669) 273-9216
           </h3>
-        </div>
-        <div className="flex flex-col m-2 justify-center items-center">
+        </a>
+        <a
+          className="flex flex-col m-2 justify-center items-center"
+          href="mailto:info@noxcookiebar.com"
+        >
           <TfiEmail size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">E-mail Address</h1>
           <h3 className="font-ArialBold text-sm text-gray-500">
             info@noxcookiebar.com
           </h3>
-        </div>
-        <div className="flex flex-col m-2 justify-center items-center">
+        </a>
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=422+E+Campbell+Ave,+Campbell,+CA+95008"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col m-2 justify-center items-center"
+        >
           <FaRegCalendarDays size={50} className="mb-4" />
           <h1 className="font-ArialBold text-xl">Business Hours</h1>
           <h3 className="font-ArialBold text-sm text-gray-500">
             Mon - Sun / 11:30AM - 11:00PM
           </h3>
-        </div>
+        </a>
       </motion.div>
       {/* Sección de Formulario y FAQ con animación al hacer scroll */}
       <motion.div
@@ -123,7 +139,7 @@ export const ContactUs = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="p-4 mt-8 flex flex-col md:flex-row justify-around"
       >
-        {/* Formulario de contacto */}
+        {/* Formulario de contacto 
         <div className="w-full md:w-5/12 rounded-lg p-6">
           <h2 className="text-2xl text-grape-900 font-bold mb-4">Contact Us</h2>
           <form className="space-y-4">
@@ -163,7 +179,7 @@ export const ContactUs = () => {
               Send Message
             </button>
           </form>
-        </div>
+        </div>*/}
         {/* Preguntas Frecuentes */}
         <div className="w-full lg:pb-24 md:w-6/12 p-6">
           <h2 className="text-2xl text-grape-900 font-bold mb-8">

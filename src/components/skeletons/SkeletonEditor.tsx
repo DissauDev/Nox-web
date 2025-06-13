@@ -1,12 +1,24 @@
-import React from "react";
+export default function GrapesEditorSkeleton() {
+  return (
+    <div className="flex h-full animate-pulse">
+      {/* Toolbar izquierda */}
+      <div className="w-16 bg-gray-800 p-2 space-y-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-8 bg-gray-700 rounded" />
+        ))}
+      </div>
 
-const SkeletonEditor: React.FC = () => (
-  <div className="h-screen flex flex-col p-4 animate-pulse">
-    {/* Cabecera simulada */}
-    <div className="h-12 bg-gray-700 rounded mb-4" />
-    {/* Canvas simulado */}
-    <div className="flex-1 bg-gray-300 rounded" />
-  </div>
-);
+      {/* Lienzo central */}
+      <div className="flex-1 bg-gray-900 p-4 mx-2 rounded">
+        <div className="h-full bg-gray-800 rounded" />
+      </div>
 
-export default SkeletonEditor;
+      {/* Panel derecho */}
+      <div className="w-64 bg-gray-800 p-2 space-y-2">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-12 bg-gray-700 rounded" />
+        ))}
+      </div>
+    </div>
+  );
+}
