@@ -19,14 +19,14 @@ export const FotosSection4 = () => {
         {/* Luz en la esquina superior derecha de la imagen 1 */}
         <div
           className="absolute top-0 right-0 transform -translate-y-1/4
-                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
-                     bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
+                     w-[350px] h-[350px] sm:w-[440px] sm:h-[440px] md:w-[440px] md:h-[440px]
+             bg-[rgba(109,165,255,0.23)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         {/* Luz en la esquina inferior izquierda de la imagen 1 */}
         <div
           className="absolute bottom-0 left-0 transform translate-y-1/4
-                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
-                     bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
+                      w-[350px] h-[350px] sm:w-[440px] sm:h-[440px] md:w-[440px] md:h-[440px]
+             bg-[rgba(109,165,255,0.23)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         <img
           src={Image1}
@@ -78,8 +78,8 @@ export const FotosSection4 = () => {
         {/* Luz en la esquina superior derecha de la imagen 3 */}
         <div
           className="absolute top-0 right-0 transform -translate-y-1/4
-                     w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
-                     bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0 pointer-events-none"
+                 w-[350px] h-[350px] sm:w-[440px] sm:h-[440px] md:w-[440px] md:h-[440px]
+             bg-[rgba(109,165,255,0.23)] rounded-full blur-3xl z-0 pointer-events-none"
         />
         <img
           src={Image3}
@@ -97,14 +97,14 @@ export const FotosSection4 = () => {
             tailored for your gatherings.
           </h3>
         </div>
-        <div className="relative z-10">
+        <div className="relative z-10 pb-10">
           <HomeSection5 />
         </div>
         {/* Efecto de luz detrás de HomeSection5 */}
         <div className="absolute top-2/3 inset-0 bott flex items-center justify-center pointer-events-none z-0">
           <div
-            className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80
-                       bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl"
+            className="  w-[350px] h-[350px] sm:w-[440px] sm:h-[440px] md:w-[440px] md:h-[440px]
+             bg-[rgba(109,165,255,0.23)] rounded-full blur-3xl"
           />
         </div>
       </motion.div>

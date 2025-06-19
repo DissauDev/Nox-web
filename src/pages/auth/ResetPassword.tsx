@@ -57,7 +57,7 @@ export default function ResetPassword() {
           </p>
           <div className="my-6">
             <button
-              className="text-xl text-pompadour-900 font-ArialBold underline"
+              className="text-xl text-sapphire-600 font-ArialBold underline"
               onClick={() => {
                 navigate("/auth");
               }}
@@ -69,7 +69,7 @@ export default function ResetPassword() {
             Didn&apos;t receive the link?
           </p>
           <button
-            className="bg-grape-900 w-full my-4 p-2 rounded-full"
+            className="bg-sapphire-950 w-full my-4 p-2 rounded-full"
             onClick={handleSubmit}
             disabled={isLoading}
           >
@@ -90,10 +90,10 @@ export default function ResetPassword() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-purple-900">
+        <h1 className="text-4xl font-bold text-sapphire-900">
           Reset your password
         </h1>
-        <p className="mt-2 text-lg text-purple-900">
+        <p className="mt-2 text-lg text-sapphire-950">
           Enter your email and we&apos;ll send you a reset link.
         </p>
 
@@ -116,8 +116,8 @@ export default function ResetPassword() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="absolute right-8 top-0 h-12 rounded-full bg-purple-900 px-6
-              font-ArialBold text-white hover:bg-purple-800 disabled:opacity-50"
+              className="absolute right-8 top-0 h-12 rounded-full bg-sapphire-950 px-6
+              font-ArialBold text-white hover:bg-sapphire-800 disabled:opacity-50"
             >
               {isLoading ? "Sending" : "Submit"}
             </Button>

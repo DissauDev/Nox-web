@@ -18,13 +18,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #583073;
+  background: #202e4f;
   /* Color de la barra (Púrpura estilo Insomnia) */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b1952;
+  background: #15203a;
   /* Oscurecer cuando pase el mouse */
 }
 
@@ -74,7 +74,7 @@
 }
 
 body {
-  @apply bg-midnight-blue-950 text-white;
+  @apply bg-sapphire-950 text-white;
 }
 
 

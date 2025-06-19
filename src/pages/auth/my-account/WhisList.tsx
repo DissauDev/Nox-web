@@ -30,7 +30,7 @@ export const WhisList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6  text-grape-900">
+    <div className="max-w-6xl mx-auto p-6  text-sapphire-950">
       <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full table-auto">

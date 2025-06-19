@@ -6,6 +6,7 @@ import ImageCoockie1 from "../../assets/FOTOS NOX CATERING/cookie2.png";
 import ImageCoockie2 from "../../assets/FOTOS NOX CATERING/cookie11.png";
 import ImageCoockie3 from "../../assets/FOTOS NOX CATERING/cookie6.png";
 import ImageCoockie4 from "../../assets/FOTOS NOX CATERING/cookie8.png";
+import Pattern from "../../assets/desing/pattern.png";
 
 export const Slider = () => {
   const [showExit, setShowExit] = useState(false);
@@ -21,11 +22,36 @@ export const Slider = () => {
   return (
     <div className="bg-black">
       <div
-        className="relative flex md:flex-row items-center overflow-hidden 
-                   bg-midnight-blue-950 min-h-[400px] md:min-h-[500px]  w-full px-4 md:px-6"
+        className="relative flex md:flex-row items-center overflow-hidden
+               min-h-[400px] md:min-h-[500px] w-full px-4 md:px-6"
       >
-        {!showExit && <EnterAnimation />}
-        {showExit && <ExitAnimation />}
+        {/* Capa del patrón de fondo */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${Pattern})`,
+            backgroundRepeat: "repeat",
+            backgroundSize: "1200px",
+            backgroundPosition: "center",
+            filter: "grayscale(0.7) brightness(0.5)",
+            opacity: 0.9,
+          }}
+        />
+
+        {/* Capa semitransparente de color #15203a */}
+        <div
+          className="absolute inset-0 py-4 z-0"
+          style={{
+            backgroundColor: "#15203a",
+            opacity: 0.9,
+          }}
+        />
+
+        {/* Contenido principal (animaciones) */}
+        <div className="">
+          {!showExit && <EnterAnimation />}
+          {showExit && <ExitAnimation />}
+        </div>
       </div>
     </div>
   );
@@ -44,7 +70,7 @@ const EnterAnimation = () => {
         <h1 className="text-white text-3xl md:text-5xl lg:text-9xl font-bold">
           Most popular at the bakery
         </h1>
-        <button className="bg-rose-600 text-white py-1 px-6 md:py-2 md:px-12 mt-6 md:mt-10 rounded-full shadow-md hover:bg-rose-800 transition">
+        <button className="bg-sapphire-800 text-white py-1 px-6 md:py-2 md:px-12 mt-6 md:mt-10 rounded-full shadow-md hover:bg-sapphire-900 transition">
           <h4 className="uppercase font-ArialBold px-1 md:px-2 text-xs md:text-base">
             Order Now
           </h4>
@@ -93,7 +119,7 @@ export const ExitAnimation = () => {
         <h1 className="text-white text-3xl md:text-5xl lg:text-9xl font-bold">
           Most popular at the bakery
         </h1>
-        <button className="bg-rose-600 text-white py-1 px-6 md:py-2 md:px-12 mt-6 md:mt-10 rounded-full shadow-md hover:bg-rose-800 transition">
+        <button className="bg-sapphire-800 text-white py-1 px-6 md:py-2 md:px-12 mt-6 md:mt-10 rounded-full shadow-md hover:bg-sapphire-900 transition">
           <h4 className="uppercase font-ArialBold px-1 md:px-2 text-xs md:text-base">
             Order Now
           </h4>
@@ -122,7 +148,7 @@ export const ExitAnimation = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
       >
-        <button className="bg-rose-600 text-white py-1 px-6 md:py-2 md:px-16  rounded-full shadow-md hover:bg-rose-800 transition">
+        <button className="bg-sapphire-800 text-white py-1 px-6 md:py-2 md:px-16  rounded-full shadow-md hover:bg-sapphire-900 transition">
           <h4 className="uppercase font-ArialBold px-1 md:px-2 text-xs md:text-base">
             Order Now
           </h4>

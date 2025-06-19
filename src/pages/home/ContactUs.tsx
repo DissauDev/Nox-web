@@ -46,7 +46,7 @@ export const ContactUs = () => {
     <div className="">
       {/* Sección Header */}
       <div className="">
-        <div className="flex items-center justify-center flex-col p-6 py-24 bg-grape-950">
+        <div className="flex items-center justify-center flex-col p-6 py-24 bg-sapphire-950">
           <motion.h3
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export const ContactUs = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mt-12 flex flex-wrap text-grape-950 p-4 items-center justify-evenly"
+        className="mt-12 flex flex-wrap text-sapphire-900 p-4 items-center justify-evenly"
       >
         <a
           href="https://www.google.com/maps/search/?api=1&query=422+E+Campbell+Ave,+Campbell,+CA+95008"
@@ -182,14 +182,14 @@ export const ContactUs = () => {
         </div>*/}
         {/* Preguntas Frecuentes */}
         <div className="w-full lg:pb-24 md:w-6/12 p-6">
-          <h2 className="text-2xl text-grape-900 font-bold mb-8">
+          <h2 className="text-2xl text-sapphire-950 font-bold mb-8">
             Frequently Asked Questions
           </h2>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div key={index} className="border rounded-lg overflow-hidden">
                 <button
-                  className="w-full flex justify-between items-center p-4 bg-grape-900 hover:bg-grape-700 transition cursor-pointer"
+                  className="w-full flex justify-between items-center p-4 bg-sapphire-900 hover:bg-sapphire-800 transition cursor-pointer"
                   onClick={() => toggleAccordion(index)}
                 >
                   <span className="text-left font-medium text-white">
@@ -212,7 +212,7 @@ export const ContactUs = () => {
                   className="overflow-hidden"
                   layout
                 >
-                  <div className="p-4 text-gray-500 text-sm">{faq.answer}</div>
+                  <div className="p-4 text-gray-700 text-sm">{faq.answer}</div>
                 </motion.div>
               </div>
             ))}

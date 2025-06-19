@@ -1,17 +1,31 @@
 import { FaApple, FaGooglePlay } from "react-icons/fa";
 import ImageMobile from "../../assets/home/Mobile-Mockup copia copy.png";
+import Pattern from "../../assets/desing/pattern.png";
 
 export const AppPromo = () => {
   return (
     <div
-      className="relative w-full bg-grape-950 text-white flex flex-col md:flex-row
+      className="relative w-full bg-black-night-950 text-white flex flex-col md:flex-row
                  items-center justify-between lg:h-[500px] overflow-visible lg:mt-48"
     >
+      {/* Fondo patrón gris oscuro */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${Pattern})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "1400px",
+          backgroundPosition: "center",
+          opacity: 0.05,
+          filter: "grayscale(1) brightness(0.5)",
+          backgroundBlendMode: "multiply",
+        }}
+      />
       {/* Efecto Lighting Purple detrás de la imagen */}
       <div
         className="absolute right-0 bottom-0 md:top-1/2 md:-translate-y-1/2
                    w-80 h-80 md:w-[500px] md:h-[460px]
-                   bg-purple-500 opacity-30 blur-3xl rounded-full z-0"
+                   bg-[#92b1dd90] opacity-30 blur-3xl rounded-full z-0"
       ></div>
 
       {/* Contenedor de texto y botones para pantallas medianas y grandes */}

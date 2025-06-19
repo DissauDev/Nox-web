@@ -73,7 +73,7 @@ export const AccountDetails: React.FC = () => {
 
               minLength: { value: 2, message: "Must be at least 2 characters" },
             })}
-            className="w-full border border-gray-300 rounded px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full border border-gray-300 rounded px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-sapphire-600"
           />
           {errors.name && (
             <p className="mt-1 text-sm text-red-600 font-ArialRegular">
@@ -90,7 +90,7 @@ export const AccountDetails: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-2 bg-grape-900 text-white rounded hover:bg-purple-800 transition font-ArialBold"
+            className="px-6 py-2 bg-sapphire-950 text-white rounded hover:bg-sapphire-900 transition font-ArialBold"
           >
             {isLoading ? "Saving..." : "Save Changes"}
           </button>
@@ -108,7 +108,7 @@ export const AccountDetails: React.FC = () => {
         </p>
         <button
           onClick={() => navigate("/reset-password")}
-          className="text-grape-800 font-medium hover:underline"
+          className="text-sapphire-900 font-medium hover:underline"
         >
           Change Password →
         </button>

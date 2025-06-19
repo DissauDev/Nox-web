@@ -41,7 +41,7 @@ export const TermsConditions = () => {
   if (isLoading) {
     return (
       <div className="text-center flex flex-col justify-center items-center mt-10">
-        <h1 className="my-2 text-3xl text-grape-900 font-ArialBold">
+        <h1 className="my-2 text-3xl text-midnight-950 font-ArialBold">
           Loading Terms
         </h1>
         <Lottie

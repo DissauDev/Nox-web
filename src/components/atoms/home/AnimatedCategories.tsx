@@ -67,7 +67,13 @@ const AnimatedCategories = () => {
   }
 
   if (isError || !categories) {
-    return <DataError title="Error to load Categories" darkTheme={true} />;
+    return (
+      <DataError
+        title="Error to load Categories"
+        darkTheme={true}
+        lighting={true}
+      />
+    );
   }
 
   // 3) Si la API devolvió un array vacío, mostramos mensaje
@@ -90,7 +96,7 @@ const AnimatedCategories = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative p-6"
+      className="relative p-6 bg-black-night-950"
     >
       <div className="max-w-4xl mx-auto mt-10">
         <h1 className="uppercase text-center font-CamilaFont tracking-wider mb-6 text-xl md:text-3xl text-mustard-yellow-400 lg:ml-14 lg:text-left">
@@ -120,11 +126,11 @@ const AnimatedCategories = () => {
           ))}
 
           {/* Línea de fondo */}
-          <div className="absolute bottom-0 left-0 w-full border-b-2 border-midnight-blue-800/90" />
+          <div className="absolute bottom-0 left-0 w-full border-b-2 border-[#15203a]" />
 
           {/* Indicador activo */}
           <motion.div
-            className="absolute bottom-0 border-b-4 border-grape-600"
+            className="absolute bottom-0 border-b-4 border-[#3948a4]"
             style={{
               width: `${100 / categories.length}%`,
               left: `${(selectedIndex * 100) / categories.length}%`,
@@ -171,7 +177,7 @@ const AnimatedCategories = () => {
 
             {/* Luz de fondo */}
             <div className="absolute inset-0 z-0 md:left-6 flex justify-center items-center">
-              <div className="w-32 h-24 md:min-w-32 md:h-32 bg-[rgb(89,47,255)] blur-3xl rounded-full" />
+              <div className="w-32 h-24 md:min-w-32 md:h-32 bg-[#3948a4] blur-3xl rounded-full" />
             </div>
             {/* 1) Placeholder blurhash */}
             {blurHashes[selectedIndex] && !loaded[selectedIndex] && (
@@ -201,7 +207,7 @@ const AnimatedCategories = () => {
 
           {/* Contenedor de texto y botón */}
           <div className="relative text-center md:text-left w-full md:w-1/2 flex flex-col items-center md:items-start">
-            <h2 className="text-2xl sm:text-2xl tracking-wider md:text-2xl font-CamilaFont text-purple-800">
+            <h2 className="text-2xl sm:text-2xl tracking-wider md:text-2xl font-CamilaFont text-[#92b1dd]">
               {categories[selectedIndex].name}
             </h2>
             <p className="text-sm font-ArialRegular md:w-5/6 sm:text-lg md:text-lg mt-2">

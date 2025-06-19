@@ -4,9 +4,11 @@ import {
 } from "@/store/features/slices/whishlistSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectIsInWishlist } from "@/store/whishlistSelector";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 import { FaPlus } from "react-icons/fa6";
-import { FiHeart, FiHeart as FiHeartFilled } from "react-icons/fi";
+
+import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 
 interface ProductCardProps {
   imageLeft: string;
@@ -31,40 +33,85 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const inWishlist = useAppSelector(selectIsInWishlist(product.id));
-
+  const [showHeartBurst, setShowHeartBurst] = React.useState(false);
   // Evita que el click en el corazón dispare otros handlers (e.g. onAdd)
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (!inWishlist) {
+      setShowHeartBurst(true);
+      setTimeout(() => setShowHeartBurst(false), 600); // durará 600ms
+    }
+
     dispatch(toggleWishlist(product));
   };
+
   return (
     <div
       onClick={onAdd}
       role="button"
       tabIndex={0}
-      className="group relative bg-white border m-6 border-[#45205d] rounded-2xl w-80 h-80 max-w-xs md:max-w-sm overflow-visible p-3 transition-all duration-300 shadow-2xl hover:shadow-pompadour-500 cursor-pointer"
+      className="group relative bg-[#15203a] border-2 m-6 border-[#92b1dd] rounded-2xl w-80 h-80 max-w-xs md:max-w-sm overflow-visible p-3 transition-all duration-300 shadow-2xl hover:shadow-[#92b1dd] cursor-pointer"
     >
-      {/* ▶️ BOTÓN WISHLIST */}
       <button
         onClick={handleWishlistClick}
-        className="absolute top-2 right-2 p-1 bg-white items-center justify-center rounded-full shadow-md hover:scale-110 transition"
+        className="absolute top-2 right-2 w-9 h-9 flex items-center justify-center
+           border-2 border-[#92b1dd] bg-[#15203a] rounded-full shadow-lg hover:shadow-[#92b1dd]
+           hover:scale-110 transition-all duration-300 z-20 overflow-visible"
       >
+        <AnimatePresence>
+          {showHeartBurst && (
+            <>
+              <motion.div
+                className="absolute"
+                initial={{ opacity: 1, scale: 0, y: 0 }}
+                animate={{ opacity: 0, scale: 1.5, y: -20 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <HiHeart className="text-mustard-yellow-500" size={12} />
+              </motion.div>
+
+              <motion.div
+                className="absolute"
+                initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
+                animate={{ opacity: 0, scale: 1.5, x: -10, y: -15 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <HiHeart className="text-mustard-yellow-500" size={10} />
+              </motion.div>
+
+              <motion.div
+                className="absolute"
+                initial={{ opacity: 1, scale: 0, x: 0, y: 0 }}
+                animate={{ opacity: 0, scale: 1.5, x: 10, y: -15 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <HiHeart className="text-mustard-yellow-500" size={10} />
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
         {inWishlist ? (
-          <FiHeartFilled
-            size={20}
-            className="text-red-500 justify-center items-center"
-          />
+          <HiHeart size={20} className="text-mustard-yellow-500" />
         ) : (
-          <FiHeart size={20} className="text-gray-400" />
+          <HiOutlineHeart size={20} className="text-[#92b1dd]" />
         )}
       </button>
 
       <div className="flex justify-between">
         <div className="w-1"></div>
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2
+               w-40 h-40 bg-[#92b1dd] rounded-full blur-2xl opacity-30 z-0"
+        />
         <img
           src={imageLeft}
           alt={name}
-          className="absolute -top-6 -left-6 h-48 w-auto rounded-full transition-transform duration-300 group-hover:scale-110"
+          className="absolute z-10 h-52 -top-10 left-12 w-auto rounded-full transition-transform duration-300 group-hover:scale-110"
         />
 
         {imageRight ? (
@@ -81,23 +128,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex-wrap justify-center">
         <div className="w-1 h-28"></div>
         <div className="transition-transform duration-300 group-hover:translate-y-2">
-          <h3 className="text-lg font-ArialBold text-[#45205d]">{name}</h3>
-          <p className="text-sm font-ArialRegular text-grape-950">
+          <h3 className="text-lg font-ArialBold text-mustard-yellow-400">
+            {name}
+          </h3>
+          <p className="text-sm font-ArialRegular text-[#92b1dd]">
             {description}
           </p>
           {sellPrice && sellPrice > price ? (
-            <span className="text-lg text-grape-950 font-ArialBold">
-              $ ? `${sellPrice.toFixed(2)}`
+            <span className="text-lg text-white font-ArialBold">
+              $ ? `$ {sellPrice.toFixed(2)}`
             </span>
           ) : null}
 
-          <span className="text-lg text-grape-950 font-ArialBold">
-            ${price}
-          </span>
+          <span className="text-lg text-white font-ArialBold"> $ {price}</span>
         </div>
       </div>
 
-      <button className="absolute bottom-2 right-2 w-10 h-10 flex items-center justify-center bg-grape-950 text-white rounded-md">
+      <button className="absolute bottom-2 right-2 w-10 h-10 flex items-center justify-center bg-[#92b1dd] text-[#15203a] rounded-md">
         <FaPlus size={22} />
       </button>
     </div>

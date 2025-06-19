@@ -114,7 +114,7 @@ const SignUpForm = () => {
                     placeholder="name"
                     {...field}
                     className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
-                    border  focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                    border  focus:outline-none focus:border-sapphire-600 transition-colors duration-300"
                   />
                 </FormControl>
                 <FormMessage />
@@ -135,7 +135,7 @@ const SignUpForm = () => {
                     placeholder="Email"
                     {...field}
                     className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
-                     border  focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                     border  focus:outline-none focus:border-sapphire-600 transition-colors duration-300"
                   />
                 </FormControl>
                 <FormMessage />
@@ -154,7 +154,7 @@ const SignUpForm = () => {
                       placeholder="Password"
                       {...field}
                       className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500
-                    border  focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                    border  focus:outline-none focus:border-sapphire-600 transition-colors duration-300"
                     />
                   </FormControl>
                   <button
@@ -193,7 +193,7 @@ const SignUpForm = () => {
                     whileTap={{ scale: 0.9 }}
                     className={`w-6 h-6 flex-shrink-0 border-2 rounded transition-all duration-200 flex justify-center items-center ${
                       field.value
-                        ? "bg-purple-500 border-purple-500"
+                        ? "bg-sapphire-700 border-sapphire-600"
                         : "bg-transparent border-gray-500"
                     }`}
                   >
@@ -238,7 +238,7 @@ const SignUpForm = () => {
                     whileTap={{ scale: 0.9 }}
                     className={`w-6 h-6 flex-shrink-0 border-2 rounded transition-all duration-200 flex justify-center items-center ${
                       field.value
-                        ? "bg-purple-500 border-purple-500"
+                        ? "bg-sapphire-700 border-sapphire-600"
                         : "bg-transparent border-gray-500"
                     }`}
                   >
@@ -262,7 +262,7 @@ const SignUpForm = () => {
             className={`w-full py-3 rounded-full ${
               isLoading
                 ? "bg-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-bold transition "
+                : "bg-gradient-to-r from-sapphire-500 to-sapphire-800 hover:from-sapphire-600 hover:to-sapphire-900 text-white font-bold transition "
             } text-white font-ArialBold transition-colors duration-300 shadow-md`}
           >
             {isLoading ? "Loading..." : "Sign Up"}
