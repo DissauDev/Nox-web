@@ -73,9 +73,45 @@ export default {
   				'950': '#550221'
   			},
   			'mustard-yellow': {
-  				'400': '#f7a823',
-  				'500': '#f1880f'
+  			   '50': '#fefbec',
+    '100': '#fcf2c9',
+    '200': '#fae38d',
+    '300': '#f7cf52',
+    '400': '#f4b71e',
+    '500': '#ee9b12',
+    '600': '#d3760c',
+    '700': '#af530e',
+    '800': '#8e4012',
+    '900': '#753512',
+    '950': '#431b05',
   			},
+			'midnight': {
+    '50': '#f0f7fe',
+    '100': '#deecfb',
+    '200': '#c5dff8',
+    '300': '#9cccf4',
+    '400': '#6eafec',
+    '500': '#4c90e5',
+    '600': '#3775d9',
+    '700': '#2e60c7',
+    '800': '#2b4fa2',
+    '900': '#284580',
+    '950': '#15203a',
+},
+
+'sapphire': {
+    '50': '#f2f5fc',
+    '100': '#e1e9f8',
+    '200': '#c9d8f4',
+    '300': '#a4bfec',
+    '400': '#789ee2',
+    '500': '#587dd9',
+    '600': '#4462cc',
+    '700': '#3a50bb',
+    '800': '#3948a4',
+    '900': '#2f3b79',
+    '950': '#21264a',
+},
   			affair: {
   				'50': '#faf7fd',
   				'100': '#f4ecfb',
@@ -167,7 +203,29 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		extend: {
+  keyframes: {
+    'pop-1': {
+      '0%': { transform: 'translate(0,0) scale(0)', opacity: '0' },
+      '100%': { transform: 'translate(-10px, -20px) scale(1)', opacity: '0' },
+    },
+    'pop-2': {
+      '0%': { transform: 'translate(0,0) scale(0)', opacity: '0' },
+      '100%': { transform: 'translate(10px, -18px) scale(1)', opacity: '0' },
+    },
+    'pop-3': {
+      '0%': { transform: 'translate(0,0) scale(0)', opacity: '0' },
+      '100%': { transform: 'translate(0px, -25px) scale(1)', opacity: '0' },
+    },
+  },
+  animation: {
+    'pop-1': 'pop-1 0.6s ease-out',
+    'pop-2': 'pop-2 0.6s ease-out',
+    'pop-3': 'pop-3 0.6s ease-out',
+  },
+}
+
   	}
   },
   plugins: [require("tailwindcss-animate")],

@@ -1,5 +1,6 @@
 import { FaFacebook, FaInstagram, FaTwitter, FaTiktok } from "react-icons/fa";
 import ImageNox from "../../assets/home/logo.png";
+import Pattern from "../../assets/desing/pattern.png";
 
 const Footer = () => {
   return (
@@ -84,10 +85,23 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Sección rosa de ancho completo con imagen centrada */}
-      <div className="bg-grape-950 w-full py-4">
-        <div className="max-w-6xl mx-auto flex justify-center">
-          {/* Reemplaza el src por la ruta de tu imagen */}
+      <div className="relative  w-full bg-black-night-950 overflow-hidden py-4">
+        {/* Fondo patrón gris oscuro */}
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${Pattern})`,
+            backgroundRepeat: "repeat",
+            backgroundSize: "1400px",
+            backgroundPosition: "center",
+            opacity: 0.05,
+            filter: "grayscale(1) brightness(0.5)",
+            backgroundBlendMode: "multiply",
+          }}
+        />
+
+        {/* Contenido */}
+        <div className="relative z-10 max-w-6xl mx-auto flex justify-center">
           <img src={ImageNox} alt="Imagen Central" className="h-24" />
         </div>
       </div>

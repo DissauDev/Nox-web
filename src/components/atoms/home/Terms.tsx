@@ -2,7 +2,7 @@ import React from "react";
 
 export const Terms = () => {
   return (
-    <div className="p-16 text-grape-900 max-w-4xl flex flex-col ">
+    <div className="p-16 text-midnight-950 max-w-4xl flex flex-col ">
       <h1 className="text-6xl font-ArialBold mb-8">
         Nox Rewards Loyalty Program
       </h1>

@@ -70,11 +70,14 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
   return (
     <div className="flex flex-row w-full items-center justify-between my-8">
       <div className="">
-        <h3 className="text-grape-900 text-xl font-ArialBold"> How Many ?</h3>
+        <h3 className="text-midnight-900 text-xl font-ArialBold">
+          {" "}
+          How Many ?
+        </h3>
         <button
           type="button"
           onClick={resetvalue}
-          className="text-pompadour-900 font-ArialRegular text-lg"
+          className="text-sapphire-600 font-ArialRegular text-lg"
         >
           Clear Section
         </button>
@@ -88,7 +91,7 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
           className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold transition text-lg ${
             count === minCount
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-grape-900 hover:bg-grape-800"
+              : "bg-midnight-950 hover:bg-midnight-900"
           }`}
         >
           <FaMinus />
@@ -105,7 +108,7 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
               setIsFocused(false);
               handleInputBlur();
             }}
-            className="w-20 text-center font-ArialBold text-xl border border-grape-950 text-grape-900 rounded-md py-2"
+            className="w-20 text-center font-ArialBold text-xl border border-midnight-950 text-midnight-900 rounded-md py-2"
           />
           {/* Sobreponer el texto animado solo cuando no se esté editando */}
           <AnimatePresence>
@@ -121,7 +124,7 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
                 }}
                 exit={{ scale: 0.5, opacity: 0, y: 20, rotate: 15 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none select-none text-grape-900 font-bold"
+                className="absolute inset-0 flex items-center justify-center pointer-events-none select-none text-midnight-950 font-bold"
               >
                 {count}
               </motion.span>
@@ -137,7 +140,7 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
           className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold transition text-lg ${
             count === maxCount
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-grape-900 hover:bg-grape-800"
+              : "bg-midnight-950 hover:bg-midnight-900"
           }`}
         >
           <FaPlus />

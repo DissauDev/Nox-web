@@ -40,7 +40,7 @@ const PrivacyPolicy = () => {
   if (isLoading) {
     return (
       <div className="text-center flex flex-col justify-center items-center mt-10">
-        <h1 className="my-2 text-3xl text-grape-900 font-ArialBold">
+        <h1 className="my-2 text-3xl text-midnight-950 font-ArialBold">
           Loading Privacy Policy
         </h1>
         <Lottie
@@ -78,7 +78,7 @@ const PrivacyPolicy = () => {
   }
 
   return (
-    <div className="p-16 flex flex-col w-full max-w-4xl mx-auto justify-center items-center text-grape-900">
+    <div className="p-16 flex flex-col w-full max-w-4xl mx-auto justify-center items-center text-midnight-950">
       <div className="">
         {/* 6) Inyectar CSS si existe y no hubo error */}
         {!hasError && cssFromBackend && (

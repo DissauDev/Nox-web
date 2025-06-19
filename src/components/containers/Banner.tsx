@@ -65,7 +65,7 @@ export const Banner: React.FC = () => {
     <header
       id="banner"
       ref={bannerRef}
-      className="bg-midnight-blue-950 fixed w-full top-0 z-50 shadow-lg text-white"
+      className="bg-[#15203A] fixed w-full top-0 z-50 shadow-lg text-white"
     >
       {/* Barra superior para pantallas grandes */}
       <div className="hidden md:block bg-mustard-yellow-400 py-1 text-center">
@@ -225,7 +225,7 @@ export const Banner: React.FC = () => {
 
       {/* Modal del menú móvil */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-grape-950 text-valentino-950 flex flex-col justify-center items-center z-50">
+        <div className="fixed inset-0 bg-[#15203A] text-valentino-950 flex flex-col justify-center items-center z-50">
           <button
             className="absolute top-6 right-6 text-valentino-950 text-3xl"
             onClick={toggleModal}
@@ -359,13 +359,13 @@ export const Banner: React.FC = () => {
               )}
             </div>
             <div className="flex items-center mx-4 space-x-4">
-              <span className="text-affair-500 font-ArialBold">
+              <span className="text-[#fffce9] font-ArialBold">
                 {savedAddress.fullAddress}
               </span>
               <a
                 target="_blank"
                 href="https://www.google.com/maps/place/422+E+Campbell+Ave,+Campbell,+CA+95008/@37.2869301,-121.9425607,16z/data=!3m1!4b1!4m6!3m5!1s0x808e34de644e1383:0xc1a0f0116d73eac4!8m2!3d37.2869301!4d-121.9425607!16s%2Fg%2F11c177bkr9?entry=ttu&g_ep=EgoyMDI1MDUyNi4wIKXMDSoASAFQAw%3D%3D"
-                className="text-mustard-yellow-400 hover:border-b-2 font-ArialRegular border-mustard-yellow-400"
+                className="text-mustard-yellow-400 hover:border-b-2 font-ArialRegular border-[#f4b71e]"
               >
                 On Map
               </a>

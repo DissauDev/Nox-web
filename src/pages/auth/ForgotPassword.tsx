@@ -96,7 +96,7 @@ export default function ForgotPassword() {
                         type={showPassword ? "text" : "password"}
                         placeholder="New Password"
                         {...field}
-                        className="w-full p-3 rounded-full bg-transparent text-white border-gray-600 border focus:border-purple-500 transition-colors duration-300"
+                        className="w-full p-3 rounded-full bg-transparent text-white border-gray-600 border focus:border-sapphire-600 transition-colors duration-300"
                       />
                     </FormControl>
                     <button
@@ -128,7 +128,7 @@ export default function ForgotPassword() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm Password"
                         {...field}
-                        className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                        className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-sapphire-600 transition-colors duration-300"
                       />
                     </FormControl>
                     <button
@@ -156,7 +156,7 @@ export default function ForgotPassword() {
                 className={`w-full py-3 rounded-full ${
                   isLoading
                     ? "bg-gray-600 cursor-not-allowed"
-                    : "bg-purple-700 hover:bg-purple-600"
+                    : "bg-sapphire-900 hover:bg-sapphire-800"
                 } text-white font-bold transition-colors duration-300`}
               >
                 {isLoading ? (

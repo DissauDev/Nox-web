@@ -4,12 +4,12 @@ import NoxLogo from "../../../assets/desing/Recurso 8@2x.png";
 
 export const HomeSection3 = () => {
   return (
-    <div className="relative">
+    <div className="relative ">
       {/* Efectos de luz en el fondo */}
       <motion.div
-        className="absolute bottom-0 left-0 transform -translate-y-1/2 
-                   w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64
-                   bg-[rgba(89,47,255,0.27)] rounded-full blur-3xl z-0"
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2
+             w-[350px] h-[350px] sm:w-[440px] sm:h-[440px] md:w-[440px] md:h-[440px]
+             bg-[rgba(109,165,255,0.23)] rounded-full blur-3xl z-0 pointer-events-none"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
@@ -68,7 +68,7 @@ export const HomeSection3 = () => {
           viewport={{ once: true, amount: 0.2 }}
         >
           <button
-            className="bg-affair-800 hover:bg-affair-900 rounded-full
+            className="bg-sapphire-800 hover:bg-sapphire-900 rounded-full
                        py-2 px-8 md:px-10 font-ArialBold font-medium text-[16px] md:text-[18px]"
           >
             Order Catering

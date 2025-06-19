@@ -167,22 +167,24 @@ const ProductDetails: React.FC = () => {
         <div className="w-full lg:w-7/12 px-4">
           <button
             onClick={() => navigate("/menu")}
-            className="text-grape-900 flex items-center font-bold mb-4"
+            className="text-midnight-900 flex items-center font-bold mb-4"
           >
             <FaChevronLeft className="mr-2" size={24} />
             Back to Menu
           </button>
 
-          <h1 className="text-4xl font-bold text-grape-900 mb-2">
+          <h1 className="text-4xl font-bold text-midnight-900 mb-2">
             {product.name}
           </h1>
-          <p className="text-grape-900 text-lg mb-2">{product.description}</p>
-          <p className="text-2xl text-grape-900 font-semibold  line-through">
+          <p className="text-midnight-900 text-lg mb-2">
+            {product.description}
+          </p>
+          <p className="text-2xl text-midnight-900 font-semibold  line-through">
             {product?.sellPrice && product?.sellPrice > product.price
               ? ` $${product.sellPrice.toFixed(2)}`
               : null}
           </p>
-          <p className="text-2xl text-grape-900 font-semibold mb-6">
+          <p className="text-2xl text-midnight-900 font-semibold mb-6">
             ${product.price.toFixed(2)}
           </p>
 
@@ -274,7 +276,7 @@ const ProductDetails: React.FC = () => {
               />
               <button
                 type="submit"
-                className="w-full mt-4 p-3 bg-grape-950 text-white font-ArialBold text-xl rounded-full transition hover:bg-grape-800 shadow-lg"
+                className="w-full mt-4 p-3 bg-midnight-950 text-white font-ArialBold text-xl rounded-full transition hover:bg-midnight-900 shadow-lg"
               >
                 Add to cart ${totalPrice.toFixed(2)}
               </button>

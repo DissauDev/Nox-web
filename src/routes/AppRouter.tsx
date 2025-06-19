@@ -92,6 +92,7 @@ const RequireAdmin: React.FC<{ children: React.ReactElement }> = ({
 const AppRoutes: React.FC = () => {
   const location = useLocation();
   const isHome = location.pathname === "/" || location.pathname === "/home";
+  const isMenu = location.pathname === "/menu";
   const isAuthRoute =
     location.pathname === "/auth" ||
     location.pathname.includes("forgot-password");
@@ -100,9 +101,11 @@ const AppRoutes: React.FC = () => {
     <div
       className={
         isHome || location.pathname.startsWith("/dashboard")
-          ? ""
+          ? "bg-[#15203a]"
           : isAuthRoute
-          ? "bg-[#21112E]"
+          ? "bg-[#15203a]"
+          : isMenu
+          ? "bg-[#3948a4]"
           : "bg-[#FDF9F3] min-h-screen w-full"
       }
     >

@@ -105,7 +105,7 @@ const SignInForm = () => {
                     type="email"
                     placeholder="Email"
                     {...field}
-                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                    className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-sapphire-400 transition-colors duration-300"
                   />
                 </FormControl>
                 <FormMessage />
@@ -123,7 +123,7 @@ const SignInForm = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       {...field}
-                      className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                      className="w-full p-3 mb-4 rounded-full bg-transparent text-white border-gray-500 border focus:outline-none focus:border-sapphire-400 transition-colors duration-300"
                     />
                   </FormControl>
                   <button
@@ -157,7 +157,7 @@ const SignInForm = () => {
             className={`w-full py-3 rounded-full ${
               isLoading
                 ? "bg-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800"
+                : "bg-gradient-to-r from-sapphire-500 to-sapphire-800 hover:from-sapphire-600 hover:to-sapphire-900"
             } text-white font-bold transition-colors duration-300 shadow-lg`}
           >
             {isLoading ? "Loading..." : "Sign In"}
@@ -175,12 +175,12 @@ const AuthPage: React.FC = () => {
   return (
     <div className="relative flex items-center justify-center p-6">
       <div className="max-w-md w-full p-8 overflow-hidden">
-        <div className="relative z-10">
+        <div className="relative z-10 ">
           {/* Toggle estilizado */}
           <div className="relative w-full flex items-center justify-between bg-transparent border-gray-500 border rounded-full p-1 mb-8">
             {/* Indicador deslizante con gradiente */}
             <div
-              className={`absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r from-purple-500 to-purple-700 rounded-full transition-transform duration-300 ${
+              className={`absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r from-sapphire-500 to-sapphire-800 rounded-full transition-transform duration-300 ${
                 isSignUp ? "translate-x-full" : "translate-x-0"
               }`}
             ></div>
