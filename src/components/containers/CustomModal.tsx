@@ -133,11 +133,11 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-[400px] mb-4 rounded-xl bg-white text-grape-950 shadow-xl z-50 flex flex-col"
+              className="fixed top-0 right-0 h-full w-[400px] mb-4 rounded-xl bg-white text-sapphire-950 shadow-xl z-50 flex flex-col"
             >
               {/* Encabezado con "My Bag" y botón de cerrar */}
               <div className="flex justify-between items-center p-4 border-b">
-                <h2 className="text-3xl font-ArialBold text-pompadour-900">
+                <h2 className="text-3xl font-ArialBold text-blue-500">
                   My Bag
                 </h2>
                 <button onClick={() => setIsOpen(false)}>
@@ -242,19 +242,19 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
               <div className="relative bg-white p-6 rounded-lg shadow-xl border-2 border-gray-300">
                 <div className="absolute -right-2 -bottom-2 w-full h-full border-r-8 border-b-8 border-mustard-yellow-500 rounded-lg pointer-events-none"></div>
                 <div className="flex justify-between">
-                  <h2 className="text-base font-ArialBold text-grape-950">
+                  <h2 className="text-base font-ArialBold text-sapphire-950">
                     {modalType === "address"
                       ? "Address Required to Add Items to Cart"
                       : "Add Items to Cart"}
                   </h2>
                   <FaTimes
                     size={24}
-                    className="text-grape-950 p-1 rounded-full"
+                    className="text-sapphire-950 p-1 rounded-full"
                     onClick={() => setIsOpen(false)}
                   />
                 </div>
 
-                <p className="mt-2 text-grape-900 text-sm font-ArialRegular max-w-lg">
+                <p className="mt-2 text-sapphire-950 text-sm font-ArialRegular max-w-lg">
                   {modalType === "address"
                     ? "Please add your address to see available items from your nearest store. Once you add some deliciousness to your cart, you can proceed to the checkout page."
                     : "You do not have any items in your cart. Please add an item to proceed to checkout."}
@@ -263,7 +263,7 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
                   <div></div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="mt-4 px-4 py-2 text-pompadour-900 rounded-lg"
+                    className="mt-4 px-4 py-2 text-midnight-500 rounded-lg"
                   >
                     Close
                   </button>

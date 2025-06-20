@@ -1,11 +1,12 @@
 // src/routes/AppRouter.tsx
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
@@ -97,23 +98,45 @@ const AppRoutes: React.FC = () => {
     location.pathname === "/auth" ||
     location.pathname.includes("forgot-password");
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      // ¿Ha hecho click en un <a data-internal href="…">…</a>?
+      const a = (e.target as HTMLElement).closest("a[data-internal]");
+      if (!a) return;
+
+      e.preventDefault();
+      const href = a.getAttribute("href");
+      if (href) {
+        // Navega sin recarga
+        navigate(href);
+      }
+    };
+
+    document.body.addEventListener("click", handleClick);
+    return () => {
+      document.body.removeEventListener("click", handleClick);
+    };
+  }, [navigate]);
+
   return (
     <div
       className={
-        isHome || location.pathname.startsWith("/dashboard")
+        isHome || isAuthRoute
           ? "bg-[#15203a]"
-          : isAuthRoute
-          ? "bg-[#15203a]"
+          : location.pathname.startsWith("/dashboard")
+          ? ""
           : isMenu
           ? "bg-[#3948a4]"
           : "bg-[#FDF9F3] min-h-screen w-full"
       }
     >
-      <div className="flex flex-col pt-20 md:pt-20">
+      <div className="flex flex-col pt-16 md:pt-20">
         <Banner />
         <main className="flex-grow">
           <Toaster />
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>Load</div>}>
             <ScrollToTop />
             <Routes>
               {/* Rutas públicas */}

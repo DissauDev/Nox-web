@@ -7,11 +7,10 @@ import { useNavigate } from "react-router-dom";
 import { DataError } from "../DataError";
 import { EmptyData } from "../EmptyData";
 import { encode } from "blurhash";
-import { Blurhash } from "react-blurhash";
+
 import Lottie from "lottie-react";
 import animationData from "../../../assets/lotties/Animation - 10.json";
 const AnimatedCategories = () => {
-  const [blurHashes, setBlurHashes] = useState<string[]>([]);
   const [loaded, setLoaded] = useState<boolean[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { ref, inView } = useInView({ triggerOnce: true });
@@ -50,7 +49,6 @@ const AnimatedCategories = () => {
           4, // X components
           4 // Y components
         );
-        setBlurHashes([...hashes]);
       };
     });
   }, [categories]);
@@ -179,18 +177,7 @@ const AnimatedCategories = () => {
             <div className="absolute inset-0 z-0 md:left-6 flex justify-center items-center">
               <div className="w-32 h-24 md:min-w-32 md:h-32 bg-[#3948a4] blur-3xl rounded-full" />
             </div>
-            {/* 1) Placeholder blurhash */}
-            {blurHashes[selectedIndex] && !loaded[selectedIndex] && (
-              <Blurhash
-                hash={blurHashes[selectedIndex]}
-                resolutionX={32}
-                resolutionY={32}
-                punch={1}
-                height={"100%"}
-                width={"100%"}
-                className="relative w-52 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
-              />
-            )}
+
             {/* Imagen dinámica proveniente de category.imageUrl */}
             <img
               src={categories[selectedIndex].imageUrl}
@@ -200,7 +187,7 @@ const AnimatedCategories = () => {
                 flags[selectedIndex] = true;
                 setLoaded(flags);
               }}
-              style={{ display: loaded[selectedIndex] ? "block" : "none" }}
+              style={{ display: loaded[selectedIndex] && "block" }}
               className="relative w-52 md:w-72 lg:w-96 h-auto object-cover rounded-lg shadow-lg transition-all duration-500"
             />
           </motion.div>
@@ -214,7 +201,11 @@ const AnimatedCategories = () => {
               {categories[selectedIndex].longDescription}
             </p>
             <button
-              onClick={() => navigate("/menu")}
+              onClick={() =>
+                navigate(
+                  `/menu#${categories[selectedIndex].name.replace(/\s+/g, "-")}`
+                )
+              }
               className="mt-4 text-xl px-20 py-2 bg-mustard-yellow-400 rounded-full text-black font-ArialBold shadow-md hover:bg-mustard-yellow-500 transition"
             >
               Menu

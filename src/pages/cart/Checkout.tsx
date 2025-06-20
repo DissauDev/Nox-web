@@ -16,12 +16,12 @@ export const Checkout = () => {
   return (
     <Elements stripe={stripePromise}>
       <div className=" p-6 mt-16">
-        <div className="flex justify-center mt-2 mb-12 items-center font-ArialBold text-sm  md:text-xl text-grape-900 space-x-4">
+        <div className="flex justify-center mt-2 mb-12 items-center font-ArialBold text-sm  md:text-xl text-sapphire-900 space-x-4">
           <button onClick={() => navigate("/cart")}>Shopping Cart</button>
           <FaChevronRight />
           <button className="">Checkout</button>
           <FaChevronRight />
-          <button className="text-gray-500  hover:text-grape-900">
+          <button className="text-gray-500  hover:text-sapphire-900">
             Order Complete
           </button>
         </div>

@@ -46,6 +46,7 @@ export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
 
       // build selected array
       const selectedArray = Object.entries(newState)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, v]) => v)
         .map(([id]) => options.find((o) => o.id === id)!)
         .filter(Boolean);
@@ -62,7 +63,7 @@ export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
 
   return (
     <div className="mt-4">
-      <label className="block font-ArialBold text-grape-800 my-4">
+      <label className="block font-ArialBold text-sapphire-900 my-4">
         {groupName}
       </label>
       <div className="flex flex-wrap gap-4">
@@ -77,7 +78,7 @@ export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
                 <motion.div
                   className={`w-8 h-8 flex items-center justify-center rounded-full border-2 cursor-pointer transition-all ${
                     checked
-                      ? "bg-grape-950 border-grape-950"
+                      ? "bg-sapphire-900 border-sapphire-900"
                       : "border-gray-400"
                   }`}
                   whileTap={{ scale: 0.6 }}
@@ -91,11 +92,11 @@ export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
                     ✓
                   </motion.div>
                 </motion.div>
-                <span className="text-grape-900 mx-4 font-ArialBold">
+                <span className="text-sapphire-950 mx-4 font-ArialBold">
                   {opt.name}
                 </span>
               </div>
-              <span className="text-grape-900 font-ArialBold">
+              <span className="text-sapphire-950 font-ArialBold">
                 (+${opt.extraPrice.toFixed(2)})
               </span>
             </div>

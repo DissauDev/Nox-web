@@ -11,7 +11,7 @@ export const EmptyData = ({ title, darkTheme }: Props) => {
       {darkTheme ? (
         <h2 className="font-ArialBold text-center text-2xl ">{title}</h2>
       ) : (
-        <h2 className="font-ArialBold text-center text-2xl text-grape-900">
+        <h2 className="font-ArialBold text-center text-2xl text-sapphire-900">
           {title}
         </h2>
       )}

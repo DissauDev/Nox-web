@@ -135,9 +135,9 @@ const PaymentForm: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
           {/* Columna Izquierda: Order Details */}
           <div className="w-full">
-            <div className="  text-grape-800 font-ArialBold">
+            <div className="  text-sapphire-900 font-ArialBold">
               {/* Pickup & Address */}
-              <div className="bg-white p-6 rounded-lg shadow border text-grape-800 mb-6">
+              <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900 mb-6">
                 <div className="flex md:flex-row flex-col justify-between mb-4">
                   <div className="flex items-center">
                     <FaStore size={28} className="mr-2" />
@@ -232,8 +232,8 @@ const PaymentForm: React.FC = () => {
               </div>
 
               {/* My Bag & Note */}
-              <div className="bg-white p-6 rounded-lg shadow border text-grape-800">
-                <h2 className="text-2xl font-ArialBold mb-4 text-pompadour-900">
+              <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900">
+                <h2 className="text-2xl font-ArialBold mb-4 text-sapphire-600">
                   My Bag
                 </h2>
                 <div className="space-y-3 border-b pb-4">
@@ -281,7 +281,7 @@ const PaymentForm: React.FC = () => {
           </div>
           {/* Columna Derecha: Payment Form */}
           <div className="w-full">
-            <div className="flex flex-col lg:max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6 text-grape-800 font-ArialBold">
+            <div className="flex flex-col lg:max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6 text-sapphire-900 font-ArialBold">
               <h2 className="text-2xl mb-4 font-ArialBold text-pompadour-900">
                 Order Details
               </h2>
@@ -304,7 +304,7 @@ const PaymentForm: React.FC = () => {
                     onClick={() => handleTipSelection(t)}
                     className={`m-1 px-4 py-2 rounded ${
                       selectedTip === t
-                        ? "bg-grape-800 text-white"
+                        ? "bg-sapphire-900 text-white"
                         : "bg-white border-2 hover:bg-gray-100"
                     }`}
                   >

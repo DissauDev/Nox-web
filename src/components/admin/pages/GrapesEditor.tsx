@@ -300,7 +300,7 @@ const GrapesEditor: React.FC<GrapesEditorProps> = ({
         ref={editorContainer}
         className={`
         w-full overflow-auto border-l-4 border-r-4 border-neutral-800
-        ${slug === "home" ? "bg-[#06060a]" : ""}
+        ${slug === "home" ? "bg-[#15203a]" : ""}
       `}
         style={{
           height: "calc(100vh - 2.5rem - 2.5rem - 2.5rem)",

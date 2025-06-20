@@ -14,7 +14,7 @@ export const AppPromo = () => {
         style={{
           backgroundImage: `url(${Pattern})`,
           backgroundRepeat: "repeat",
-          backgroundSize: "1400px",
+          backgroundSize: "1200px",
           backgroundPosition: "center",
           opacity: 0.05,
           filter: "grayscale(1) brightness(0.5)",
@@ -44,16 +44,16 @@ export const AppPromo = () => {
         <div className="mt-6 hidden md:flex md:flex-col lg:flex-row gap-3 w-full">
           <a
             href="#"
-            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
-                       text-sm md:text-lg font-semibold hover:bg-gray-800 transition w-auto"
+            className="flex items-center justify-center bg-sapphire-900 px-4 py-2 rounded-lg text-white
+                       text-sm md:text-lg font-semibold hover:bg-sapphire-800 transition w-auto"
           >
             <FaApple className="mr-2 text-lg md:text-2xl" />
             App Store
           </a>
           <a
             href="#"
-            className="flex items-center justify-center bg-black px-4 py-2 rounded-lg text-white
-                       text-sm md:text-lg font-semibold hover:bg-gray-800 transition w-auto"
+            className="flex items-center justify-center bg-sapphire-900 px-4 py-2 rounded-lg text-white
+                       text-sm md:text-lg font-semibold hover:bg-sapphire-800 transition w-auto"
           >
             <FaGooglePlay className="mr-2 text-lg md:text-2xl" />
             Google Play

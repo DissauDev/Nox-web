@@ -38,7 +38,7 @@ const ItemCards: React.FC = () => {
         {/* Tabla de Productos */}
         <div className="w-full lg:w-8/12 overflow-x-auto">
           <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">
-            <thead className="bg-grape-800">
+            <thead className="bg-sapphire-900">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium ">
                   Product
@@ -89,7 +89,7 @@ const ItemCards: React.FC = () => {
                           onClick={() =>
                             handleDecrementOrRemove(p.id, p.quantity)
                           }
-                          className="p-1 bg-grape-700 rounded hover:bg-grape-900 transition"
+                          className="p-1 bg-sapphire-800 rounded hover:bg-sapphire-900 transition"
                         >
                           <FiMinus />
                         </button>
@@ -98,7 +98,7 @@ const ItemCards: React.FC = () => {
                           onClick={() =>
                             handleDecrementOrRemove(p.id, p.quantity)
                           }
-                          className="p-1 bg-grape-700 rounded hover:bg-grape-900 transition"
+                          className="p-1 bg-sapphire-800 rounded hover:bg-sapphire-900 transition"
                         >
                           <FiTrash2 />
                         </button>
@@ -108,7 +108,7 @@ const ItemCards: React.FC = () => {
                       </span>
                       <button
                         onClick={() => handleIncrement(p.id)}
-                        className="p-1 bg-grape-700 rounded hover:bg-grape-900 transition"
+                        className="p-1 bg-sapphire-800 rounded hover:bg-sapphire-900 transition"
                       >
                         <FiPlus />
                       </button>
@@ -128,7 +128,7 @@ const ItemCards: React.FC = () => {
         {/* Tarjeta de Totales */}
         <div className="w-full lg:w-5/12 mt-6 lg:mt-0">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-ArialBold text-grape-900 mb-4">
+            <h2 className="text-xl font-ArialBold text-sapphire-900 mb-4">
               Cart Totals
             </h2>
             <div className="flex justify-between mb-2">

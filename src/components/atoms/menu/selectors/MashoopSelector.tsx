@@ -62,14 +62,14 @@ const MashoopSelector: React.FC<MashoopSelectorProps> = ({
 
   return (
     <div className="p-4 mb-10">
-      <h2 className="text-2xl font-bold mb-6 text-grape-950">
+      <h2 className="text-2xl font-bold mb-6 text-sapphire-950">
         Select ({maxSelectable}) {groupName}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {options.map((opt) => (
           <div
             key={opt.id}
-            className="flex flex-col text-grape-950 items-center p-4"
+            className="flex flex-col text-sapphire-950 items-center p-4"
           >
             <div className="w-56 h-56 overflow-hidden">
               <img
@@ -92,7 +92,7 @@ const MashoopSelector: React.FC<MashoopSelectorProps> = ({
                 className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold text-2xl transition ${
                   counts[opt.id] === 0
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-grape-900 hover:bg-grape-800"
+                    : "bg-sapphire-950 hover:bg-sapphire-900"
                 }`}
               >
                 –
@@ -109,7 +109,7 @@ const MashoopSelector: React.FC<MashoopSelectorProps> = ({
                 className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-bold text-2xl transition ${
                   counts[opt.id] >= maxSelectable || total >= maxSelectable
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-grape-900 hover:bg-grape-800"
+                    : "bg-sapphire-950 hover:bg-sapphire-900"
                 }`}
               >
                 +
