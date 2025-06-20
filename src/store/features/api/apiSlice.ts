@@ -10,8 +10,8 @@ import type { RootState } from '@/store/store'; // ← así debe importarse
 import { logout, refreshTokens } from '../slices/authSlice';
 
 
-//export  const baseUrl = 'https://app.nox.dissau.online/api'
-export  const baseUrl = 'http://localhost:3000/api'
+export  const baseUrl = 'https://app.nox.dissau.online/api'
+//export  const baseUrl = 'http://localhost:3000/api'
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
   prepareHeaders: (headers, { getState }) => {
