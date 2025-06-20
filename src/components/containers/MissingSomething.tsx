@@ -113,7 +113,7 @@ export function MissingSomething() {
               <button
                 type="button"
                 onClick={() => handleAdd(item)}
-                className="absolute -top-3 right-0 bg-grape-900 text-white p-1 rounded-full w-6 h-6 flex items-center justify-center"
+                className="absolute -top-3 right-0 bg-sapphire-950 text-white p-1 rounded-full w-6 h-6 flex items-center justify-center"
               >
                 +
               </button>

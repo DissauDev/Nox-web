@@ -88,7 +88,7 @@ export const Home: React.FC = () => {
         ) : (
           // 8) Si no hay error, intentamos renderizar dinámicamente desde el backend
           <>
-            <div className=" py-10">
+            <div className=" pb-10">
               {/*renderSection(sections, "HomeSection3") || */ <HomeSection3 />}
               {
                 /*renderSection(sections, "FotosSection4") || */ <FotosSection4 />

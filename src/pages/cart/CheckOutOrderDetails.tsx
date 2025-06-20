@@ -21,7 +21,7 @@ export const CheckOutOrderDetails: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Pickup & Address */}
-      <div className="bg-white p-6 rounded-lg shadow border text-grape-800">
+      <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900">
         <div className="flex justify-between mb-4">
           <div className="flex items-center">
             <FaStore size={28} className="mr-2" />
@@ -106,8 +106,8 @@ export const CheckOutOrderDetails: React.FC = () => {
       </div>
 
       {/* Mi Bolsa */}
-      <div className="bg-white p-6 rounded-lg shadow border text-grape-800">
-        <h2 className="text-2xl font-ArialBold mb-4 text-pompadour-900">
+      <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900">
+        <h2 className="text-2xl font-ArialBold mb-4 text-sapphire-600">
           My Bag
         </h2>
         <div className="space-y-3 border-b pb-4">

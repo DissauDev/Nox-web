@@ -1,3 +1,4 @@
+import { DataError } from "@/components/atoms/DataError";
 import { useGetUserOrdersQuery } from "@/store/features/api/ordersApi";
 import { RootState } from "@/store/store";
 import { Button } from "@headlessui/react";
@@ -11,10 +12,11 @@ export const OrderContent = () => {
 
   console.log("userState:--" + userState.email);
   const navigate = useNavigate();
-  const { isLoading, data } = useGetUserOrdersQuery(userState.email);
+  const { isLoading, data, isError } = useGetUserOrdersQuery(userState.email);
 
   if (isLoading) return <h3>...</h3>;
-
+  if (isError)
+    return <DataError title={"Error to show orders"} darkTheme={false} />;
   return (
     <div className="flex-1 text-gray-800 py-6">
       <div className="flex items-center mb-6">
@@ -37,7 +39,7 @@ export const OrderContent = () => {
             {isLoading && (
               <tr>
                 <td colSpan={5} className="py-4 text-center text-gray-500">
-                  Cargando órdenes…
+                  Loading orders…
                 </td>
               </tr>
             )}
@@ -45,7 +47,7 @@ export const OrderContent = () => {
             {!isLoading && data?.orders?.length === 0 && (
               <tr>
                 <td colSpan={5} className="py-4 text-center text-gray-600">
-                  No tienes órdenes aún.
+                  No orders to show
                 </td>
               </tr>
             )}

@@ -1,29 +1,19 @@
-import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 //import ImageCoockie from "../../assets/desing/foto dulces .png";
-import ImageCoockie from "../../assets/cookie.png";
+import ImageCoockie from "../../assets/desing/dulces (2).png";
 import ImageCoockie1 from "../../assets/FOTOS NOX CATERING/cookie2.png";
 import ImageCoockie2 from "../../assets/FOTOS NOX CATERING/cookie11.png";
 import ImageCoockie3 from "../../assets/FOTOS NOX CATERING/cookie6.png";
 import ImageCoockie4 from "../../assets/FOTOS NOX CATERING/cookie8.png";
 import Pattern from "../../assets/desing/pattern.png";
+import { useNavigate } from "react-router-dom";
 
 export const Slider = () => {
-  const [showExit, setShowExit] = useState(false);
-
-  // Después de 3 segundos se muestra la animación de salida
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowExit(true);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <div className="bg-black">
+    <div className="bg-black lg:mt-6">
       <div
-        className="relative flex md:flex-row items-center overflow-hidden
-               min-h-[400px] md:min-h-[500px] w-full px-4 md:px-6"
+        className="relative flex md:flex-row items-start overflow-hidden
+               min-h-[400px] md:min-h-[500px] w-full "
       >
         {/* Capa del patrón de fondo */}
         <div
@@ -48,21 +38,84 @@ export const Slider = () => {
         />
 
         {/* Contenido principal (animaciones) */}
-        <div className="">
-          {!showExit && <EnterAnimation />}
-          {showExit && <ExitAnimation />}
-        </div>
+        <EnterAnimation />
       </div>
     </div>
   );
 };
 
 const EnterAnimation = () => {
+  const navigate = useNavigate();
   return (
     <>
-      {/* Texto y botón */}
+      <section className="relative overflow-hidden flex w-full">
+        <div className="flex flex-col md:flex-row items-center justify-between w-full">
+          {/* Texto y botón */}
+          <motion.div
+            className="
+        relative
+        -right-2
+        w-full mb-8    
+                  /* móvil: full-width encima del texto */
+        md:absolute md:inset-y-0 /* md+: de arriba a abajo */
+        md:right-0               /* siempre pegada a la derecha */
+        md:w-1/2                 /* md+: ocupa el 50% del ancho */
+        overflow-hidden
+        z-10
+        md:hidden
+      "
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <img
+              src={ImageCoockie}
+              alt="Galletas"
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+          <motion.div
+            className="w-full md:w-1/2  px-4 md:px-8  lg:px-16 order-2 md:order-1 text-center md:text-left"
+            initial={{ x: -100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <h1 className="text-white text-3xl md:text-5xl lg:text-7xl font-CamilaFont leading-tight">
+              Most popular at the bakery
+            </h1>
+            <h3 className="text-white text-lg md:text-xl lg:text-2xl font-ArialRegular leading-tight">
+              Pick a warm, delicious 12-packs.
+            </h3>
+            <button
+              onClick={() => navigate("/menu")}
+              className="mt-6 inline-block bg-sapphire-800 mb-6 hover:bg-sapphire-900 text-white px-10 py-2 rounded-full shadow-md transition"
+            >
+              <span className="uppercase font-ArialBold text-sm md:text-base">
+                Order Now
+              </span>
+            </button>
+          </motion.div>
+
+          {/* Imagen */}
+          <motion.div
+            className="w-full hidden md:flex md:w-1/2 order-1 md:order-2 relative -right-2   overflow-hidden  justify-end"
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <img
+              src={ImageCoockie}
+              alt="Galletas"
+              loading="lazy"
+              className="w-full h-auto max-w-lg  object-cover"
+            />
+          </motion.div>
+        </div>
+      </section>
+      {/* Texto y botón 
       <motion.div
-        className="absolute left-4 md:left-8 max-w-[220px] md:max-w-[600px] lg:max-w-[960px] text-left opacity-0 leading-tight z-10"
+        className="absolute left-4 md:left-8  max-w-[220px] md:max-w-[600px] lg:max-w-[960px] text-left opacity-0 leading-tight z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.5, ease: "easeOut" }}
@@ -77,7 +130,7 @@ const EnterAnimation = () => {
         </button>
       </motion.div>
 
-      {/* Imagen animada */}
+     
       <motion.div
         className="absolute bottom-0 w-[43%] md:w-[50%] flex justify-center p-2 md:p-4 z-20"
         style={{ left: "30%", transform: "translateX(-50%)" }}
@@ -101,7 +154,7 @@ const EnterAnimation = () => {
           loading="lazy"
           className="w-full h-auto object-cover md:max-w-md"
         />
-      </motion.div>
+      </motion.div>*/}
     </>
   );
 };

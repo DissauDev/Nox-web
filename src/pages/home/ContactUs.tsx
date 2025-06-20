@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegCalendarDays } from "react-icons/fa6";
 import { LuMapPin } from "react-icons/lu";
 import { TfiEmail } from "react-icons/tfi";
@@ -6,6 +6,7 @@ import { IoPhonePortraitOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import RestaurantMap from "@/components/atoms/home/RestaurantMap";
+import { useLocation } from "react-router-dom";
 
 const faqs = [
   {
@@ -42,6 +43,19 @@ export const ContactUs = () => {
     setOpenIndex(openIndex === index ? -1 : index);
   };
 
+  const location = useLocation();
+
+  // Esto se encarga del scroll suave cuando cambia el hash
+  useEffect(() => {
+    if (location.hash) {
+      // quita la almohadilla y busca el elemento
+      const id = location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location]);
   return (
     <div className="">
       {/* Sección Header */}
@@ -84,7 +98,8 @@ export const ContactUs = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mt-12 flex flex-wrap text-sapphire-900 p-4 items-center justify-evenly"
+        id="info"
+        className="my-12 flex flex-wrap text-sapphire-900 p-4 items-center justify-evenly"
       >
         <a
           href="https://www.google.com/maps/search/?api=1&query=422+E+Campbell+Ave,+Campbell,+CA+95008"
@@ -181,7 +196,7 @@ export const ContactUs = () => {
           </form>
         </div>*/}
         {/* Preguntas Frecuentes */}
-        <div className="w-full lg:pb-24 md:w-6/12 p-6">
+        <div className="w-full lg:pb-24 md:w-6/12 p-6" id="faq">
           <h2 className="text-2xl text-sapphire-950 font-bold mb-8">
             Frequently Asked Questions
           </h2>
@@ -220,7 +235,7 @@ export const ContactUs = () => {
         </div>
       </motion.div>
       {/* Sección del Mapa sin animación de scroll */}
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center" id="map">
         <div className="w-full mb-10">
           <RestaurantMap />
         </div>

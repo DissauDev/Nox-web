@@ -32,18 +32,18 @@ export const Orders: React.FC = () => {
   return (
     <div className="min-h-screen py-10 mt-10 px-4">
       {/* Breadcrumbs */}
-      <div className="flex justify-center mt-6 items-center font-ArialBold text-sm md:text-xl text-grape-800 space-x-2 mb-8">
+      <div className="flex justify-center mt-6 items-center font-ArialBold text-sm md:text-xl text-sapphire-900 space-x-2 mb-8">
         <button onClick={() => navigate("/cart")} className="hover:underline">
           Shopping Cart
         </button>
-        <FaChevronRight className="text-grape-800" />
+        <FaChevronRight className="text-sapphire-900" />
         <button
           onClick={() => navigate("/checkout")}
           className="hover:underline"
         >
           Checkout
         </button>
-        <FaChevronRight className="text-grape-800" />
+        <FaChevronRight className="text-sapphire-900" />
         <span className="text-gray-500">Order Complete</span>
       </div>
 
@@ -53,14 +53,14 @@ export const Orders: React.FC = () => {
         whileInView="visible"
         viewport={{ once: true }}
         variants={containerVariants}
-        className="max-w-4xl mx-auto p-8 border-grape-800 shadow-2xl border-b-8 border-r-8 rounded-md"
+        className="max-w-4xl mx-auto p-8 border-sapphire-900 shadow-2xl border-b-8 border-r-8 rounded-md"
       >
         <motion.h2
           initial={{ opacity: 0, y: -10 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-2xl md:text-3xl font-bold text-grape-800 text-center mb-6"
+          className="text-2xl md:text-3xl font-bold text-sapphire-900 text-center mb-6"
         >
           ✅ Thank you. Your order has been received.
         </motion.h2>
@@ -114,14 +114,14 @@ export const Orders: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
           viewport={{ once: true }}
-          className="mb-6 text-grape-800"
+          className="mb-6 text-sapphire-900"
         >
           <h3 className="text-xl font-semibold mb-4">Your order</h3>
           <div className="space-y-4">
             {order.items.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col sm:flex-row justify-between items-start p-4 border border-grape-800 rounded-md"
+                className="flex flex-col sm:flex-row justify-between items-start p-4 border border-sapphire-800 rounded-md"
               >
                 <div>
                   <p className="font-medium">
@@ -161,7 +161,7 @@ export const Orders: React.FC = () => {
             className="my-6 text-gray-600"
           >
             <p className="text-sm">
-              <span className="font-ArialBold text-grape-800">Note:</span>{" "}
+              <span className="font-ArialBold text-sapphire-900">Note:</span>{" "}
               {order.specifications}
             </p>
           </motion.div>
@@ -169,7 +169,7 @@ export const Orders: React.FC = () => {
           {/* Totals breakdown */}
           <div className="mt-6 space-y-2 text-right">
             <p className="text-gray-800 font-medium">
-              <span className="font-bold text-grape-800">Subtotal:</span> $
+              <span className="font-bold text-sapphire-900">Subtotal:</span> $
               {order.subtotal.toFixed(2)}
             </p>
             {/*  <p className="text-gray-800 font-medium">
@@ -177,7 +177,7 @@ export const Orders: React.FC = () => {
               ${order.tax?.toFixed(2) ?? "0.00"}
             </p> */}
             <p className="text-xl font-bold text-gray-800">
-              <span className="font-ArialBold text-grape-800">Total:</span> $
+              <span className="font-ArialBold text-sapphire-900">Total:</span> $
               {order.totalAmount.toFixed(2)}
             </p>
           </div>
@@ -194,7 +194,7 @@ export const Orders: React.FC = () => {
           <h3 className="text-xl font-semibold mb-4 text-gray-900">
             Billing Address
           </h3>
-          <div className="bg-gray-50 p-6 rounded-lg shadow-inner border-l-4 border-grape-800">
+          <div className="bg-gray-50 p-6 rounded-lg shadow-inner border-l-4 border-sapphire-800">
             <p className="font-semibold text-gray-800">{order.customerName}</p>
             <p className="text-gray-600">{order.customerAddress}</p>
             <p className="text-gray-600">{order.customerPhone}</p>

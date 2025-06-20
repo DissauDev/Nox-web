@@ -1,6 +1,7 @@
-import { FaFacebook, FaInstagram, FaTwitter, FaTiktok } from "react-icons/fa";
+//import { FaFacebook, FaInstagram, FaTwitter, FaTiktok } from "react-icons/fa";
 import ImageNox from "../../assets/home/logo.png";
 import Pattern from "../../assets/desing/pattern.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -11,64 +12,100 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           {/* Columna 1: Enlaces de Orders */}
           <div className="flex flex-col space-y-2">
-            <a href="#" className="hover:text-gray-300 font-ArialBold">
-              Orders
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Order Status
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Track Order
-            </a>
+            <a className="hover:text-gray-300 font-ArialBold">Orders</a>
+
+            <Link
+              to="/account/orders"
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              My Orders
+            </Link>
           </div>
           {/* Columna 2: Enlaces de Company */}
           <div className="flex flex-col space-y-2">
-            <a href="#" className="hover:text-gray-300 font-ArialBold">
-              About Us
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Careers
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Franchise
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Gift Cards
-            </a>
+            <Link
+              to="/contact-us"
+              className="hover:text-gray-300 font-ArialBold"
+            >
+              Contact us
+            </Link>
+
+            <Link
+              to="/contact-us#info"
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              Info
+            </Link>
+            <Link
+              to="/contact-us#faq"
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              FAQS
+            </Link>
+            <Link
+              to="/contact-us#map"
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              Map
+            </Link>
           </div>
           {/* Columna 3: Enlaces de Support */}
           <div className="flex flex-col space-y-2">
-            <a href="#" className="hover:text-gray-300 font-ArialBold">
-              Contact Us
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              FAQs
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
+            <Link
+              to={"/account/dashboard"}
+              className="hover:text-gray-300 font-ArialBold"
+            >
+              Profile
+            </Link>
+            <Link
+              to={"/account/details"}
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              Account Details
+            </Link>
+            <Link
+              to={"privacy-policy"}
+              className="hover:text-gray-300 font-ArialRegular"
+            >
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
+            </Link>
+            <Link
+              to={"/terms"}
+              className="hover:text-gray-300 font-ArialRegular"
+            >
               Terms of Service
-            </a>
+            </Link>
+            <Link
+              to={"/account/wishlist"}
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              WhishList
+            </Link>
           </div>
           {/* Columna 4: Otros Enlaces (ejemplo: Blog, Press, etc.) */}
           <div className="flex flex-col space-y-2">
-            <a href="#" className="hover:text-gray-300 font-ArialBold">
+            <a className="hover:text-gray-300 font-ArialBold">Links</a>
+            <Link
+              target="_blank"
+              to="https://nox.dissau.site/blog/"
+              className="hover:text-gray-300"
+            >
               Blog
-            </a>
-            <a href="#" className="hover:text-gray-300 ">
-              Press
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Investors
-            </a>
-            <a href="#" className="hover:text-gray-300 font-ArialRegular">
-              Sustainability
-            </a>
+            </Link>
+            <Link
+              target="_blank"
+              to={
+                "https://www.google.com/maps/search/?api=1&query=422+E+Campbell+Ave,+Campbell,+CA+95008"
+              }
+              className="hover:text-gray-300 font-ArialRegular"
+            >
+              Google Map
+            </Link>
           </div>
         </div>
 
-        {/* Fila de redes sociales centradas */}
+        {/* Fila de redes sociales centradas 
+        
         <div className="mt-8 flex justify-center space-x-6">
           <a href="#" className="text-gray-400 hover:text-white text-2xl">
             <FaFacebook />
@@ -82,7 +119,7 @@ const Footer = () => {
           <a href="#" className="text-gray-400 hover:text-white text-2xl">
             <FaTiktok />
           </a>
-        </div>
+        </div> */}
       </div>
 
       <div className="relative  w-full bg-black-night-950 overflow-hidden py-4">
@@ -92,7 +129,7 @@ const Footer = () => {
           style={{
             backgroundImage: `url(${Pattern})`,
             backgroundRepeat: "repeat",
-            backgroundSize: "1400px",
+            backgroundSize: "1200px",
             backgroundPosition: "center",
             opacity: 0.05,
             filter: "grayscale(1) brightness(0.5)",

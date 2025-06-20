@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import DessertCard from "../../components/atoms/menu/DessertCard";
 import { Slider } from "../../components/atoms/Slider";
@@ -29,7 +29,7 @@ const Menu = () => {
     { size: "text-xl hidden  lg:block", top: "76%", right: "65" },
   ];
   const navigate = useNavigate();
-
+  const location = useLocation();
   // 1. Estado para la pestaña activa
   const [activeTab, setActiveTab] = useState<string>("");
 
@@ -45,9 +45,20 @@ const Menu = () => {
   // 4. Al tener las secciones (dataMenu), inicializamos activeTab en la primera categoría
   useEffect(() => {
     if (sections.length > 0 && !activeTab) {
-      setActiveTab(sections[0]);
+      const firstSlug = sections[0].trim().replace(/\s+/g, "-");
+      setActiveTab(firstSlug);
     }
   }, [sections, activeTab]);
+  // Al cambiar el hash en la URL, desplazamos al elemento correspondiente
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        window.scrollTo({ top: el.offsetTop - 60, behavior: "smooth" });
+      }
+    }
+  }, [location.hash]);
 
   // 5. useEffect para actualizar activeTab al hacer scroll (siempre basado en "sections")
   useEffect(() => {
@@ -78,6 +89,7 @@ const Menu = () => {
     const element = document.getElementById(id);
     if (element) {
       window.scrollTo({ top: element.offsetTop - 60, behavior: "smooth" });
+      setActiveTab(id);
     }
   };
 
@@ -119,14 +131,16 @@ const Menu = () => {
               {sections.map((sectionId) => (
                 <li
                   key={sectionId}
-                  onClick={() => handleTabClick(sectionId)}
+                  onClick={() =>
+                    handleTabClick(sectionId.trim().replace(/\s+/g, "-"))
+                  }
                   className={`cursor-pointer py-2 border-b-2 transition-all ${
-                    activeTab === sectionId
+                    activeTab === sectionId.trim().replace(/\s+/g, "-")
                       ? "border-white"
                       : "border-transparent"
                   } text-[clamp(10px,1.5vw,16px)]`}
                 >
-                  {sectionId.toUpperCase()}
+                  {sectionId.trim().replace(/\s+/g, "-")}
                 </li>
               ))}
             </ul>
@@ -155,9 +169,9 @@ const Menu = () => {
         <div className=" bg-[#3948a4]">
           {dataMenu?.map((cat) => (
             <motion.div
-              id={cat.category}
+              id={cat.category.trim().replace(/\s+/g, "-")}
               key={cat.category}
-              className="mb-16 flex flex-col items-center"
+              className=" flex flex-col items-center"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
@@ -221,7 +235,7 @@ const Menu = () => {
               </div>
               {/* Grid de productos */}
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-8 gap-6 justify-items-center"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}

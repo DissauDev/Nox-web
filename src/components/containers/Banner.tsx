@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useEffect, useRef, useState } from "react";
+
 import { NavLink, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import NoxBanner from "../../assets/nox-banner.png";
@@ -10,6 +10,7 @@ import { FiShoppingBag, FiTruck } from "react-icons/fi";
 import { useAppSelector } from "../../store/hooks";
 import CustomModal from "./CustomModal";
 import { toast } from "@/hooks/use-toast";
+import React, { useRef, useState, useLayoutEffect } from "react";
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,21 +29,25 @@ export const Banner: React.FC = () => {
   const showAddressSection =
     location.pathname === "/" || location.pathname === "/home";
   // Función para actualizar la variable CSS de la altura del banner
+
   const updateBannerHeight = () => {
     if (bannerRef.current) {
-      const bannerHeight = bannerRef.current.offsetHeight;
-      document.documentElement.style.setProperty(
-        "--banner-height",
-        bannerHeight + "px"
-      );
+      const h = bannerRef.current.getBoundingClientRect().height;
+      document.documentElement.style.setProperty("--banner-height", `${h}px`);
     }
   };
 
-  useEffect(() => {
-    updateBannerHeight();
+  // 1) Montar listener de resize solo una vez
+  useLayoutEffect(() => {
     window.addEventListener("resize", updateBannerHeight);
     return () => window.removeEventListener("resize", updateBannerHeight);
-  }, [savedAddress]); // Se re-calcula si cambia savedAddress
+  }, []);
+
+  // 2) Cada vez que cambie la ruta o la sección de dirección,
+  //    reaplicamos la medida antes del paint
+  useLayoutEffect(() => {
+    updateBannerHeight();
+  }, [location.pathname, savedAddress]);
 
   const toggleModal = () => setModalOpen(!modalOpen);
   const handelCheck = (e: React.MouseEvent) => {
@@ -70,7 +75,8 @@ export const Banner: React.FC = () => {
       {/* Barra superior para pantallas grandes */}
       <div className="hidden md:block bg-mustard-yellow-400 py-1 text-center">
         <span className="text-black font-ArialRegular text-sm">
-          🚚 Get FREE DELIVERY with code <strong>JUST4U</strong> on orders $15+
+          Get our Cookies , <strong>Mon - Sun / 11:30AM - 11:00PM</strong> ,
+          Enjoy!
         </span>
       </div>
 
@@ -382,7 +388,7 @@ export const Banner: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <span className="text-affair-500 font-bold">
+              <span className="text-sapphire-400 font-bold">
                 {savedAddress.fullAddress}
               </span>
               <a

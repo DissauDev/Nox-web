@@ -1,10 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import NoxLogo from "../../../assets/desing/Recurso 8@2x.png";
+import ImagePromo from "../../../assets/desing/sesion 4.webp";
 
 export const HomeSection3 = () => {
   return (
     <div className="relative ">
+      <motion.img
+        src={ImagePromo}
+        className="h-auto  w-full"
+        alt="Image Promo"
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.7 }}
+        viewport={{ once: true, amount: 0.2 }}
+      />
       {/* Efectos de luz en el fondo */}
       <motion.div
         className="absolute bottom-0 left-1/2 transform -translate-x-1/2
@@ -67,12 +77,13 @@ export const HomeSection3 = () => {
           transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
           viewport={{ once: true, amount: 0.2 }}
         >
-          <button
+          <a
+            href={"/menu"}
             className="bg-sapphire-800 hover:bg-sapphire-900 rounded-full
                        py-2 px-8 md:px-10 font-ArialBold font-medium text-[16px] md:text-[18px]"
           >
             Order Catering
-          </button>
+          </a>
         </motion.div>
       </motion.div>
     </div>
