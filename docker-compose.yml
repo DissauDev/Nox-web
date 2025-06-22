@@ -1,0 +1,23 @@
+version: '3.9'
+
+networks:
+  web:
+    external: 'true'
+
+services:
+  nox-web:
+    build: .
+    restart: always
+    env_file: .env
+    expose:
+      - 80
+    networks:
+      - web
+    labels:
+      # Caddy
+      caddy: ${HOST}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      # Traefik
+      traefik.enable: 'true'
+      traefik.frontend.rule: "Host:${HOST}"
+      traefik.port: '80'
