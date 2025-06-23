@@ -1,20 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import NoxLogo from "../../../assets/desing/Recurso 8@2x.png";
-import ImagePromo from "../../../assets/desing/sesion 4.webp";
 
 export const HomeSection3 = () => {
   return (
     <div className="relative ">
-      <motion.img
-        src={ImagePromo}
-        className="h-auto  w-full"
-        alt="Image Promo"
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.7 }}
-        viewport={{ once: true, amount: 0.2 }}
+      <img
+        src="http://app.nox.dissau.online/uploads/1750622859690.jpg"
+        alt="Promo"
+        loading="lazy"
+        className=" w-full h-screen max-h-screen"
       />
+
       {/* Efectos de luz en el fondo */}
       <motion.div
         className="absolute bottom-0 left-1/2 transform -translate-x-1/2

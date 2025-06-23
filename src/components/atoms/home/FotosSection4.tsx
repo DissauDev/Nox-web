@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Image1 from "../../../assets/home/img 1.webp";
-import Image2 from "../../../assets/home/img 2.webp";
-import Image3 from "../../../assets/home/img 3.webp";
+import Image1 from "../../../assets/desing/foto chica copy.webp";
+import Image2 from "../../../assets/desing/foto galletas copy.webp";
+import Image3 from "../../../assets/desing/a-home-baker-scoops-cookie-dough-onto-parchment-pa-2024-11-25-12-45-38-utc copy 2.webp";
 import { HomeSection5 } from "./HomeSection5";
 
 export const FotosSection4 = () => {
@@ -31,7 +31,7 @@ export const FotosSection4 = () => {
         <img
           src={Image1}
           alt="Imagen 1"
-          className="w-4/5 mb-10 h-auto relative z-10"
+          className="w-full max-w-[80vw] mb-10 h-auto object-cover max-h-[68vh] rounded-[120px] relative z-10"
         />
         <div className="px-4 text-center">
           <h1 className="font-CamilaFont tracking-wider text-2xl md:text-4xl">
@@ -53,12 +53,16 @@ export const FotosSection4 = () => {
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
         viewport={{ once: true, amount: 0.2 }}
       >
-        <img src={Image2} alt="Imagen 2" className="w-4/5 mb-10 h-auto" />
+        <img
+          src={Image2}
+          alt="Imagen 2"
+          className="w-full max-w-[80vw] mb-10 h-auto object-cover max-h-[68vh] relative z-10 rounded-[120px] "
+        />
         <div className="px-4 text-center">
           <h1 className="font-CamilaFont tracking-wider text-2xl md:text-3xl">
             Choose Your Flavors
           </h1>
-          <h3 className="font-ArialRegular text-xs md:text-xl mx-10 mb-10 md:p-4 md:w-[70vw] text-balance">
+          <h3 className="font-ArialRegular text-xs md:text-xl mx-10 mb-10 md:p-4  md:w-[70vw] text-balance">
             Treat your guests to a delectable assortment from our weekly menu!
             Choose from our rotating flavors of Mini or Large cookies. Starting
             with orders of 48, you can add increments of 12 to customize your
@@ -84,7 +88,7 @@ export const FotosSection4 = () => {
         <img
           src={Image3}
           alt="Imagen 3"
-          className="w-4/5 mb-10 h-auto relative z-10"
+          className="w-full max-w-[80vw] mb-10 h-auto object-cover max-h-[68vh] rounded-[120px] relative z-10"
         />
         <div className="px-4 text-center">
           <h1 className="font-CamilaFont tracking-wider text-2xl md:text-3xl">

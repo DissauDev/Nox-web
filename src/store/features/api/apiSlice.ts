@@ -12,7 +12,7 @@ import { logout, refreshTokens } from '../slices/authSlice';
 
 export  const baseUrl = 'https://app.nox.dissau.online/api'
 //export  const baseUrl = 'http://localhost:3000/api'
-const baseQuery = fetchBaseQuery({
+const baseQueryJson = fetchBaseQuery({
   baseUrl: baseUrl,
   prepareHeaders: (headers, { getState }) => {
     headers.set('Content-Type', 'application/json');
@@ -24,6 +24,14 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+const baseQueryForm = fetchBaseQuery({
+  baseUrl,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth.accessToken;
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+    return headers;
+  },
+});
 /**
  * Wrapper que, ante un 401 de accessToken expirado, intenta refrescar antes de reintentar la petición.
  */
@@ -33,14 +41,22 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   // 1) Ejecuta la petición original
-  let result = await baseQuery(args, api, extraOptions);
+    const isUpload =
+    typeof args !== 'string' &&
+    typeof args.url === 'string' &&
+    args.url.includes('/upload/create');
+
+  // 3.1) Lanzar la petición original con el baseQuery adecuado
+  const rawBase = isUpload ? baseQueryForm : baseQueryJson;
+
+  let result = await rawBase(args, api, extraOptions);
 
   // 2) Si obtuvo 401 (token expirado o inválido), intentamos refresh
   if (result.error && result.error.status === 401) {
     const refreshToken = (api.getState() as RootState).auth.refreshToken;
     if (refreshToken) {
       // Llamamos al endpoint de refresh
-      const refreshResult = await baseQuery(
+      const refreshResult = await baseQueryJson(
         {
           url: '/auth/refresh',
           method: 'POST',
@@ -60,7 +76,7 @@ const baseQueryWithReauth: BaseQueryFn<
           })
         );
         // Reintentamos la petición original con el nuevo accessToken
-        result = await baseQuery(args, api, extraOptions);
+        result = await rawBase(args, api, extraOptions);
       } else {
         // Si el refresh falló, forzamos logout
         api.dispatch(logout());

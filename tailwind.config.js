@@ -1,17 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ["class"],
+    darkMode: "class",
     content: ['./src/**/*.{js,jsx,ts,tsx}', './grapesjs-blocks/**/*.js'],
 	safelist: [
-		{
-		  // capturar clases como bg-[#06060a], blur-3xl, text-balance…
-		  pattern: /^(bg|text|blur|font|tracking|p|m|w|h|flex|items|justify|rounded|hover):?/,
-		},
-		{
-		  // para clases arbitrarias con corchetes
-		  pattern: /\[.*\]/,
-		},
-	  ],
+  {
+    // utilidades de layout, posicionamiento, transform y estado hover
+pattern: /^(bg|text|blur|font|tracking|p|m|w|h|max-w|min-w|max-h|min-h|flex|inline-flex|items|justify|relative|absolute|fixed|sticky|static|inset|top|bottom|left|right|transform|\-?translate|z|overflow|pointer-events|rounded|border|shadow|opacity|transition|duration|ease|hover|focus|active):?/,
+  },
+  {
+    // para clases arbitrarias con corchetes
+    pattern: /\[.*\]/,
+  },
+],
 	
   theme: {
   	extend: {
@@ -204,8 +204,7 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-		extend: {
-  keyframes: {
+ keyframes: {
     'pop-1': {
       '0%': { transform: 'translate(0,0) scale(0)', opacity: '0' },
       '100%': { transform: 'translate(-10px, -20px) scale(1)', opacity: '0' },
@@ -224,8 +223,6 @@ export default {
     'pop-2': 'pop-2 0.6s ease-out',
     'pop-3': 'pop-3 0.6s ease-out',
   },
-}
-
   	}
   },
   plugins: [require("tailwindcss-animate")],

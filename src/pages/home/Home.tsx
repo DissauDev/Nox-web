@@ -30,6 +30,7 @@ export const Home: React.FC = () => {
 
     // b) Saneamiento
     const clean = DOMPurify.sanitize(unescaped);
+    console.log(clean);
     return <div dangerouslySetInnerHTML={{ __html: clean }} />;
   };
 

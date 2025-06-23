@@ -23,7 +23,8 @@ export const UploadPage = () => {
   } = useGetImagesQuery(); // GET /upload/getImages
   const images = data?.images ?? [];
 
-  const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation(); // POST /upload/create
+  const [uploadImage, { isLoading: isUploading, error }] =
+    useUploadImageMutation(); // POST /upload/create
 
   const [deleteImage, { isLoading: isDeleting }] = useDeleteImageMutation(); // DELETE /upload/:filename
 
@@ -59,6 +60,7 @@ export const UploadPage = () => {
       setToastMessage("Image uploaded successfully.");
       setShowToast(true);
     } catch (err) {
+      console.log("error" + error);
       console.error("Upload error", err);
       setToastMessage("Error uploading image.");
       setShowToast(true);

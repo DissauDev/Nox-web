@@ -121,7 +121,7 @@ const GrapesEditor: React.FC<GrapesEditorProps> = ({
       if (slug === "home") {
         const styleBg = doc.createElement("style");
         styleBg.innerHTML = `
-          body { background-color: #06060a !important; }
+          body { background-color: #15203a !important; }
         `;
         doc.head.appendChild(styleBg);
       }

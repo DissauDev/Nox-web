@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/GrapesEditorContainer.tsx
 import React, { useEffect, useRef, useState } from "react";
 import grapesjs, { Editor } from "grapesjs";
@@ -10,7 +11,7 @@ import EditorToolbar from "./EditorToolbar";
 interface GrapesEditorContainerProps {
   slug: string;
   recordId: number;
-  //@ts-ignore
+
   sections: any;
   initialCss?: string;
   onSaveSections: (sections, css: string) => void;
@@ -99,7 +100,7 @@ const GrapesEditorContainer: React.FC<GrapesEditorContainerProps> = ({
       if (slug === "home") {
         const styleBg = doc.createElement("style");
         styleBg.innerHTML = `
-            body { background-color: #06060a !important; }
+            body { background-color: ##15203a !important; }
           `;
         doc.head.appendChild(styleBg);
       }

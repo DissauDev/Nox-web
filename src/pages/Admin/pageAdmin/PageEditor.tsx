@@ -36,40 +36,30 @@ const PageEditor: React.FC = () => {
   useEffect(() => {
     if (!pageData) return;
 
-    // `pageData.layout` podría ser un string JSON o un objeto ya parseado
     let layoutObj: PageLayout = {};
     if (typeof pageData.layout === "string") {
       try {
-        layoutObj = JSON.parse(pageData.layout as string);
+        layoutObj = JSON.parse(pageData.layout);
       } catch {
         layoutObj = {};
       }
-    } else if (pageData.layout && typeof pageData.layout === "object") {
+    } else {
       layoutObj = pageData.layout as PageLayout;
     }
 
-    const secs = layoutObj.sections || [];
-    if (secs.length) {
-      // Limpiamos el HTML de cada sección igual que antes
-      const clean = secs.map((s) => {
-        const noBody = s.html.replace(/<\/?body[^>]*>/g, "");
-        return {
-          key: s.key,
-          html: noBody
-            .replace(/\\"/g, `"`) // quita las comillas escapadas
-            .replace(/\\\//g, "/") // quita las barras escapadas
-            .trim(),
-        };
-      });
-      setSections(clean);
-    } else {
-      // Si no hay secciones, dejarlo vacío
-      setSections([]);
-    }
+    const clean = (layoutObj.sections || []).map((s) => {
+      // Des-escapa sólo lo que hace Home.tsx:
+      const unescaped = (s.html as string)
+        .replace(/\\"/g, '"') // \" → "
+        .replace(/\\\\/g, "\\"); // \\ → \
 
+      return { key: s.key, html: unescaped.trim() };
+    });
+
+    console.log("→ secciones limpias (igual que Home):", clean);
+    setSections(clean);
     setInitialCss(layoutObj.css || "");
   }, [pageData]);
-
   // 3) Mostrar skeleton mientras carga o falló la petición
   if (isLoading || isFetching) {
     return <SkeletonEditor />;
