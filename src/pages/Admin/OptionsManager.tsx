@@ -1,22 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // components/OptionsManager.tsx
-"use client";
-
 import React, { useState } from "react";
 import OptionGroupsPanel, { OptionGroup } from "./OptionsGroupsPanel";
 
 import OptionValuesPanel from "./OptionsValuesPanel";
 
 export default function OptionsManager() {
-  // 1) Mantienes la lista de grupos aquí
   const [groups, setGroups] = useState<OptionGroup[]>([]);
-  // 2) Y qué grupo está “activo”
-  const [selectedGroup, setSelectedGroup] = useState<OptionGroup | null>(null);
 
-  // Si quisieras precargar desde API al montar:
-  // useEffect(() => {
-  //   fetch("/api/option-groups").then(r => r.json()).then(setGroups);
-  // }, []);
+  const [selectedGroup, setSelectedGroup] = useState<OptionGroup | null>(null);
 
   return (
     <div className=" flex  md:flex-row  gap-2">
@@ -60,7 +52,10 @@ export default function OptionsManager() {
 
       {/* — Panel de Valores — */}
       {selectedGroup ? (
-        <OptionValuesPanel groupId={selectedGroup.id} />
+        <OptionValuesPanel
+          groupId={selectedGroup.id}
+          showImages={selectedGroup.showImages}
+        />
       ) : (
         <div className="flex-1 p-4 text-gray-400 italic">
           Select a group to manage its values…

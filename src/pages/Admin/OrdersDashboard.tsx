@@ -192,7 +192,7 @@ export const OrdersDashboard = () => {
                       {/* Order # y Cliente */}
                       <td
                         onClick={() => navigate(`/dashboard/orders/${o.id}`)}
-                        className="px-4 py-3 cursor-pointer text-blue-400 hover:underline"
+                        className="px-4 py-3 cursor-pointer text-sapphire-600 hover:underline"
                       >
                         #{o.orderNumber} {o.customerName}
                       </td>

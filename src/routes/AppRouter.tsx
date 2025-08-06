@@ -18,7 +18,7 @@ import NotFound from "../pages/NotFound";
 import { Banner } from "../components/containers/Banner";
 import MapPage from "../pages/menu/MapPage";
 import AuthPage from "../pages/auth/AuthPage";
-import { AppPromo } from "../components/containers/AppPromo";
+//import { AppPromo } from "../components/containers/AppPromo";
 import Footer from "../components/containers/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Checkout } from "@/pages/cart/Checkout";
@@ -54,6 +54,8 @@ import { AccountDetails } from "@/pages/auth/my-account/AccountDetails";
 import { DashboardAccount } from "@/pages/auth/my-account/DashboardAccount";
 import { OrdersView } from "@/pages/auth/my-account/OrdersView";
 import { WhisList } from "@/pages/auth/my-account/WhisList";
+import { FotterPromo } from "@/components/containers/FotterPromo";
+import { SettingsPage } from "@/pages/Admin/SettingsPage";
 
 // Lazy Load for ProductDetails
 const ProductsDetails = React.lazy(
@@ -194,6 +196,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="pages" element={<PagesAdmin />} />
                 <Route path="uploads" element={<UploadPage />} />
                 <Route path="employees" element={<Employees />} />
+                <Route path="settings" element={<SettingsPage />} />
                 <Route path="orders/:orderkey" element={<OrderDetails />} />
               </Route>
 
@@ -213,7 +216,7 @@ const AppRoutes: React.FC = () => {
           </Suspense>
         </main>
       </div>
-      <AppPromo />
+      <FotterPromo />
       <Footer />
     </div>
   );

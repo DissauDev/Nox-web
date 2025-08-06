@@ -44,7 +44,7 @@ export const Orders: React.FC = () => {
           Checkout
         </button>
         <FaChevronRight className="text-sapphire-900" />
-        <span className="text-gray-500">Order Complete</span>
+        <span className="text-sapphire-900">Order Complete</span>
       </div>
 
       {/* Confirmation card */}
@@ -76,31 +76,31 @@ export const Orders: React.FC = () => {
           {/** Order meta */}
           <div className="w-full sm:w-auto mb-3 sm:mb-0 px-2">
             <p className="text-base font-semibold">
-              <span className="text-pompadour-950 font-ArialBold">#:</span>{" "}
+              <span className="text-sapphire-600 font-ArialBold">#:</span>{" "}
               {order.orderNumber}
             </p>
           </div>
           <div className="w-full sm:w-auto mb-3 sm:mb-0 px-2">
             <p className="text-base font-semibold">
-              <span className="text-pompadour-950 font-ArialBold">Status:</span>{" "}
+              <span className="text-sapphire-600 font-ArialBold">Status:</span>{" "}
               {order.status}
             </p>
           </div>
           <div className="w-full sm:w-auto mb-3 sm:mb-0 px-2">
             <p className="text-base font-semibold">
-              <span className="text-pompadour-950 font-ArialBold">Date:</span>{" "}
+              <span className="text-sapphire-600 font-ArialBold">Date:</span>{" "}
               {date}
             </p>
           </div>
           <div className="w-full sm:w-auto mb-3 sm:mb-0 px-2">
             <p className="text-base font-semibold">
-              <span className="text-pompadour-950 font-ArialBold">Total:</span>{" "}
-              ${order.totalAmount.toFixed(2)}
+              <span className="text-sapphire-600 font-ArialBold">Total:</span> $
+              {order.totalAmount.toFixed(2)}
             </p>
           </div>
           <div className="w-full sm:w-auto px-2">
             <p className="text-base font-semibold">
-              <span className="text-pompadour-950 font-ArialBold">
+              <span className="text-sapphire-600 font-ArialBold">
                 Payment method:
               </span>{" "}
               {order.paymentMethod}
@@ -195,8 +195,10 @@ export const Orders: React.FC = () => {
             Billing Address
           </h3>
           <div className="bg-gray-50 p-6 rounded-lg shadow-inner border-l-4 border-sapphire-800">
-            <p className="font-semibold text-gray-800">{order.customerName}</p>
-            <p className="text-gray-600">{order.customerAddress}</p>
+            <p className="font-semibold text-gray-800">{order.customerName} </p>
+            <p className="text-gray-600">
+              {order.billingState}, {order.billingCity}, {order.customerAddress}
+            </p>
             <p className="text-gray-600">{order.customerPhone}</p>
             <p className="text-gray-900 underline">{order.customerEmail}</p>
           </div>

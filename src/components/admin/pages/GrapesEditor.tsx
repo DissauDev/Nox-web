@@ -40,11 +40,18 @@ const GrapesEditor: React.FC<GrapesEditorProps> = ({
 
     // 2️⃣ Build the initial HTML from sections
     const initialHtml = sections
-      .map(
-        (s) =>
-          `<div data-section-key="${s.key}" style="margin-bottom:20px;">${s.html}</div>`
-      )
+      .map((s) => {
+        let html = s.html;
+        if (s.key.startsWith("BannerSection")) {
+          html = html
+            .replace(/\bfixed\b/g, "static")
+            .replace(/z-50/g, "z-auto");
+        }
+        return `<div data-section-key="${s.key}" style="margin-bottom:20px;">${html}</div>`;
+      })
       .join("");
+
+    console.log(initialHtml);
 
     // 3️⃣ Initialize GrapesJS
     const editor = grapesjs.init({
@@ -100,22 +107,6 @@ const GrapesEditor: React.FC<GrapesEditorProps> = ({
         s.innerHTML = initialCss;
         doc.head.appendChild(s);
       }
-
-      // 4.2️⃣ Placeholder styling for image blocks
-      const stylePlaceholder = doc.createElement("style");
-      stylePlaceholder.innerHTML = `
-        .gjs-cv-canvas .no-image,
-        .gjs-cv-canvas img[data-gjs-type="image"][src=""] {
-          background-color: #facc15 !important;
-          border: 2px dashed #000 !important;
-        }
-        .gjs-block-image .gjs-block__preview .no-image,
-        .gjs-block-image .gjs-block__preview img[src=""] {
-          background-color: #facc15 !important;
-          border: 2px dashed #000 !important;
-        }
-      `;
-      doc.head.appendChild(stylePlaceholder);
 
       // 4.5️⃣ Dark background for home
       if (slug === "home") {

@@ -14,6 +14,7 @@ import {
 import { Category } from "@/types/system";
 import { DataError } from "@/components/atoms/DataError";
 import { TableSkeleton } from "@/components/skeletons/TableSkeleton";
+import DEfaultImage from "../../assets/base/illustration-gallery-icon.png";
 
 export const Categories = () => {
   // State for the list of categories
@@ -140,7 +141,7 @@ export const Categories = () => {
           <div className="flex gap-2 w-full md:w-auto">
             <button
               onClick={() => openForm()}
-              className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md flex items-center"
+              className="bg-sapphire-500 hover:bg-sapphire-600 text-white px-4 py-2 rounded-md flex items-center"
             >
               <PlusIcon className="h-5 w-5 mr-1" />
               Add Category
@@ -170,8 +171,8 @@ export const Categories = () => {
           <div
             className={`${
               showForm
-                ? "w-2/3 p-6 border-2 border-[#7436A2] rounded-lg"
-                : "w-full p-6 border-2 border-[#7436A2] rounded-lg"
+                ? "w-2/3 p-6 border-2 border-[#3948a4] rounded-lg"
+                : "w-full p-6 border-2 border-[#3948a4] rounded-lg"
             }`}
           >
             <div className="flex flex-wrap gap-2 mb-4">
@@ -321,15 +322,25 @@ export const Categories = () => {
                   {currentCategories.map((category) => (
                     <tr
                       key={category.id}
+                      onClick={() => openForm(category)}
                       className="border-b border-gray-800 hover:bg-gray-900"
                     >
                       <td className="py-3 px-4">
-                        <div className="font-medium">{category.name}</div>
-                        {category.shortDescription && (
-                          <div className="text-xs text-gray-400">
-                            {category.shortDescription}
+                        <div className="flex items-center">
+                          <div>
+                            <img
+                              src={category.imageUrl || DEfaultImage}
+                              alt={category.name}
+                              className="w-10 h-10 rounded-md mr-3"
+                            />
+                            <div className="font-medium">{category.name}</div>
+                            {category.shortDescription && (
+                              <div className="text-xs text-gray-400">
+                                {category.shortDescription}
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </td>
                       <td className="py-3 px-4">
                         ${category.accumulated.toFixed(2)}

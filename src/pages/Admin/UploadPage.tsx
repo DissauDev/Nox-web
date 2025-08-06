@@ -109,7 +109,7 @@ export const UploadPage = () => {
               onClick={() => setPage(idx + 1)}
               className={`px-3 py-1 rounded font-medium ${
                 page === idx + 1
-                  ? "bg-purple-600 text-white"
+                  ? "bg-sapphire-700 text-white"
                   : "bg-gray-700 hover:bg-gray-600"
               }`}
             >
@@ -134,7 +134,7 @@ export const UploadPage = () => {
                   setSelectedImage(img);
                   setShowDetailModal(true);
                 }}
-                className="aspect-[3/4] border-2 border-[#7436A2] bg-gray-800 p-2 rounded shadow cursor-pointer hover:opacity-80"
+                className="aspect-[3/4] border-2 border-[#3948a4] bg-gray-800 p-2 rounded shadow cursor-pointer hover:opacity-80"
               >
                 <img
                   src={img.url}
@@ -174,12 +174,12 @@ export const UploadPage = () => {
               leaveTo="scale-90 opacity-0"
             >
               <Dialog.Panel className="w-full max-w-md rounded-lg bg-gray-800 p-6 shadow-xl relative">
-                <Dialog.Title className="text-xl font-bold text-purple-300 mb-4">
+                <Dialog.Title className="text-xl font-bold text-sapphire-300 mb-4">
                   Upload Image
                 </Dialog.Title>
 
                 <div
-                  className="border-2 border-dashed border-purple-500 rounded-lg p-8 text-center text-purple-400 hover:bg-gray-700 transition cursor-pointer"
+                  className="border-2 border-dashed border-[#3948a4] rounded-lg p-8 text-center text-sapphire-400 hover:bg-gray-700 transition cursor-pointer"
                   onDrop={handleFileDrop}
                   onDragOver={(e) => e.preventDefault()}
                 >
@@ -230,8 +230,8 @@ export const UploadPage = () => {
               leaveFrom="scale-100 opacity-100"
               leaveTo="scale-90 opacity-0"
             >
-              <Dialog.Panel className="w-full max-w-md rounded-2xl bg-gray-900 p-6 shadow-xl relative border border-purple-500">
-                <Dialog.Title className="text-xl font-bold text-purple-300 mb-4">
+              <Dialog.Panel className="w-full max-w-md rounded-2xl bg-gray-900 p-6 shadow-xl relative border border-[#3948a4]">
+                <Dialog.Title className="text-xl font-bold text-sapphire-300 mb-4">
                   Image Details
                 </Dialog.Title>
                 {selectedImage && (
@@ -244,13 +244,13 @@ export const UploadPage = () => {
                     <div>
                       <p className="text-white">
                         Name:{" "}
-                        <span className="font-semibold text-purple-400">
+                        <span className="font-semibold text-sapphire-400">
                           {selectedImage.filename}
                         </span>
                       </p>
                       <p className="text-white break-all">
                         URL:{" "}
-                        <span className="text-sm text-purple-300">
+                        <span className="text-sm text-sapphire-300">
                           {selectedImage.url}
                         </span>
                       </p>
@@ -265,7 +265,7 @@ export const UploadPage = () => {
                   </div>
                 )}
                 <button
-                  className="absolute top-4 right-4 text-purple-300 hover:text-purple-500"
+                  className="absolute top-4 right-4 text-sapphire-300 hover:text-sapphire-500"
                   onClick={() => setShowDetailModal(false)}
                 >
                   <XMarkIcon className="w-6 h-6" />
@@ -281,7 +281,7 @@ export const UploadPage = () => {
           open={showToast}
           duration={3000}
           onOpenChange={setShowToast}
-          className="border-l-4 border-[#7436A2] bg-gray-800 text-white p-4 rounded-lg shadow-md"
+          className="border-l-4 border-[#3948a4] bg-gray-800 text-white p-4 rounded-lg shadow-md"
         >
           <Toast.Title className="font-bold">Notice</Toast.Title>
           <Toast.Description className="text-sm mt-1">

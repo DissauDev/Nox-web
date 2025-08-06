@@ -3,17 +3,17 @@ import { FaTimes } from "react-icons/fa";
 import { FiPlus, FiMinus, FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 
-//import drinksIMg from "../../assets/Imnsomnia fotos/drinks1.png";
-
 import {
   // addProduct,
   incrementProductQuantity,
+  recalculateTotals,
   removeProduct,
 } from "@/store/features/slices/orderSlice";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MissingSomething } from "./MissingSomething";
+import { useGetStoreConfigQuery } from "@/store/features/api/storeConfigApi";
 
 export interface MissingItem {
   id: number;
@@ -30,24 +30,11 @@ interface Props {
   modalType?: "checkout" | "order" | "address";
 }
 
-// Items iniciales para la sección Missing Something?
-/*const initialMissingItems: MissingItem[] = [
-  {
-    id: 1,
-    name: "check milk",
-    price: 4.9,
-    image: drinksIMg,
-    options: []
-  },
-];*/
-
 export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const orderState = useSelector((state: RootState) => state.orders);
-  // const [localMissingItems, setLocalMissingItems] =
-  // useState<MissingItem[]>(initialMissingItems);
-
+  const { data: storeConfig } = useGetStoreConfigQuery();
   // Deshabilitar el scroll del body cuando el modal esté abierto
   useEffect(() => {
     if (isOpen) {
@@ -64,6 +51,9 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
   // Incrementa la cantidad del producto
   const handleIncrement = (id: string) => {
     dispatch(incrementProductQuantity({ id, increment: 1 }));
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig)); // ✅ recalcula
+    }
   };
 
   // Si la cantidad es mayor a 1, decrementa; si es 1, elimina el producto
@@ -76,30 +66,10 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
     } else {
       dispatch(removeProduct(product.id));
     }
-  };
-
-  // Agrega el item missing al carrito y lo remueve de la lista de missing items
-  {
-    /* const handleAddMissingItem = (item: MissingItem) => {
-    const exists = orderState.products.find((p) => p.id === item.id.toString());
-    if (exists) {
-      dispatch(incrementProductQuantity({ id: exists.id, increment: 1 }));
-    } else {
-      dispatch(
-        addProduct({
-          id: item.id.toString(),
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-          categoryId: item.categoryId, // asegúrate de que MissingItem lo incluya
-          options: item.options || [],
-          specifications: "",
-        })
-      );
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig)); // ✅ recalcula
     }
-    setLocalMissingItems((prev) => prev.filter((mi) => mi.id !== item.id));
-  }; */
-  }
+  };
 
   const handlecheckout = () => {
     setIsOpen(false);
@@ -137,7 +107,7 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
             >
               {/* Encabezado con "My Bag" y botón de cerrar */}
               <div className="flex justify-between items-center p-4 border-b">
-                <h2 className="text-3xl font-ArialBold text-blue-500">
+                <h2 className="text-3xl font-ArialBold text-sapphire-800">
                   My Bag
                 </h2>
                 <button onClick={() => setIsOpen(false)}>
@@ -208,7 +178,7 @@ export default function CustomModal({ isOpen, setIsOpen, modalType }: Props) {
 
                 <div>
                   {/* ... tu lista de items ... */}
-                  <MissingSomething />
+                  <MissingSomething storeConfig={storeConfig} />
                   {/* ... resto del checkout ... */}
                 </div>
               </div>

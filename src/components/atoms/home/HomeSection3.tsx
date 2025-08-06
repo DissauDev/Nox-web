@@ -1,16 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import NoxLogo from "../../../assets/desing/Recurso 8@2x.png";
+import { NewHomeSection } from "./NewHomeSection";
 
 export const HomeSection3 = () => {
   return (
     <div className="relative ">
-      <img
-        src="http://app.nox.dissau.online/uploads/1750622859690.jpg"
-        alt="Promo"
-        loading="lazy"
-        className=" w-full h-screen max-h-screen"
-      />
+      <div
+        className="
+        relative
+        w-full
+    overflow-hidden
+      "
+      >
+        <NewHomeSection />
+      </div>
 
       {/* Efectos de luz en el fondo */}
       <motion.div

@@ -136,9 +136,9 @@ const Calendar: React.FC<Props> = ({ selectedDates, onDateSelect }) => {
 
     const bgColor =
       isStart || isEnd
-        ? "bg-purple-800 text-white"
+        ? "bg-sapphire-800 text-white"
         : isInRange
-        ? "bg-purple-400 text-white"
+        ? "bg-sapphire-400 text-white"
         : "hover:bg-gray-100 text-gray-700";
 
     return (

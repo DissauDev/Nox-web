@@ -17,13 +17,19 @@ import { toast } from "@/hooks/use-toast";
 
 import ConfirmDialog from "@/components/atoms/admin/ConfirmModal";
 import { DataError } from "@/components/atoms/DataError";
+import { InputNumber } from "@/components/ui/InputNumber";
+import { useGetCategoriesAvailableQuery } from "@/store/features/api/categoriesApi";
+import { Dropdown } from "@/components/atoms/DropDown";
 
 export interface OptionGroup {
+  showImages?: boolean;
   id: string;
   name: string;
   required: boolean;
   minSelectable: number;
   maxSelectable: number;
+  categoryId?: string;
+  optionGroupIdToClone?: string;
 }
 
 interface Props {
@@ -43,6 +49,12 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
   // — Nuevo grupo —
   const [newName, setNewName] = useState("");
   const [newRequired, setNewRequired] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedOptionGroup, setSelectedOptionGroup] = useState(null);
+
+  const { data: categories = [] } = useGetCategoriesAvailableQuery();
+  const { data: optionsData = [] } = useGetOptionGroupsQuery();
+
   const [newMin, setNewMin] = useState(2);
   const [newMax, setNewMax] = useState(3);
   // Estado para el modal
@@ -53,6 +65,8 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
   const [editingRequired, setEditingRequired] = useState(true);
   const [editingMin, setEditingMin] = useState(2);
   const [editingMax, setEditingMax] = useState(3);
+  const [newShowImages, setNewShowImages] = useState(false); // ➕ para crear
+  const [editingShowImages, setEditingShowImages] = useState(false); // ➕ para editar
 
   // Cuando abrimos edición, precargamos el form
   useEffect(() => {
@@ -62,7 +76,9 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
       setEditingName(g.name);
       setEditingRequired(g.required);
       setEditingMin(g.minSelectable);
+      setNewShowImages(false);
       setEditingMax(g.maxSelectable);
+      setEditingShowImages(g.showImages ?? false); // ➕ nuevo estado
     }
   }, [editingId, groups]);
 
@@ -72,13 +88,19 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
       await createGroup({
         name: newName,
         required: newRequired,
+        showImages: newShowImages, // ➕ nuevo campo
         minSelectable: newMin,
         maxSelectable: newMax,
+        categoryId: selectedCategory?.id ?? null,
+        optionGroupIdToClone: selectedOptionGroup?.id ?? null,
       }).unwrap();
       setNewName("");
       setNewRequired(true);
       setNewMin(2);
       setNewMax(3);
+      setSelectedCategory(null);
+      setSelectedOptionGroup(null);
+      setNewShowImages(false);
       toast({
         className: "border-l-4 border-green-500",
         title: "✅ Success",
@@ -103,6 +125,7 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
         name: editingName,
         required: editingRequired,
         minSelectable: editingMin,
+        showImages: editingShowImages, // ➕ nuevo campo
         maxSelectable: editingMax,
       }).unwrap();
       setEditingId(null);
@@ -135,6 +158,7 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
           required: true,
           minSelectable: 0,
           maxSelectable: 0,
+          showImages: true,
         });
       }
 
@@ -161,11 +185,19 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
     setNewMin(2);
     setNewMax(3);
   };
+  const categoryOptions = categories.map((cat) => ({
+    id: cat.id,
+    label: cat.name,
+  }));
+  const optionsDrops = optionsData.map((cat) => ({
+    id: cat.id,
+    label: cat.name,
+  }));
   if (error)
     return <DataError title={"Error to load options"} darkTheme={true} />;
 
   return (
-    <div className="w-1/3 bg-[#0c0014] p-4 rounded-2xl border border-purple-800">
+    <div className="w-1/3 bg-[#15203a] border border-sapphire-700 p-4 rounded-2xl ">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg">Option Groups</h3>
         <Button variant="ghost" size="sm" onClick={resetForm}>
@@ -174,7 +206,7 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
         </Button>
       </div>
 
-      <div className="space-y-2 max-h-80 overflow-y-auto">
+      <div className="space-y-2 max-h-[30vh] overflow-y-auto">
         {isLoading
           ? Array.from({ length: 5 }).map((_, i) => (
               <div
@@ -196,8 +228,10 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
           : groups.map((g) => (
               <div
                 key={g.id}
-                className={`flex justify-between items-center p-2 rounded cursor-pointer ${
-                  g.id === selectedId ? "bg-purple-700" : "hover:bg-gray-800"
+                className={`flex justify-between items-center mx-2 p-2 rounded cursor-pointer ${
+                  g.id === selectedId
+                    ? "bg-sapphire-600"
+                    : "hover:bg-sapphire-950"
                 }`}
                 onClick={() => onSelect(g)}
               >
@@ -230,8 +264,6 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
             ))}
       </div>
 
-      {/* 📋 Formulario añadir / editar */}
-
       <ConfirmDialog
         open={Boolean(groupToDelete)}
         onOpenChange={(val) => {
@@ -253,10 +285,54 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
               : setNewName(e.target.value)
           }
         />
+        {!editingId && (
+          <div className="w-full">
+            <h3 className="text-white font-ArialRegular mb-1 text-sm">
+              Select a category{" "}
+              <span className="text-xs text-gray-400">(only one)</span>
+            </h3>
+            <Dropdown
+              label={selectedCategory?.label || "Choose category"}
+              options={categoryOptions.map((opt) => opt.label)}
+              onSelect={(label) => {
+                const selected = categoryOptions.find(
+                  (opt) => opt.label === label
+                );
+                setSelectedCategory(selected);
+                setSelectedOptionGroup(null);
+              }}
+              styles="rounded-md px-3 py-1 text-base"
+              borderColor="border border-sapphire-80"
+              focusBorder="focus:ring-1 ring-sapphire-500"
+            />
+          </div>
+        )}
+        {!editingId && (
+          <div className="w-full">
+            <h3 className="text-white font-ArialRegular mb-1 text-sm">
+              Or duplicate existing options{" "}
+              <span className="text-xs text-gray-400">(only one)</span>
+            </h3>
 
+            <Dropdown
+              label={selectedOptionGroup?.label || "Choose options"}
+              options={optionsDrops.map((opt) => opt.label)}
+              onSelect={(label) => {
+                const selected = optionsDrops.find(
+                  (opt) => opt.label === label
+                );
+                setSelectedOptionGroup(selected);
+                setSelectedCategory(null); // ❗Limpiar la otra selección
+              }}
+              styles="rounded-md px-3 py-1 text-base"
+              borderColor="border border-sapphire-80"
+              focusBorder="focus:ring-1 ring-sapphire-500"
+            />
+          </div>
+        )}
         <div className="flex items-center space-x-2">
           <Switch
-            className="!bg-gray-800 data-[state=checked]:!bg-pink-600"
+            className="!bg-gray-800 data-[state=checked]:!bg-sapphire-600"
             checked={editingId ? editingRequired : newRequired}
             onCheckedChange={(v) =>
               editingId ? setEditingRequired(v) : setNewRequired(v)
@@ -264,35 +340,44 @@ export default function OptionGroupsPanel({ onSelect, selectedId }: Props) {
           />
           <span className="text-sm">Required?</span>
         </div>
-
+        {!(editingId ? editingRequired : newRequired) && (
+          <div className="flex items-center space-x-2">
+            <Switch
+              className="!bg-gray-800 data-[state=checked]:!bg-sapphire-600"
+              checked={editingId ? editingShowImages : newShowImages}
+              onCheckedChange={(v) =>
+                editingId ? setEditingShowImages(v) : setNewShowImages(v)
+              }
+            />
+            <span className="text-sm">
+              Show images in this option (visual only)
+            </span>
+          </div>
+        )}
         <div className="flex gap-2">
-          <div>
+          <div className="w-1/2">
             <h3 className="text-white font-ArialRegular mb-1 text-sm">
               Min quantity
             </h3>
-            <Input
-              type="number"
+            <InputNumber
+              variant="integer"
               placeholder="Min"
               value={editingId ? editingMin : newMin}
-              onChange={(e) =>
-                editingId
-                  ? setEditingMin(Number(e.target.value))
-                  : setNewMin(Number(e.target.value))
+              onChange={(val) =>
+                editingId ? setEditingMin(Number(val)) : setNewMin(Number(val))
               }
             />
           </div>
-          <div>
+          <div className="w-1/2">
             <h3 className="text-white font-ArialRegular mb-1 text-sm">
               Max quantity
             </h3>
-            <Input
-              type="number"
+            <InputNumber
+              variant="integer"
               placeholder="Max"
               value={editingId ? editingMax : newMax}
-              onChange={(e) =>
-                editingId
-                  ? setEditingMax(Number(e.target.value))
-                  : setNewMax(Number(e.target.value))
+              onChange={(val) =>
+                editingId ? setEditingMax(Number(val)) : setNewMax(Number(val))
               }
             />
           </div>

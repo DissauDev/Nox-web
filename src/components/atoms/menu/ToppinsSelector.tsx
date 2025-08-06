@@ -13,6 +13,7 @@ type ToppinsSelectorProps = {
   groupName: string;
   minSelectable: number;
   maxSelectable: number;
+  showImages?: boolean;
   options: ToppingOption[];
   onToppingsChange: (
     selectedToppings: ToppingOption[],
@@ -23,6 +24,7 @@ type ToppinsSelectorProps = {
 export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
   groupName,
   maxSelectable,
+  showImages,
   options,
   onToppingsChange,
 }) => {
@@ -74,27 +76,36 @@ export const ToppinsSelector: React.FC<ToppinsSelectorProps> = ({
               key={opt.id}
               className="flex items-center justify-between w-full"
             >
-              <div className="flex flex-row items-center">
-                <motion.div
-                  className={`w-8 h-8 flex items-center justify-center rounded-full border-2 cursor-pointer transition-all ${
-                    checked
-                      ? "bg-sapphire-900 border-sapphire-900"
-                      : "border-gray-400"
-                  }`}
-                  whileTap={{ scale: 0.6 }}
-                  onClick={() => handleToggle(opt)}
-                >
+              <div className="flex items-center">
+                {showImages && opt.imageUrl && (
+                  <img
+                    src={opt.imageUrl}
+                    alt={opt.name}
+                    className="w-12 h-12 rounded object-cover mr-2 border border-gray-300"
+                  />
+                )}
+                <div className="flex flex-row items-center">
                   <motion.div
-                    className={`text-xl transition-all ${
-                      checked ? "text-white" : "text-gray-400"
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 cursor-pointer transition-all ${
+                      checked
+                        ? "bg-sapphire-900 border-sapphire-900"
+                        : "border-gray-400"
                     }`}
+                    whileTap={{ scale: 0.6 }}
+                    onClick={() => handleToggle(opt)}
                   >
-                    ✓
+                    <motion.div
+                      className={`text-xl transition-all ${
+                        checked ? "text-white" : "text-gray-400"
+                      }`}
+                    >
+                      ✓
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-                <span className="text-sapphire-950 mx-4 font-ArialBold">
-                  {opt.name}
-                </span>
+                  <span className="text-sapphire-950 mx-4 font-ArialBold">
+                    {opt.name}
+                  </span>
+                </div>
               </div>
               <span className="text-sapphire-950 font-ArialBold">
                 (+${opt.extraPrice.toFixed(2)})

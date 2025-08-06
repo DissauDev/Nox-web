@@ -63,7 +63,7 @@ export default function PagesList() {
               setSearch(e.target.value);
               setPage(1); // Reiniciamos a página 1 cada vez que cambia el search
             }}
-            className="w-full pl-10 pr-4 py-2 bg-transparent border border-gray-600 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-grape-800"
+            className="w-full pl-10 pr-4 py-2 bg-transparent border border-gray-600 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sapphire-800"
           />
         </div>
         <button
@@ -71,7 +71,7 @@ export default function PagesList() {
             setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
             setPage(1); // Reiniciamos a página 1 al cambiar el orden
           }}
-          className="px-4 py-2 bg-grape-900 font-ArialRegular hover:bg-grape-800 rounded-lg"
+          className="px-4 py-2 bg-sapphire-600 font-ArialRegular hover:bg-sapphire-700 rounded-lg"
         >
           Sort: {sortOrder === "asc" ? "Oldest" : "Newest"}
         </button>
@@ -109,10 +109,10 @@ export default function PagesList() {
                     className="border-b border-gray-800 hover:bg-gray-800 group"
                   >
                     <td className="p-3">
-                      <div className="text-grape-700 font-medium cursor-pointer">
+                      <div className="text-sapphire-400 font-medium cursor-pointer">
                         {p.title}
                       </div>
-                      <div className="hidden group-hover:flex gap-4 mt-1 text-sm text-grape-300">
+                      <div className="hidden group-hover:flex gap-4 mt-1 text-sm text-sapphire-300">
                         <button
                           className="hover:underline"
                           onClick={() => navigate(`/${p.slug}`)}

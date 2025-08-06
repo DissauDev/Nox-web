@@ -19,7 +19,7 @@ const StatCard: React.FC<StatCardProps> = ({
   comparisonText,
 }) => {
   return (
-    <div className="px-4 py-2 rounded-lg shadow border-2 border-[#7436A2]">
+    <div className="px-4 py-2 rounded-lg shadow border-2 border-[#3948a4]">
       <p className="text-sm text-gray-400">{title}</p>
       <div className="flex justify-between items-start">
         <p className="text-2xl font-bold mt-2">{value}</p>

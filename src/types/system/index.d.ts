@@ -48,6 +48,7 @@ export enum Roles {
 
 // ——— Modelos ———
 export interface Category {
+  sortOrder?: number;
   id: string;
   name: string;
   accumulated:number?;
@@ -68,6 +69,9 @@ export interface OptionGroup {
   maxSelectable: number;
   productOptions?: ProductOption[];
   OptionValue?: OptionValue[];
+  categoryId?: string;
+  optionGroupIdToClone?:string;
+  showImages?: boolean
 }
 
 export interface OptionValue {
@@ -82,6 +86,10 @@ export interface OptionValue {
 }
 
 export interface Product {
+  packOptionSurcharge?: number;
+  isCustomizable?: boolean;
+  packMaxItems?: number;
+  hasRequiredOptions?: boolean;
   id: string;
   name: string;
   price: number;
@@ -144,6 +152,9 @@ export interface Order {
   customerPhone: string;
   customerAddress: string;
   specifications: string?;
+  postalCode?:string;
+  billingState?:string;
+  billingCity:string;
   items?: OrderItem[];
 }
 export interface OrderCustomer  {

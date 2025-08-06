@@ -17,9 +17,11 @@ import ToppinsSelector, {
 import MashoopSelector from "@/components/atoms/menu/selectors/MashoopSelector";
 import IceCreamFlavorSelector from "@/components/atoms/menu/IceCreamFlavorSelector";
 import ProductDetailsSkeleton from "@/components/skeletons/ProductDetailsSkeleton";
+import { updateItemSelectionsForGroup } from "@/store/features/slices/cartSlice";
 
 const ProductDetails: React.FC = () => {
   const { toast } = useToast();
+
   const { productKey } = useParams<{ productKey: string }>();
   const { data: product, isLoading } = useGetProductQuery(productKey!);
   const dispatch = useDispatch();
@@ -65,27 +67,45 @@ const ProductDetails: React.FC = () => {
 
   useEffect(() => {
     if (!product) return;
-    //  Reúne todos los extraPrice: requeridos + toppings
+
+    // ✅ base price con fallback a price si sellPrice no aplica
+    const base =
+      product.sellPrice && product.sellPrice > 0
+        ? product.sellPrice
+        : product.price;
+
     const extras: number[] = [];
 
-    // 1) Opciones requeridas
+    // 1) Opciones requeridas (cuenta ocurrencias)
     product.options
       .filter((o) => o.group.required)
       .forEach((opt) => {
         const sel = selectedOptions[opt.group.id] ?? [];
+
+        // 🆕 contar ocurrencias por id
+        const counts = sel.reduce<Record<string, number>>((acc, id) => {
+          acc[id] = (acc[id] || 0) + 1;
+          return acc;
+        }, {});
+
+        // 🆕 por cada OptionValue, sumar extra tantas veces como se eligió
         opt.group.OptionValue.forEach((val) => {
-          if (sel.includes(val.id) && val.extraPrice > 0) {
-            extras.push(val.extraPrice);
+          const times = counts[val.id] || 0;
+          if (times > 0 && val.extraPrice > 0) {
+            // empuja 'times' veces para mantener tu API de calculateTotalPrice(extras: number[])
+            for (let i = 0; i < times; i++) {
+              extras.push(val.extraPrice);
+            }
           }
         });
       });
 
-    // 2) Opciones toppings
+    // 2) Toppings (si cada topping es único, queda igual; si permites múltiples, aplica la misma técnica de "counts")
     selectedToppings
       .filter((t) => t.extraPrice > 0)
       .forEach((t) => extras.push(t.extraPrice));
 
-    setTotalPrice(calculateTotalPrice(product.price, quantity, extras));
+    setTotalPrice(calculateTotalPrice(Number(base), quantity, extras));
   }, [product, quantity, selectedOptions, selectedToppings]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -128,7 +148,7 @@ const ProductDetails: React.FC = () => {
     const productToAdd: Product = {
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: product.sellPrice,
       quantity,
       categoryId: product.categoryId,
       imageUrl: product.imageLeft.url,
@@ -149,8 +169,79 @@ const ProductDetails: React.FC = () => {
     });
   };
 
+  //desabled button to cart
+  // 🆕 Helpers para deshabilitar el botón "Add to cart"
+  const packMax = product?.packMaxItems ?? 0;
+
+  const requiredGroups = React.useMemo(
+    () => (product ? product.options.filter((o) => o.group.required) : []),
+    [product]
+  );
+
+  const requiredCounts = React.useMemo(() => {
+    const m: Record<string, number> = {};
+    requiredGroups.forEach((opt) => {
+      const gid = opt.group.id;
+      const arr = selectedOptions[gid] ?? [];
+      m[gid] = Array.isArray(arr) ? arr.length : 0;
+    });
+    return m;
+  }, [requiredGroups, selectedOptions]);
+
+  const totalSelectedRequired = React.useMemo(
+    () => Object.values(requiredCounts).reduce((a, b) => a + b, 0),
+    [requiredCounts]
+  );
+
+  const allRequiredMinsSatisfied = React.useMemo(
+    () =>
+      requiredGroups.every((opt) => {
+        const c = requiredCounts[opt.group.id] || 0;
+        return c >= opt.group.minSelectable;
+      }),
+    [requiredGroups, requiredCounts]
+  );
+
+  const withinMaxPerGroup = React.useMemo(
+    () =>
+      requiredGroups.every((opt) => {
+        const c = requiredCounts[opt.group.id] || 0;
+        return c <= opt.group.maxSelectable;
+      }),
+    [requiredGroups, requiredCounts]
+  );
+
+  // ✅ Regla de habilitación:
+  // - Si hay packMaxItems > 0 ⇒ exigir exactamente esa suma y cumplir mínimos & máximos por grupo
+  // - Si NO hay packMaxItems ⇒ exigir mínimos por grupo
+  const isAddDisabled = React.useMemo(() => {
+    if (!product) return true;
+    if (packMax > 0) {
+      return !(totalSelectedRequired === packMax && allRequiredMinsSatisfied);
+    }
+    return !allRequiredMinsSatisfied;
+  }, [product, packMax, totalSelectedRequired, allRequiredMinsSatisfied]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log({
+      packMax,
+      requiredCounts,
+      totalSelectedRequired,
+      allRequiredMinsSatisfied,
+      withinMaxPerGroup,
+      isAddDisabled,
+    });
+  }, [
+    packMax,
+    requiredCounts,
+    totalSelectedRequired,
+    allRequiredMinsSatisfied,
+    withinMaxPerGroup,
+    isAddDisabled,
+  ]);
   if (isLoading || !product) return <ProductDetailsSkeleton />;
-  console.log(product.sellPrice);
+
   return (
     <div className="flex justify-center mb-20 p-4">
       <div className="w-full flex flex-col lg:flex-row items-center lg:items-start gap-8 mt-10">
@@ -179,14 +270,23 @@ const ProductDetails: React.FC = () => {
           <p className="text-midnight-900 text-lg mb-2">
             {product.description}
           </p>
-          <p className="text-2xl text-midnight-900 font-semibold  line-through">
-            {product?.sellPrice && product?.sellPrice > product.price
-              ? ` $${product.sellPrice.toFixed(2)}`
-              : null}
-          </p>
-          <p className="text-2xl text-midnight-900 font-semibold mb-6">
-            ${product.price.toFixed(2)}
-          </p>
+
+          {product.sellPrice !== null &&
+          product.sellPrice < product.price &&
+          product.sellPrice > 0 ? (
+            <>
+              <p className="text-2xl text-midnight-900 font-semibold line-through">
+                ${product.price.toFixed(2)}
+              </p>{" "}
+              <p className="text-2xl text-midnight-900 font-semibold mb-6">
+                ${product.sellPrice.toFixed(2)}
+              </p>
+            </>
+          ) : (
+            <p className="text-2xl text-midnight-900 font-semibold mb-6">
+              ${product.price.toFixed(2)}
+            </p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Opciones requeridas */}
@@ -245,6 +345,36 @@ const ProductDetails: React.FC = () => {
                         [groupId]: flattened,
                       }));
                     }}
+                    onSelectionsChange={(selections) => {
+                      dispatch(
+                        updateItemSelectionsForGroup({
+                          id: product.id, // id de la línea en el carrito
+                          groupId, // id del OptionGroup que estás editando
+                          selections: selections, // [{ optionId, name, count, unitExtra }]
+                        })
+                      );
+                    }}
+                    packMaxItems={product.packMaxItems}
+                    // 🆕 Reserva mínima de los demás grupos (suma de minSelectable SOLO de los otros grupos requeridos)
+                    otherGroupsMinRequired={
+                      product.packMaxItems
+                        ? product.options.reduce((sum, og) => {
+                            if (og.groupId === groupId) return sum;
+                            return (
+                              sum +
+                              (og.group?.required ? og.group.minSelectable : 0)
+                            );
+                          }, 0)
+                        : 0
+                    }
+                    //Total ya seleccionado en otros grupos (para no pasarse del máximo global)
+                    globalSelectedExcludingThis={Object.entries(
+                      selectedOptions
+                    ).reduce((sum, [gid, arr]) => {
+                      if (gid === groupId) return sum;
+                      const len = Array.isArray(arr) ? arr.length : 0;
+                      return sum + len;
+                    }, 0)}
                   />
                 );
               })}
@@ -264,6 +394,7 @@ const ProductDetails: React.FC = () => {
                     extraPrice: val.extraPrice,
                     imageUrl: val.imageUrl,
                   }))}
+                  showImages={opt.group.showImages}
                   onToppingsChange={handleToppingsChange}
                 />
               ))}
@@ -271,12 +402,18 @@ const ProductDetails: React.FC = () => {
             {/* Cantidad general y botón */}
             <div>
               <CartCounter
-                price={product.price}
+                price={product.sellPrice}
                 onQuantityChange={handleQuantityChange}
               />
               <button
                 type="submit"
-                className="w-full mt-4 p-3 bg-midnight-950 text-white font-ArialBold text-xl rounded-full transition hover:bg-midnight-900 shadow-lg"
+                disabled={isAddDisabled} // 🆕
+                className={`w-full mt-4 p-3 text-white font-ArialBold text-xl rounded-full transition shadow-lg
+    ${
+      isAddDisabled
+        ? "bg-midnight-950 opacity-50 cursor-not-allowed"
+        : "bg-midnight-950 hover:bg-midnight-900"
+    }`} // 🆕
               >
                 Add to cart ${totalPrice.toFixed(2)}
               </button>

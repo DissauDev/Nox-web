@@ -15,6 +15,10 @@ import { DataError } from "@/components/atoms/DataError";
 import { toast } from "@/hooks/use-toast";
 import ConfirmDialog from "@/components/atoms/admin/ConfirmModal";
 import ImageEmpty from "../../assets/base/illustration-gallery-icon.png";
+import { useGetImagesQuery } from "@/store/features/api/uploadApi";
+import { LuImagePlus } from "react-icons/lu";
+import { ModalImages } from "@/components/atoms/admin/ModalImages";
+import { InputNumber } from "@/components/ui/InputNumber";
 
 export interface OptionValue {
   id: string;
@@ -27,9 +31,10 @@ export interface OptionValue {
 
 interface Props {
   groupId: string;
+  showImages: boolean;
 }
 
-export default function OptionValuesPanel({ groupId }: Props) {
+export default function OptionValuesPanel({ groupId, showImages }: Props) {
   // 1) Load
   const {
     data: values = [],
@@ -58,6 +63,13 @@ export default function OptionValuesPanel({ groupId }: Props) {
   const [editingDescription, setEditingDescription] = useState("");
   const [editingPrice, setEditingPrice] = useState(0);
   const [editingUrl, setEditingUrl] = useState("");
+  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
+
+  const { data, isLoading: isLoadingImages } = useGetImagesQuery();
+  const images = data?.images ?? [];
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedServerImage, setSelectedServerImage] = useState<string>("");
 
   // 4) Preload in edit mode
   useEffect(() => {
@@ -171,7 +183,7 @@ export default function OptionValuesPanel({ groupId }: Props) {
     return <DataError title={"Error to show values"} darkTheme={true} />;
 
   return (
-    <div className="w-2/3 bg-[#0c0014] p-4 rounded-2xl border border-purple-800 ml-4">
+    <div className="w-2/3 bg-[#15203a] border border-sapphire-700 p-4 rounded-2xl  ml-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg">Option Values</h3>
         <Button variant="ghost" size="sm" onClick={resetForm}>
@@ -180,7 +192,7 @@ export default function OptionValuesPanel({ groupId }: Props) {
       </div>
 
       {/* scroll thin */}
-      <div className="space-y-2 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-600 scrollbar-track-purple-900">
+      <div className="space-y-2 max-h-[30vh] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-600 scrollbar-track-purple-900">
         {isLoading
           ? Array.from({ length: 5 }).map((_, i) => (
               <div
@@ -207,8 +219,8 @@ export default function OptionValuesPanel({ groupId }: Props) {
               <div
                 key={v.id}
                 className={
-                  "flex justify-between items-center p-2 rounded hover:bg-gray-800 " +
-                  (v.id === editingId ? "border-2 border-purple-500" : "")
+                  "flex justify-between mx-2 items-center p-2 rounded hover:bg-sapphire-950 " +
+                  (v.id === editingId ? "border-2 border-sapphire-400" : "")
                 }
               >
                 <div className="flex items-center gap-2">
@@ -256,16 +268,27 @@ export default function OptionValuesPanel({ groupId }: Props) {
         description="This action cannot be undone."
       />
       {/* add / edit form */}
-      <div className="mt-4 space-y-2">
-        <Input
-          placeholder={editingId ? "Edit name" : "New value name"}
-          value={editingId ? editingName : newName}
-          onChange={(e) =>
-            editingId
-              ? setEditingName(e.target.value)
-              : setNewName(e.target.value)
-          }
-        />
+      <div className=" space-y-3 mt-2">
+        <div className="flex flex-row space-x-4">
+          <Input
+            placeholder={editingId ? "Edit name" : "New value name"}
+            value={editingId ? editingName : newName}
+            onChange={(e) =>
+              editingId
+                ? setEditingName(e.target.value)
+                : setNewName(e.target.value)
+            }
+          />
+          <InputNumber
+            variant="price"
+            placeholder="Extra price"
+            value={editingId ? editingPrice : newPrice}
+            onChange={(val) =>
+              editingId ? setEditingPrice(val) : setNewPrice(val)
+            }
+          />
+        </div>
+
         <Input
           placeholder="Description"
           value={editingId ? editingDescription : newDescription}
@@ -275,26 +298,28 @@ export default function OptionValuesPanel({ groupId }: Props) {
               : setNewDescription(e.target.value)
           }
         />
-        <Input
-          type="number"
-          step="any"
-          placeholder="Extra price"
-          value={editingId ? editingPrice : newPrice}
-          onChange={(e) =>
-            editingId
-              ? setEditingPrice(Number(e.target.value))
-              : setNewPrice(Number(e.target.value))
-          }
-        />
-        <Input
-          placeholder="Thumbnail URL"
-          value={editingId ? editingUrl : newUrl}
-          onChange={(e) =>
-            editingId
-              ? setEditingUrl(e.target.value)
-              : setNewUrl(e.target.value)
-          }
-        />
+        {showImages && (
+          <div className="flex flex-row space-x-4">
+            <Input
+              placeholder="Thumbnail URL"
+              value={editingId ? editingUrl : newUrl}
+              onChange={(e) =>
+                editingId
+                  ? setEditingUrl(e.target.value)
+                  : setNewUrl(e.target.value)
+              }
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="flex items-center justify-center w-20 text-gray-900 hover:text-grape-800"
+              onClick={() => setIsImageSelectorOpen(true)}
+            >
+              <LuImagePlus />
+            </Button>
+          </div>
+        )}
+
         <Button
           onClick={editingId ? onSaveEdit : onAdd}
           disabled={(editingId ? editingName : newName).trim().length === 0}
@@ -310,6 +335,23 @@ export default function OptionValuesPanel({ groupId }: Props) {
             : "Add Group"}
         </Button>
       </div>
+      <ModalImages
+        isOpen={isImageSelectorOpen}
+        onClose={() => {
+          setIsImageSelectorOpen(false);
+          setSelectedServerImage("");
+        }}
+        images={images}
+        loading={isLoadingImages}
+        onSelect={(url) => {
+          if (editingId) {
+            setEditingUrl(url);
+          } else {
+            setNewUrl(url);
+          }
+          setIsImageSelectorOpen(false);
+        }}
+      />
     </div>
   );
 }

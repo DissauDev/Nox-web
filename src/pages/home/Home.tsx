@@ -65,7 +65,7 @@ export const Home: React.FC = () => {
   }
 
   return (
-    <div className="justify-center lg:pt-6">
+    <div className="justify-center lg:pt-6 ">
       {/* 6) Inyectamos CSS si existe y no hubo error */}
       {!hasError && cssFromBackend && (
         <style
@@ -83,14 +83,16 @@ export const Home: React.FC = () => {
         {hasError ? (
           // 7) En caso de error, siempre renderizamos las secciones por defecto
           <>
-            <HomeSection3 />
-            <FotosSection4 />
+            <div className="  relative w-full overflow-hidden">
+              <HomeSection3 />
+              <FotosSection4 />
+            </div>
           </>
         ) : (
           // 8) Si no hay error, intentamos renderizar dinámicamente desde el backend
           <>
-            <div className=" pb-10">
-              {renderSection(sections, "HomeSection3") || <HomeSection3 />}
+            <div className=" pb-10 relative w-full overflow-hidden">
+              {/*renderSection(sections, "HomeSection3") ||*/ <HomeSection3 />}
               {renderSection(sections, "FotosSection4") || <FotosSection4 />}
             </div>
           </>

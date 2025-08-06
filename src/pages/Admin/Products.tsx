@@ -152,7 +152,7 @@ export const Products = () => {
               <div className="flex gap-2 w-full md:w-auto">
                 <button
                   onClick={() => openForm()}
-                  className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md flex items-center"
+                  className="bg-sapphire-500 hover:bg-sapphire-600 text-white px-4 py-2 rounded-md flex items-center"
                 >
                   <PlusIcon className="h-5 w-5 mr-1" />
                   Add Product
@@ -184,7 +184,7 @@ export const Products = () => {
               <div
                 className={`${
                   showForm ? "w-2/3" : "w-full"
-                } p-6 border-2 border-[#7436A2] rounded-lg`}
+                } p-6 border-2 border-[#3948a4] rounded-lg`}
               >
                 {/* Filters */}
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -260,6 +260,7 @@ export const Products = () => {
                           <tr
                             key={p.id}
                             className="border-b border-gray-800 hover:bg-gray-900"
+                            onClick={() => openForm(p)}
                           >
                             <td className="py-3 px-4">
                               <div className="flex items-center">
@@ -282,7 +283,18 @@ export const Products = () => {
                                 </div>
                               </div>
                             </td>
-                            <td className="py-3 px-4">${p.price}</td>
+                            <td className="py-2 px-2">
+                              {p.sellPrice !== null &&
+                              p.sellPrice < p.price &&
+                              p.sellPrice > 0 ? (
+                                <>
+                                  <p className="line-through ">${p.price}</p>
+                                  <p>${p.sellPrice}</p>{" "}
+                                </>
+                              ) : (
+                                <p>${p.price}</p>
+                              )}
+                            </td>
                             <td className="py-3 px-4">
                               {" "}
                               <div className="flex flex-wrap gap-1">

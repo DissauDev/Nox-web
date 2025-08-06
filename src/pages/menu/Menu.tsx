@@ -98,7 +98,6 @@ const Menu = () => {
     navigate(`/products/${category}/${productKey}`);
   };
 
-  // 8. Mientras carga, mostramos un simple loading screen
   if (isLoading) return <LoadingWithGlow />;
 
   // 9. Si dataMenu está vacío o indefinido, podemos mostrar un mensaje
@@ -253,9 +252,10 @@ const Menu = () => {
                       name={product.name}
                       description={product.description}
                       imageLeft={product.imageLeft.url}
+                      hasRequiredOptions={product.hasRequiredOptions}
                       sellPrice={product?.sellPrice || product.price}
                       imageRight={product.imageRight}
-                      price={product.price}
+                      price={product.price || product.sellPrice}
                       //@ts-ignore
                       product={product}
                       onAdd={() => handleItemClick(cat.category, product.id)}

@@ -156,7 +156,7 @@ export const Employees: React.FC = () => {
     <div className="p-6 text-white">
       <h1 className="text-3xl my-4 font-semibold">Employees</h1>
 
-      <div className="border-2 border-[#7436A2] rounded-lg shadow p-6">
+      <div className="border-2 border-[#3948a4] rounded-lg shadow p-6">
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-3 md:space-y-0">
           <div className="relative flex-1">
@@ -168,12 +168,12 @@ export const Employees: React.FC = () => {
               value={search}
               onChange={handleSearchChange}
               placeholder="Search employees..."
-              className="w-3/5 pl-10 pr-4 py-2 bg-transparent border-[#036666] border-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#3acaca]"
+              className="w-3/5 pl-10 pr-4 py-2 bg-transparent border-[#a3c1f5] border-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#3acaca]"
             />
           </div>
           <button
             onClick={openCreateModal}
-            className="bg-yellow-400 flex justify-center items-center hover:bg-yellow-500 text-xl text-black font-bold py-2 px-6 rounded transition"
+            className="bg-yellow-400 flex justify-center items-center hover:bg-yellow-500 text-xl text-black font-ArialBold py-2 px-6 rounded transition"
           >
             <FaPlus className="mr-2" /> Add
           </button>
@@ -394,7 +394,7 @@ export const Employees: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-grape-800 rounded hover:bg-grape-900 disabled:opacity-50"
+                  className="px-4 py-2 bg-sapphire-800 rounded hover:bg-sapphire-900 disabled:opacity-50"
                   disabled={creating || updating}
                 >
                   {editingUser

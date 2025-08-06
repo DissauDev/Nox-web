@@ -2,7 +2,7 @@ import Lottie from "lottie-react";
 import animationData from "../../assets/lotties/Animation - 1749432478619.json"; // o usa una URL remota
 
 export const LoadingWithGlow = () => (
-  <div className="relative flex flex-col justify-center items-center w-full h-auto p-4 space-y-4">
+  <div className="relative flex flex-col justify-center items-center w-full h-auto p-4 space-y-4 mb-20">
     {/* Glow de fondo */}
 
     <div className="absolute top-10 inset-0 flex justify-center items-center pointer-events-none z-0">

@@ -151,8 +151,8 @@ const Presets: React.FC<Props> = ({ selectedRange, onSelect }) => {
                 key={label}
                 className={`w-full text-left px-3 py-2 text-sm rounded font-semibold ${
                   isSelected
-                    ? "bg-grape-800 text-white "
-                    : "hover:bg-grape-100 text-gray-600"
+                    ? "bg-sapphire-800 text-white "
+                    : "hover:bg-sapphire-100 text-gray-600"
                 }`}
                 onClick={() => onSelect(range)}
               >

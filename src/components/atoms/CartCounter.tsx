@@ -29,7 +29,7 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
   // Cada vez que count cambie, informamos al padre.
   useEffect(() => {
     onQuantityChange(count);
-  }, [count, onQuantityChange, inputValue]);
+  }, [count, onQuantityChange]);
 
   const handleIncrement = () => {
     if (count < maxCount) {
@@ -49,8 +49,23 @@ const CartCounter = ({ onQuantityChange }: cartCounterProps) => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
     // Permite cualquier valor mientras se edita
-    setInputValue(e.target.value);
+    setInputValue(raw);
+    // Si está vacío, no cambiamos count (evitamos NaN mientras borra)
+    if (raw.trim() === "") return;
+
+    // Acepta solo dígitos
+    const digitsOnly = raw.replace(/[^\d]/g, "");
+    if (digitsOnly === "") return;
+
+    // Parse + clamp al rango
+    let value = parseInt(digitsOnly, 10);
+    if (isNaN(value)) return;
+    if (value > maxCount) value = maxCount;
+    if (value < minCount) value = minCount;
+
+    setCount(value); // ✅ actualiza al instante
   };
 
   const handleInputBlur = () => {

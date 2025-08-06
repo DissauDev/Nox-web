@@ -19,6 +19,7 @@ const adminNavItems = [
   { name: "Pages", path: "/dashboard/pages" },
   { name: "Uploads", path: "/dashboard/uploads" },
   { name: "Employees", path: "/dashboard/employees" },
+  { name: "Settings", path: "/dashboard/settings" },
 ];
 
 export default function AdminSidebar() {
@@ -53,7 +54,7 @@ export default function AdminSidebar() {
   return (
     <>
       {/* Botón mobile */}
-      <div className="md:hidden w-10 mx-6 flex items-center justify-between rounded-lg p-2 bg-gradient-to-b from-[#370958] to-[#1C0B29] text-white sticky top-0 z-30">
+      <div className="md:hidden w-10 mx-6 flex items-center justify-between rounded-lg p-2 bg-gradient-to-b from-[#15203a] to-[#3948a4] text-white sticky top-0 z-30">
         <button onClick={toggle}>
           <FaBars size={24} />
         </button>
@@ -63,7 +64,7 @@ export default function AdminSidebar() {
       <aside
         className="hidden md:flex flex-col mx-4 mt-10 rounded-3xl w-60 min-h-screen sticky top-0 text-white"
         style={{
-          background: "linear-gradient(180deg, #370958 0%, #1C0B29 100%)",
+          background: "linear-gradient(180deg, #15203a 0%, #3948a4 100%)",
         }}
       >
         <div className="p-6">
@@ -77,8 +78,8 @@ export default function AdminSidebar() {
                     end={item.path === "/dashboard"}
                     className={({ isActive }) =>
                       isActive
-                        ? "block border-l-4 border-pink-500 pl-4 text-white font-bold"
-                        : "block text-white opacity-80 hover:opacity-100"
+                        ? "block border-l-4 border-[#a3c1f5] pl-4 text-white font-bold"
+                        : "block text-white opacity-85 hover:opacity-100"
                     }
                   >
                     {item.name}
@@ -120,7 +121,7 @@ export default function AdminSidebar() {
             />
             {/* Sidebar móvil */}
             <motion.aside
-              className="fixed top-0 left-0 bottom-0 w-64 p-6 bg-gradient-to-b from-[#370958] to-[#1C0B29] z-50 text-white flex flex-col"
+              className="fixed top-0 left-0 bottom-0 w-64 p-6 bg-gradient-to-b from-[#15203a] to-[#3948a4] z-50 text-white flex flex-col"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -139,7 +140,7 @@ export default function AdminSidebar() {
                         onClick={toggle}
                         className={({ isActive }) =>
                           isActive
-                            ? "block border-l-4 border-pink-500 pl-4 text-white font-bold"
+                            ? "block border-l-4 border-[#a3c1f5] pl-4 text-white font-bold"
                             : "block text-white opacity-80 hover:opacity-100"
                         }
                       >

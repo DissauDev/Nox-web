@@ -4,10 +4,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { Blurhash } from "react-blurhash";
 import { RootState } from "@/store/store";
 // ajusta la ruta si es necesario
-import { addProduct } from "@/store/features/slices/orderSlice";
+import {
+  addProduct,
+  recalculateTotals,
+} from "@/store/features/slices/orderSlice";
 import { useGetProductSuggestionsQuery } from "@/store/features/api/productsApi";
+import { StoreConfig } from "@/store/features/api/storeConfigApi";
 
-export function MissingSomething() {
+interface Props {
+  storeConfig: StoreConfig;
+}
+
+export function MissingSomething({ storeConfig }: Props) {
   const dispatch = useDispatch();
   const cartItems = useSelector((s: RootState) => s.orders.products);
   const firstProductId = cartItems[0]?.id;
@@ -38,6 +46,9 @@ export function MissingSomething() {
         specifications: "",
       })
     );
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig)); // ✅ recalcula
+    }
   };
 
   if (!firstProductId || isError || (!isLoading && suggestions.length === 0)) {
@@ -48,7 +59,7 @@ export function MissingSomething() {
   if (isLoading) {
     return (
       <div className="mt-4">
-        <p className="font-ArialBold text-pompadour-900 text-xl mb-4">
+        <p className="font-ArialBold text-sapphire-500 text-xl mb-4">
           Missing Something?
         </p>
         <div className="flex space-x-4">
@@ -67,7 +78,7 @@ export function MissingSomething() {
   // Render final
   return (
     <div className="mt-4">
-      <p className="font-ArialBold text-pompadour-900 text-xl mb-4">
+      <p className="font-ArialBold text-sapphire-500 text-xl mb-4">
         Missing Something?
       </p>
       <div className="flex flex-wrap">

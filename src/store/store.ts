@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { apiSlice } from './features/api/apiSlice';
-import exampleReducer from './features/exampleSlice';
+
 import addressReducer from './features/slices/addressSlice';
 import ordersReducer from './features/slices/orderSlice';
 import authReducer from './features/slices/authSlice';
@@ -30,7 +30,6 @@ const rootPersistConfig = {
 const rootReducer = combineReducers({
   address: addressReducer,
   auth: authReducer,
-  example: exampleReducer,
   whishlist: whishlistReducer,
   orders: ordersReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,18 @@ import { useForm, Controller } from "react-hook-form";
 import { FaMapMarkerAlt, FaStore } from "react-icons/fa";
 import { IMaskInput } from "react-imask";
 import { RootState } from "@/store/store";
-import { setTipPercent } from "@/store/features/slices/orderSlice";
+import {
+  clearOrder,
+  recalculateTotals,
+  setTipPercent,
+} from "@/store/features/slices/orderSlice";
 import { useAppSelector } from "@/store/hooks";
 import { useCreateOrderMutation } from "@/store/features/api/ordersApi";
 import { toast } from "@/hooks/use-toast";
+import { cleanCart } from "@/store/features/slices/cartSlice";
+import { useGetStoreConfigQuery } from "@/store/features/api/storeConfigApi";
+import { Paymentskeleton } from "@/components/skeletons/Paymentskeleton";
+import { StateSelect } from "@/components/admin/ui/StateSelect";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const stripePromise = loadStripe(
@@ -25,6 +33,9 @@ export type CheckoutFormValues = {
   customerEmail: string;
   note: string;
   email: string;
+  billingCity: string;
+  billingState: string;
+  street: string;
 };
 
 const PaymentForm: React.FC = () => {
@@ -34,7 +45,11 @@ const PaymentForm: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
   const addressState = useSelector((s: RootState) => s.address);
+
   const [createOrder, { isLoading }] = useCreateOrderMutation();
+
+  const { data: storeConfig, isLoading: isLoadingStore } =
+    useGetStoreConfigQuery();
   const {
     register,
     handleSubmit,
@@ -52,18 +67,33 @@ const PaymentForm: React.FC = () => {
   const handleTipSelection = (value: string) => {
     setSelectedTip(value);
     if (value !== "Custom") dispatch(setTipPercent(parseFloat(value) / 100));
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig));
+    }
   };
   const handleCustomTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomTip(e.target.value);
     const val = parseFloat(e.target.value);
     if (!isNaN(val)) dispatch(setTipPercent(val / 100));
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig));
+    }
   };
+
+  useEffect(() => {
+    if (storeConfig) {
+      dispatch(recalculateTotals(storeConfig));
+    }
+  }, [storeConfig, dispatch]);
 
   const onSubmit = async ({
     phone,
     name,
     customerEmail,
     note,
+    street,
+    billingCity,
+    billingState,
   }: CheckoutFormValues) => {
     setIsProcessing(true);
     if (!stripe || !elements) {
@@ -81,6 +111,18 @@ const PaymentForm: React.FC = () => {
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
         card: cardElement,
+        billing_details: {
+          name: `${name}`,
+          email: customerEmail,
+          phone,
+          address: {
+            city: billingCity,
+            country: "US",
+            state: billingState,
+
+            line1: street,
+          },
+        },
       });
       if (error) throw error;
 
@@ -101,9 +143,12 @@ const PaymentForm: React.FC = () => {
         customerEmail,
         customerPhone: phone,
         customerName: name,
+
         specifications: note,
         subtotal: subTotal,
-        customerAddress: addressState.savedAddress.fullAddress,
+        customerAddress: street,
+        billingState,
+        billingCity,
         paymentMethodId: paymentMethod.id,
         userId: userAuth?.id || null,
       };
@@ -117,6 +162,8 @@ const PaymentForm: React.FC = () => {
       });
 
       navigate(`/ordersClient/${res.id}`);
+      dispatch(clearOrder());
+      dispatch(cleanCart());
     } catch (err) {
       toast({
         className: "border-l-4 border-red-500 ",
@@ -137,8 +184,8 @@ const PaymentForm: React.FC = () => {
           <div className="w-full">
             <div className="  text-sapphire-900 font-ArialBold">
               {/* Pickup & Address */}
-              <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900 mb-6">
-                <div className="flex md:flex-row flex-col justify-between mb-4">
+              <div className="bg-white p-6 rounded-lg shadow border text-sapphire-900 mb-2">
+                <div className="flex md:flex-row flex-col justify-between mb-2">
                   <div className="flex items-center">
                     <FaStore size={28} className="mr-2" />
                     <span className="font-ArialBold">
@@ -157,76 +204,134 @@ const PaymentForm: React.FC = () => {
                     </p>
                   </div>
                 </div>
-
+                <span className="font-ArialBold text-lg mb-2">
+                  Billing Address
+                </span>
                 {/* Customer inputs */}
                 <div className="space-y-2">
-                  {/* Phone */}
-                  <div>
-                    <label className="block mb-1">Phone Number</label>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      rules={{
-                        required: "Required",
-                        pattern: {
-                          value: /^\+1 \(\d{3}\) \d{3}-\d{4}$/,
-                          message: "Invalid US phone number",
-                        },
-                      }}
-                      render={({ field }) => (
-                        <IMaskInput
-                          {...field}
-                          mask="+1 (000) 000-0000"
-                          definitions={{ 0: /[0-9]/ }}
-                          className="w-full p-2 border rounded"
-                          placeholder="+1 (555) 123-4567"
-                        />
-                      )}
-                    />
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm">
-                        {errors.phone.message}
-                      </p>
-                    )}
-                  </div>
-
                   {/* Name */}
-                  <div>
-                    <label className="block mb-1">Name</label>
-                    <input
-                      defaultValue={userAuth?.name || ""}
-                      {...register("name", { required: "Required" })}
-                      className="w-full p-2 border rounded"
-                      placeholder="Your name"
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm">
-                        {errors.name.message}
-                      </p>
-                    )}
+                  <div className="flex flex-col space-x-2 md:flex-row justify-between">
+                    <div className="w-full">
+                      <label className="block mb-1">
+                        Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        defaultValue={userAuth?.name || ""}
+                        {...register("name", { required: "Required" })}
+                        className="w-full p-1 border rounded"
+                        placeholder="Your name"
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm">
+                          {errors.name.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-full">
+                      <label className="block mb-1">
+                        Phone Number<span className="text-red-500">*</span>
+                      </label>
+                      <Controller
+                        name="phone"
+                        control={control}
+                        rules={{
+                          required: "Required",
+                          pattern: {
+                            value: /^\+1 \(\d{3}\) \d{3}-\d{4}$/,
+                            message: "Invalid US phone number",
+                          },
+                        }}
+                        render={({ field }) => (
+                          <IMaskInput
+                            {...field}
+                            mask="+1 (000) 000-0000"
+                            definitions={{ 0: /[0-9]/ }}
+                            className="w-full p-1 border rounded"
+                            placeholder="+1 (555) 123-4567"
+                          />
+                        )}
+                      />
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm">
+                          {errors.phone.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="block mb-1">Email</label>
-                    <input
-                      type="email"
-                      defaultValue={userAuth?.email || ""}
-                      {...register("customerEmail", {
-                        required: "Required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Invalid email",
-                        },
-                      })}
-                      className="w-full p-2 border rounded"
-                      placeholder="you@example.com"
-                    />
-                    {errors.customerEmail && (
-                      <p className="text-red-500 text-sm">
-                        {errors.customerEmail.message}
-                      </p>
-                    )}
+                  <div className="flex flex-col space-x-2 md:flex-row justify-between">
+                    {/* Email */}
+                    <div className="w-full">
+                      <label className="block mb-1">
+                        Email<span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue={userAuth?.email || ""}
+                        {...register("customerEmail", {
+                          required: "Required",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Invalid email",
+                          },
+                        })}
+                        className="w-full p-1 border rounded"
+                        placeholder="you@example.com"
+                      />
+                      {errors.customerEmail && (
+                        <p className="text-red-500 text-sm">
+                          {errors.customerEmail.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-full">
+                      <StateSelect
+                        control={control}
+                        name="billingState"
+                        label="State"
+                        required
+                        placeholder="Select your state"
+                      />
+                      {errors.billingState && (
+                        <p className="text-red-500 text-sm">
+                          {errors.billingState.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-x-2 md:flex-row justify-between">
+                    <div className="flex flex-col  w-full">
+                      <label htmlFor="billingCity">
+                        City <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full p-1 border rounded"
+                        id="billingCity"
+                        {...register("billingCity", { required: true })}
+                        placeholder="Enter your city"
+                      />
+                      {errors.billingCity && (
+                        <p className="text-red-500 text-sm">
+                          {errors.billingCity.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col  w-full">
+                      <label htmlFor="street">
+                        Street y Number House{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full p-1 border rounded"
+                        id="street"
+                        {...register("street", { required: true })}
+                        placeholder="Street and house number"
+                      />
+                      {errors.street && (
+                        <p className="text-red-500 text-sm">
+                          {errors.street.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -263,7 +368,10 @@ const PaymentForm: React.FC = () => {
                                   key={ops.id}
                                 >
                                   <p className="text-xs font-semibold">
-                                    {ops.name} (${ops.extraPrice})
+                                    {ops.name}{" "}
+                                    {ops.extraPrice > 0 &&
+                                      `(+${ops.extraPrice?.toFixed(2)})`}{" "}
+                                    {ops.quantity > 1 && `x${ops.quantity}`}
                                   </p>
                                 </div>
                               ))}
@@ -281,68 +389,82 @@ const PaymentForm: React.FC = () => {
           </div>
           {/* Columna Derecha: Payment Form */}
           <div className="w-full">
-            <div className="flex flex-col lg:max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6 text-sapphire-900 font-ArialBold">
-              <h2 className="text-2xl mb-4 font-ArialBold text-pompadour-900">
-                Order Details
-              </h2>
-              {/* Subtotal & Tip */}
-              <div className="flex justify-between mb-2">
-                <span>Subtotal</span>
-                <span>${orderState.totals.subTotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-gray-600 mb-4">
-                <span>Tip</span>
-                <span>${orderState.totals.tip.toFixed(2)}</span>
-              </div>
+            {isLoadingStore ? (
+              <Paymentskeleton isTip={true} />
+            ) : (
+              <div className="flex flex-col lg:max-w-lg w-full bg-white rounded-lg shadow-lg border border-gray-300 p-6 text-sapphire-900 font-ArialBold">
+                <h2 className="text-2xl mb-4 font-ArialBold text-sapphire-800">
+                  Order Details
+                </h2>
+                {/* Subtotal & Tip */}
+                <div className="flex justify-between mb-2">
+                  <span>Subtotal</span>
+                  <span>${orderState.totals.subTotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-gray-600 mb-4">
+                  <span>Tip</span>
+                  <span>${orderState.totals.tip.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-gray-600 mb-4">
+                  <span>Tax</span>
+                  <span>${orderState.totals.tax}</span>
+                </div>
 
-              {/* Tip selector */}
-              <div className="mb-4 flex flex-wrap">
-                {["18", "20", "25", "Custom"].map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => handleTipSelection(t)}
-                    className={`m-1 px-4 py-2 rounded ${
-                      selectedTip === t
-                        ? "bg-sapphire-900 text-white"
-                        : "bg-white border-2 hover:bg-gray-100"
-                    }`}
-                  >
-                    {t === "Custom" ? t : ` ${t}%`}
-                  </button>
-                ))}
-              </div>
-              {selectedTip === "Custom" && (
-                <input
-                  type="number"
-                  placeholder="Tip %"
-                  value={customTip}
-                  onChange={handleCustomTipChange}
-                  className="w-full p-2 border rounded mb-4"
-                />
-              )}
+                {/* Tip selector */}
+                <div className="mb-4 flex flex-wrap">
+                  {["18", "20", "25", "Custom"].map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => handleTipSelection(t)}
+                      className={`m-1 px-4 py-2 rounded ${
+                        selectedTip === t
+                          ? "bg-sapphire-900 text-white"
+                          : "bg-white border-2 hover:bg-gray-100"
+                      }`}
+                    >
+                      {t === "Custom" ? t : ` ${t}%`}
+                    </button>
+                  ))}
+                </div>
+                {selectedTip === "Custom" && (
+                  <input
+                    type="number"
+                    placeholder="Tip %"
+                    value={customTip}
+                    onChange={handleCustomTipChange}
+                    className="w-full p-2 border rounded mb-4"
+                  />
+                )}
 
-              {/* Total */}
-              <div className="flex justify-between font-ArialBold text-xl">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-              <hr className="mb-4" />
+                {/* Total */}
+                <div className="flex justify-between font-ArialBold text-xl">
+                  <span>Total</span>
+                  {isLoadingStore ? (
+                    <div className="h-4 w-1/3 bg-gray-600 rounded" />
+                  ) : (
+                    <span>${total.toFixed(2)}</span>
+                  )}
+                </div>
+                <hr className="mb-4" />
 
-              {/* Stripe CardElement */}
-              <div>
-                <label className="block mb-1 font-semibold">Card details</label>
-                <CardElement className="p-2 border rounded mb-4" />
-              </div>
+                {/* Stripe CardElement */}
+                <div>
+                  <label className="block mb-1 font-semibold">
+                    Card details
+                  </label>
+                  <CardElement className="p-2 border rounded mb-4" />
+                </div>
 
-              <button
-                type="submit"
-                disabled={!stripe || isLoading || isProcessing}
-                className="w-full py-2 bg-mustard-yellow-400 text-black-night-950 rounded font-ArialBold disabled:opacity-50"
-              >
-                {isLoading || isProcessing ? "Processing..." : "Place Order"}
-              </button>
-            </div>
+                <button
+                  type="submit"
+                  disabled={!stripe || isLoading || isProcessing}
+                  className="w-full py-2 bg-mustard-yellow-400 text-black-night-950 rounded font-ArialBold disabled:opacity-50"
+                >
+                  {isLoading || isProcessing ? "Processing..." : "Place Order"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

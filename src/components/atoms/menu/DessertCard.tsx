@@ -1,3 +1,5 @@
+import { toast } from "@/hooks/use-toast";
+import { addProduct } from "@/store/features/slices/orderSlice";
 import {
   Product,
   toggleWishlist,
@@ -9,16 +11,20 @@ import React from "react";
 import { FaPlus } from "react-icons/fa6";
 
 import { HiOutlineHeart, HiHeart } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import DEfaultImage from "../../../assets/base/illustration-gallery-icon.png";
 
 interface ProductCardProps {
   imageLeft: string;
   imageRight?: string;
   name: string;
+
   description: string;
   price: number;
   sellPrice?: number;
   onAdd: () => void;
   product: Product;
+  hasRequiredOptions: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -29,11 +35,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   price,
   sellPrice,
   product,
+  hasRequiredOptions,
   onAdd,
 }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const inWishlist = useAppSelector(selectIsInWishlist(product.id));
   const [showHeartBurst, setShowHeartBurst] = React.useState(false);
+
   // Evita que el click en el corazón dispare otros handlers (e.g. onAdd)
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -44,6 +53,34 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
 
     dispatch(toggleWishlist(product));
+  };
+
+  const onClick = (p: Product, e) => {
+    e?.stopPropagation();
+    if (hasRequiredOptions) {
+      // Llévalo a pantalla de selección
+      navigate(`/products/${p.category}/${p.id}`);
+    } else {
+      // Agrégalo directo al carrito con cantidad=1
+      const productToAdd = {
+        id: p.id,
+        name: p.name,
+        price: p.sellPrice,
+        quantity: 1,
+        categoryId: p.categoryId,
+        imageUrl: p.imageLeft.url,
+        blurHashImage: p.imageLeft.blurHash,
+
+        options: [],
+        specifications: p.specifications ?? "",
+      };
+
+      dispatch(addProduct(productToAdd));
+      toast({
+        title: "✅ Added to cart!",
+        description: "Item added with quantity 1.",
+      });
+    }
   };
 
   return (
@@ -108,8 +145,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2
                w-40 h-40 bg-[#92b1dd] rounded-full blur-2xl opacity-30 z-0"
         />
+
         <img
-          src={imageLeft}
+          src={imageLeft || DEfaultImage}
           alt={name}
           className="absolute z-10 h-52 -top-10 left-12 w-auto rounded-full transition-transform duration-300 group-hover:scale-110"
         />
@@ -135,8 +173,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {description}
           </p>
           {sellPrice && sellPrice > price ? (
-            <span className="text-lg text-white font-ArialBold">
-              $ ? `$ {sellPrice.toFixed(2)}`
+            <span className="text-lg text-white font-ArialBold line-through">
+              $ {sellPrice.toFixed(2)}
             </span>
           ) : null}
 
@@ -144,7 +182,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      <button className="absolute bottom-2 right-2 w-10 h-10 flex items-center justify-center bg-[#92b1dd] text-[#15203a] rounded-md">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(product, e);
+        }}
+        className="absolute bottom-2 right-2 w-10 h-10 flex items-center justify-center
+        bg-[#92b1dd] hover:bg-[#6a96d4] text-[#15203a] rounded-md"
+      >
         <FaPlus size={22} />
       </button>
     </div>

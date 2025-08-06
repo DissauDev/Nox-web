@@ -153,7 +153,7 @@ export default function DateRangeSelector({
             <button
               className={`flex-1 text-center py-2 text-sm font-medium ${
                 activeTab === "presets"
-                  ? "text-grape-950 border-b-2 border-grape-900"
+                  ? "text-sapphire-900 border-b-2 border-sapphire-700"
                   : "text-gray-500"
               }`}
               onClick={() => setActiveTab("presets")}
@@ -163,7 +163,7 @@ export default function DateRangeSelector({
             <button
               className={`flex-1 text-center py-2 text-sm font-medium ${
                 activeTab === "custom"
-                  ? "text-grape-950 border-b-2 border-grape-900"
+                  ? "text-sapphire-900 border-b-2 border-sapphire-700"
                   : "text-gray-500"
               }`}
               onClick={() => setActiveTab("custom")}
@@ -195,13 +195,13 @@ export default function DateRangeSelector({
                     key={type}
                     className={`flex-1 text-center font-semibold py-1.5 text-sm border rounded ${
                       compareType === type
-                        ? "bg-white border-grape-800 text-gray-700"
+                        ? "bg-white border-sapphire-800 text-gray-700"
                         : "border-gray-300 text-gray-500"
                     }`}
                     onClick={() => setCompareType(type)}
                   >
                     {compareType === type && (
-                      <span className="inline-block w-2 h-2 bg-grape-800 rounded-full mr-1"></span>
+                      <span className="inline-block w-2 h-2 bg-sapphire-800 rounded-full mr-1"></span>
                     )}
                     {type === "previous_period"
                       ? "Previous period"
@@ -222,7 +222,7 @@ export default function DateRangeSelector({
               </button>
             )}
             <button
-              className="flex-1 font-semibold py-2 text-sm bg-grape-800 text-white rounded hover:bg-grape-900"
+              className="flex-1 font-semibold py-2 text-sm bg-sapphire-800 text-white rounded hover:bg-sapphire-900"
               onClick={handleUpdate}
             >
               Update

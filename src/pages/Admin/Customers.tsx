@@ -61,7 +61,7 @@ export const Customers = () => {
       <h1 className="text-3xl my-4 font-semibold">Customers</h1>
 
       {/* Card */}
-      <div className="border-2 border-[#7436A2] rounded-lg shadow p-6">
+      <div className="border-2 border-[#3948a4] rounded-lg shadow p-6">
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-3 md:space-y-0">
           <div className="relative flex-1">
@@ -76,7 +76,7 @@ export const Customers = () => {
                 setPage(1);
               }}
               placeholder="Search customers..."
-              className="w-3/5 pl-10 pr-4 py-2 bg-transparent border-[#036666] border-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#3acaca]"
+              className="w-3/5 pl-10 pr-4 py-2 bg-transparent border-[#a3c1f5] border-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#3acaca]"
             />
           </div>
           <div className="flex items-center space-x-2">
@@ -119,7 +119,7 @@ export const Customers = () => {
                           }
                           className={`${
                             visibleCols[col.key]
-                              ? "bg-grape-600"
+                              ? "bg-sapphire-600"
                               : "bg-gray-700"
                           } relative inline-flex items-center h-5 rounded-full w-9 focus:outline-none`}
                         >
@@ -271,7 +271,7 @@ export const Customers = () => {
               ? "…"
               : errorStats
               ? "Error"
-              : `${stats.averageOrdersPerUser.toFixed(2)} Average orders`}
+              : `${stats?.averageOrdersPerUser?.toFixed(2)} Average orders`}
           </div>
           <div>
             {loadingStats

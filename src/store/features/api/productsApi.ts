@@ -121,5 +121,6 @@ export const {
   useSetProductOptionsMutation,
   useGetProductOptionsQuery,
   useGetProductSuggestionsQuery,
+
   useGetMenuQuery
 } = productsApi;

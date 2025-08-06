@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useState, Fragment, useEffect } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+
 import { FaCheck, FaChevronLeft } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -16,6 +15,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { DataError } from "@/components/atoms/DataError";
 import animationData from "../../assets/lotties/Animation 8.json"; // o usa una URL remota
 import Lottie from "lottie-react";
+import { Dropdown } from "@/components/atoms/DropDown";
 
 export const OrderDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -158,8 +158,8 @@ export const OrderDetails: React.FC = () => {
   }
 
   // A estas alturas ya tienes `order` y `userOrders` seguros
-  const borderColor = "border border-[#036666]";
-  const focusBorder = "focus:border-[#15CAB8]";
+  const borderColor = "border border-[#b9d3ff]";
+  const focusBorder = "focus:border-[#92b1d9]";
   const date = new Date(order.createdAt).toLocaleString("en-US", {
     year: "numeric",
     month: "long",
@@ -184,7 +184,7 @@ export const OrderDetails: React.FC = () => {
         {/* ── MAIN ── */}
         <div className="flex-1 space-y-6">
           {/* General + Billing */}
-          <div className="border-2 border-[#7436A2] p-6 rounded-md">
+          <div className="border-2 border-[#3948a4] p-6 rounded-md">
             <div className="flex lg:flex-row justify-around flex-col ">
               {/* General (2 cols) */}
               <div className="col-span-2 space-y-6">
@@ -206,6 +206,7 @@ export const OrderDetails: React.FC = () => {
                 <div className="flex gap-2 text-sm ">
                   <Dropdown
                     label={`Status: ${status}`}
+                    styles="rounded px-4 py-2"
                     options={[
                       "PAID",
                       "PROCESSING",
@@ -218,7 +219,7 @@ export const OrderDetails: React.FC = () => {
                     focusBorder={focusBorder}
                   />
                   <button
-                    className="bg-[#036666] hover:bg-[#2a857c] px-4 py-2 rounded flex items-center justify-center"
+                    className="bg-sapphire-400 hover:bg-sapphire-500 px-4 py-2 rounded flex items-center justify-center"
                     disabled={isUpdating}
                     onClick={() => handleChangeStatus(status)}
                   >
@@ -249,7 +250,7 @@ export const OrderDetails: React.FC = () => {
           </div>
 
           {/* Items */}
-          <div className="border-2 border-[#7436A2] p-6 rounded-md">
+          <div className="border-2 border-[#3948a4] p-6 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Items</h2>
             <table className="w-full text-sm">
               <thead>
@@ -313,7 +314,7 @@ export const OrderDetails: React.FC = () => {
             {/* Totals & Refund */}
             <div className="flex justify-between items-center mt-6">
               <button
-                className="bg-rose-700 hover:bg-rose-800 font-ArialBold px-4 py-2 rounded"
+                className="bg-mustard-yellow-500 hover:bg-mustard-yellow-600 font-ArialBold px-4 py-2 rounded"
                 onClick={handleRefund}
                 disabled={isRefunding}
               >
@@ -339,7 +340,7 @@ export const OrderDetails: React.FC = () => {
         {/* ── SIDEBAR ── */}
         <aside className=" space-y-6">
           {/* Order Actions */}
-          <div className="border-2 border-[#7436A2] p-2 rounded-md space-y-4">
+          <div className="border-2 border-[#3948a4] p-2 rounded-md space-y-4">
             <h2 className="font-semibold">Order Actions</h2>
             <div className="flex gap-2 text-sm">
               <Dropdown
@@ -350,7 +351,7 @@ export const OrderDetails: React.FC = () => {
                 focusBorder={focusBorder}
               />
               <button
-                className="bg-[#036666] hover:bg-[#2a857c] px-4 py-2 rounded flex items-center justify-center disabled:opacity-50"
+                className="bg-sapphire-400 hover:bg-sapphire-500 px-4 py-2 rounded flex items-center justify-center disabled:opacity-50"
                 onClick={handleAction}
                 disabled={action === ACTIONS[0] || isUpdating}
               >
@@ -359,14 +360,14 @@ export const OrderDetails: React.FC = () => {
             </div>
             <button
               disabled={isDeleting || isRefunding || isUpdating}
-              className="text-rose-600 hover:underline text-sm h-6"
+              className="text-mustard-yellow-500 hover:underline text-sm h-6"
               onClick={handleDelete}
             >
               {isDeleting ? "Deleting..." : " Move to Trash"}
             </button>
           </div>
 
-          <div className="border-2 border-[#7436A2] p-6 rounded-md space-y-2">
+          <div className="border-2 border-[#3948a4] p-6 rounded-md space-y-2">
             <h2 className="font-semibold">Order Attribution</h2>
             <div className="text-sm text-gray-300">
               <p>
@@ -379,7 +380,7 @@ export const OrderDetails: React.FC = () => {
             </div>
           </div>
 
-          <div className="border-2 border-[#7436A2] p-6 rounded-md space-y-2">
+          <div className="border-2 border-[#3948a4] p-6 rounded-md space-y-2">
             <h2 className="font-semibold">Customer History</h2>
             {loadingUserOrders ? (
               <div className="text-sm text-gray-300 space-y-2">
@@ -406,7 +407,7 @@ export const OrderDetails: React.FC = () => {
           </div>
 
           {/* Order Notes */}
-          <div className="border-2 border-[#7436A2] p-6 rounded-md">
+          <div className="border-2 border-[#3948a4] p-6 rounded-md">
             <h2 className="font-semibold">Order Notes</h2>
             <p className="text-gray-500 text-sm">
               {order.specifications || "No notes yet."}
@@ -417,43 +418,3 @@ export const OrderDetails: React.FC = () => {
     </div>
   );
 };
-
-// Simple Headless UI dropdown
-function Dropdown({ label, options, onSelect, borderColor, focusBorder }) {
-  return (
-    <Menu as="div" className="relative inline-block text-left w-50">
-      <Menu.Button
-        className={`w-full text-left  ${borderColor} ${focusBorder} rounded px-4 py-2 flex items-center justify-between`}
-      >
-        <span className="text-gray-200">{label}</span>
-        <ChevronDownIcon className="h-5 w-5 text-gray-400" />
-      </Menu.Button>
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute right-0 mt-1 w-full bg-gray-800 rounded shadow-lg ring-1 ring-black ring-opacity-5 z-10">
-          {options.map((opt) => (
-            <Menu.Item key={opt}>
-              {({ active }) => (
-                <button
-                  onClick={() => onSelect(opt)}
-                  className={`w-full text-left px-4 py-2 text-sm ${
-                    active ? "bg-[#036666] text-white" : "text-gray-300"
-                  }`}
-                >
-                  {opt}
-                </button>
-              )}
-            </Menu.Item>
-          ))}
-        </Menu.Items>
-      </Transition>
-    </Menu>
-  );
-}
