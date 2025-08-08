@@ -8,20 +8,16 @@ import { useAppSelector } from "../../store/hooks";
 import CustomModal from "./CustomModal";
 import { toast } from "@/hooks/use-toast";
 import React, { useRef, useState, useLayoutEffect, useMemo } from "react";
-import { useGetPageBySlugQuery } from "@/store/features/api/pageApi";
+
 import DOMPurify from "dompurify";
+import { usePageData } from "./PageDataContext";
 
 type Section = { key: string; html: string };
 type Layout = { sections: Section[]; css?: string };
 
 export const Banner: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const {
-    data: pageData,
-    error: pageError,
-    isLoading,
-  } = useGetPageBySlugQuery("banner");
-  console.log(pageData);
+  const { bannerPageData: pageData } = usePageData();
   const location = useLocation();
   const savedAddress = useAppSelector((state) => state.address.savedAddress);
   const products = useAppSelector((state) => state.orders.products);
@@ -83,7 +79,7 @@ export const Banner: React.FC = () => {
   // 3) Mientras carga, mostramos un indicador simple
 
   // 4) Si hay error, NO salimos: mostramos los componentes estáticos por defecto
-  const hasError = Boolean(pageError);
+  const hasError = !pageData;
 
   // 5) Si la petición fue exitosa, extraemos layout.sections y layout.css
   let sections: Section[] = [];
@@ -112,10 +108,6 @@ export const Banner: React.FC = () => {
 
     sections = layoutObj.sections || [];
     cssFromBackend = layoutObj.css || "";
-  }
-
-  if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
   }
 
   return (

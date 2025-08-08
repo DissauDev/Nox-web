@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGetPageBySlugQuery } from "@/store/features/api/pageApi";
+import { PageDataContext } from "./PageDataContext";
 
 interface PreloaderProps {
   children: React.ReactNode;
@@ -7,22 +9,25 @@ interface PreloaderProps {
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ children, imageSources }) => {
-  const [loaded, setLoaded] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [ready, setReady] = useState(false);
 
+  const { data: bannerPageData, isSuccess } = useGetPageBySlugQuery("banner");
+
+  // Preload imágenes
   useEffect(() => {
     let count = 0;
     const total = imageSources.length;
 
     if (total === 0) {
-      setLoaded(true);
+      setImagesLoaded(true);
       return;
     }
 
     const onLoad = () => {
       count++;
       if (count === total) {
-        // espera un pelín antes de iniciar la salida
-        setTimeout(() => setLoaded(true), 300);
+        setImagesLoaded(true);
       }
     };
 
@@ -37,10 +42,17 @@ const Preloader: React.FC<PreloaderProps> = ({ children, imageSources }) => {
     });
   }, [imageSources]);
 
+  // Esperar a que tanto imágenes como datos estén listos
+  useEffect(() => {
+    if (imagesLoaded && isSuccess) {
+      setTimeout(() => setReady(true), 300);
+    }
+  }, [imagesLoaded, isSuccess]);
+
   return (
-    <>
+    <PageDataContext.Provider value={{ bannerPageData }}>
       <AnimatePresence>
-        {!loaded && (
+        {!ready && (
           <motion.div
             key="preloader"
             className="fixed inset-0 flex items-center justify-center bg-midnight-950 text-white z-50"
@@ -63,7 +75,7 @@ const Preloader: React.FC<PreloaderProps> = ({ children, imageSources }) => {
       </AnimatePresence>
 
       {/* Contenido principal que va apareciendo a medida que el preloader se va */}
-      {loaded && (
+      {ready && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -72,7 +84,7 @@ const Preloader: React.FC<PreloaderProps> = ({ children, imageSources }) => {
           {children}
         </motion.div>
       )}
-    </>
+    </PageDataContext.Provider>
   );
 };
 
